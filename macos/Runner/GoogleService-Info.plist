@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyCUQN1PIButD0AC6DBPUhmdNQsCRVs9M9g</string>
+	<key>GCM_SENDER_ID</key>
+	<string>709894266438</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.waterSaver.RunnerTests</string>
+	<key>PROJECT_ID</key>
+	<string>myesp32-e60de</string>
+	<key>STORAGE_BUCKET</key>
+	<string>myesp32-e60de.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:709894266438:ios:4fc8fe883e906f322c7447</string>
+	<key>DATABASE_URL</key>
+	<string>https://myesp32-e60de-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>
