@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:water_saver/screens/homepage.dart';
+import 'package:water_saver/screens/onboarding.dart';
+import 'package:water_saver/screens/signup_screen.dart';
 
 class OtpScreen extends StatefulWidget {
   const OtpScreen({super.key, required this.verificationId});
@@ -12,6 +15,27 @@ class OtpScreen extends StatefulWidget {
 
 class _OtpScreenState extends State<OtpScreen> {
   TextEditingController otpController = TextEditingController();
+  var db = FirebaseFirestore.instance;
+
+  void forwardScreen(User user) async {
+    var doc = await db.collection("users").doc(user.uid).get();
+    if (doc.exists &&
+        (doc.data()!['name'] != null || doc.data()!['name'] != "")) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => HomeScreen(
+                  user: user,
+                )),
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => onboardingScreen(user: user)),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -47,12 +71,8 @@ class _OtpScreenState extends State<OtpScreen> {
               );
               FirebaseAuth.instance.signInWithCredential(cred).then((value) {
                 print(value.user?.phoneNumber);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => HomeScreen(
-                            user: value.user,
-                          )),
+                forwardScreen(
+                  value.user!,
                 );
               });
             } catch (ex) {}

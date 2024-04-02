@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:auth_buttons/auth_buttons.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -5,7 +6,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:water_saver/firebase_options.dart';
 import 'package:water_saver/screens/homepage.dart';
+import 'package:water_saver/screens/onboarding.dart';
 import 'package:water_saver/screens/otp_screen.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:water_saver/main.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({
@@ -18,6 +22,26 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController phoneController = TextEditingController();
+  var db = FirebaseFirestore.instance;
+  void forwardScreen(User user) async {
+    var doc = await db.collection("users").doc(user.uid).get();
+    if (doc.exists &&
+        (doc.data()!['name'] != null || doc.data()!['name'] != "")) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => HomeScreen(
+                  user: user,
+                )),
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => onboardingScreen(user: user)),
+      );
+    }
+  }
+
   Future<bool> signOutFromGoogle() async {
     try {
       await GoogleSignIn().disconnect();
@@ -77,7 +101,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     verificationCompleted: (PhoneAuthCredential cred) {
                       FirebaseAuth.instance.signInWithCredential(cred).then(
                         (value) {
-                          Navigator.push(
+                          Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => HomeScreen(
@@ -89,7 +113,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     },
                     verificationFailed: (FirebaseAuthException e) {},
                     codeSent: (String verificationId, int? resendToken) {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                           builder: (context) => OtpScreen(
@@ -109,14 +133,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               GoogleAuthButton(
                 onPressed: () async {
-                  UserCredential user = await signInWithGoogle();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => HomeScreen(
-                              user: user.user,
-                            )),
-                  );
+                  try {
+                    UserCredential user = await signInWithGoogle();
+                    forwardScreen(user.user!);
+                  } catch (e) {
+                    print(e);
+                  }
                 },
                 style: const AuthButtonStyle(
                   iconType: AuthIconType.outlined,
