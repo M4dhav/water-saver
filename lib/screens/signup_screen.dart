@@ -144,14 +144,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   iconType: AuthIconType.outlined,
                 ),
               ),
-              MicrosoftAuthButton(
-                onPressed: () {
-                  signOutFromGoogle();
-                },
-                style: const AuthButtonStyle(
-                  iconType: AuthIconType.outlined,
-                ),
-              ),
             ],
           ),
         ), // This trailing comma makes auto-formatting nicer for build methods.
