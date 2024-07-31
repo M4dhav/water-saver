@@ -32,12 +32,8 @@ dependencies:
   firebase_phone_auth_handler: 
   auth_buttons: 
   firebase_ui_auth: 
-  # flutter:
-  #   sdk: flutter
-
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
+  flutter:
+    sdk: flutter
   cupertino_icons:
   firebase_auth: 
   cloud_firestore:
@@ -49,6 +45,7 @@ dependencies:
   flutter_blue_plus: 
   fl_chart: 
   get: 
+  sizer:
 
 dev_dependencies:
   flutter_test:

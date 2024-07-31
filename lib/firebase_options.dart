@@ -65,7 +65,7 @@ class DefaultFirebaseOptions {
     projectId: 'myesp32-e60de',
     databaseURL: 'https://myesp32-e60de-default-rtdb.firebaseio.com',
     storageBucket: 'myesp32-e60de.appspot.com',
-    androidClientId: '709894266438-fruta39kohkjapj8v6mnpkoq5hbe069s.apps.googleusercontent.com',
+    androidClientId: '709894266438-ac9s0qc4h1oppeqfega25p24k74gitpg.apps.googleusercontent.com',
     iosClientId: '709894266438-e70dv93u3mgobu53ukmc8pgv01t6gbbn.apps.googleusercontent.com',
     iosBundleId: 'com.example.waterSaver',
   );

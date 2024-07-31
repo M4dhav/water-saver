@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "709894266438-ac9s0qc4h1oppeqfega25p24k74gitpg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.water_saver",
+            "certificate_hash": "7a8ade9ac4dc9f7a46e8467624ea0cd539a7c38b"
+          }
+        },
+        {
           "client_id": "709894266438-hmr2ijglh96r83cvkuvs5flbbjjmpoqs.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
