@@ -1,44 +1,45 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/get_instance.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:water_saver/firebase_options.dart';
 import 'package:water_saver/screens/homepage.dart';
-import 'package:water_saver/screens/otp_screen.dart';
-import 'package:water_saver/screens/password_registration.dart';
 import 'package:water_saver/screens/signup_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  Get.put(await SharedPreferences.getInstance());
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   bool loggedIn = false;
-  User? user = await FirebaseAuth.instance.currentUser;
+  User? user = FirebaseAuth.instance.currentUser;
   if (user != null) {
     loggedIn = true;
   }
   runApp(MainApp(
     loggedIn: loggedIn,
-    user: user,
   ));
 }
 
 class MainApp extends StatelessWidget {
-  const MainApp({super.key, required this.loggedIn, required this.user});
+  const MainApp({
+    super.key,
+    required this.loggedIn,
+  });
   final bool loggedIn;
-  final User? user;
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      home: loggedIn
-          ? HomeScreen(
-              user: user,
-            )
-          : SignUpScreen(),
+    return GetMaterialApp(
+      title: 'Water Saver',
+      home: loggedIn ? const HomeScreen() : const SignUpScreen(),
     );
   }
 }

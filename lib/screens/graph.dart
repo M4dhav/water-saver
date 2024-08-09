@@ -2,15 +2,18 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 class LineChartPage extends StatelessWidget {
-  const LineChartPage({required this.isShowingMainData});
+  const LineChartPage({super.key, required this.isShowingMainData});
 
   final bool isShowingMainData;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Data'),
+      ),
       body: Center(
-        child: Container(
+        child: SizedBox(
           height: 300,
           width: double.infinity,
           child: LineChart(

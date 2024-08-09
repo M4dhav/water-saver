@@ -1,9 +1,14 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_core/get_core.dart';
+import 'package:get/get_instance/get_instance.dart';
+import 'package:get/get_navigation/get_navigation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:water_saver/screens/homepage.dart';
 import 'package:water_saver/screens/onboarding.dart';
-import 'package:water_saver/screens/signup_screen.dart';
 
 class OtpScreen extends StatefulWidget {
   const OtpScreen({super.key, required this.verificationId});
@@ -14,25 +19,18 @@ class OtpScreen extends StatefulWidget {
 }
 
 class _OtpScreenState extends State<OtpScreen> {
+  final SharedPreferences prefs = Get.find();
   TextEditingController otpController = TextEditingController();
   var db = FirebaseFirestore.instance;
 
   void forwardScreen(User user) async {
-    var doc = await db.collection("users").doc(user.uid).get();
+    final String? deviceId = prefs.getString('device_id');
+    var doc = await db.collection("users").doc(deviceId).get();
     if (doc.exists &&
         (doc.data()!['name'] != null || doc.data()!['name'] != "")) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) => HomeScreen(
-                  user: user,
-                )),
-      );
+      Get.to(const HomeScreen());
     } else {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => onboardingScreen(user: user)),
-      );
+      Get.to(const OnboardingScreen());
     }
   }
 
@@ -41,7 +39,7 @@ class _OtpScreenState extends State<OtpScreen> {
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
-        title: Text('OTP Verification'),
+        title: const Text('OTP Verification'),
         centerTitle: true,
       ),
       body: Column(children: [
@@ -65,17 +63,19 @@ class _OtpScreenState extends State<OtpScreen> {
         ElevatedButton(
           onPressed: () async {
             try {
-              PhoneAuthCredential cred = await PhoneAuthProvider.credential(
+              PhoneAuthCredential cred = PhoneAuthProvider.credential(
                 verificationId: widget.verificationId,
                 smsCode: otpController.text.toString(),
               );
               FirebaseAuth.instance.signInWithCredential(cred).then((value) {
-                print(value.user?.phoneNumber);
+                log(value.user!.phoneNumber.toString());
                 forwardScreen(
                   value.user!,
                 );
               });
-            } catch (ex) {}
+            } catch (ex) {
+              log(ex.toString());
+            }
           },
           child: const Text('Verify'),
         ),

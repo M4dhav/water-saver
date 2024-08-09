@@ -8,7 +8,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:water_saver/main.dart';
 import 'package:water_saver/screens/signup_screen.dart';
 
 void main() {

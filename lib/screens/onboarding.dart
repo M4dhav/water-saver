@@ -2,40 +2,41 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/get_instance.dart';
+import 'package:get/get_navigation/get_navigation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:water_saver/screens/password_registration.dart';
 
-class onboardingScreen extends StatefulWidget {
-  onboardingScreen({super.key, required this.user});
-  final User user;
-  var db = FirebaseFirestore.instance;
+class OnboardingScreen extends StatefulWidget {
+  const OnboardingScreen({
+    super.key,
+  });
 
   @override
-  State<onboardingScreen> createState() => _onboardingScreenState();
+  State<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _onboardingScreenState extends State<onboardingScreen> {
+class _OnboardingScreenState extends State<OnboardingScreen> {
+  final User user = FirebaseAuth.instance.currentUser!;
+  var db = FirebaseFirestore.instance;
   late TextEditingController phoneNumberController;
   late TextEditingController nameController;
   late TextEditingController emailController;
   TextEditingController deviceSerialNo = TextEditingController();
-  late var doc;
+  late DocumentSnapshot doc;
   final ref = FirebaseDatabase.instance.ref();
-  late var snapshot;
+  final SharedPreferences prefs = Get.find();
+
+  late DataSnapshot snapshot;
 
   @override
   void initState() {
     super.initState();
-    phoneNumberController =
-        TextEditingController(text: widget.user.phoneNumber);
-    nameController = TextEditingController(text: widget.user.displayName);
-    emailController = TextEditingController(text: widget.user.email);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _fetchDocs();
-    });
-  }
-
-  Future<void> _fetchDocs() async {
-    doc = await widget.db.collection("users").doc(widget.user.uid).get();
+    phoneNumberController = TextEditingController(text: user.phoneNumber);
+    nameController = TextEditingController(text: user.displayName);
+    emailController = TextEditingController(text: user.email);
+    WidgetsBinding.instance.addPostFrameCallback((_) {});
   }
 
   @override
@@ -43,7 +44,7 @@ class _onboardingScreenState extends State<onboardingScreen> {
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
-        title: Text("User Onboarding"),
+        title: const Text("User Onboarding"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -61,7 +62,7 @@ class _onboardingScreenState extends State<onboardingScreen> {
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             TextField(
@@ -75,7 +76,7 @@ class _onboardingScreenState extends State<onboardingScreen> {
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             TextField(
@@ -89,7 +90,7 @@ class _onboardingScreenState extends State<onboardingScreen> {
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             TextField(
@@ -103,7 +104,7 @@ class _onboardingScreenState extends State<onboardingScreen> {
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             ElevatedButton(
@@ -113,49 +114,39 @@ class _onboardingScreenState extends State<onboardingScreen> {
                   if (emailController.text.isEmpty ||
                       nameController.text.isEmpty ||
                       phoneNumberController.text.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text('Please fill all the fields!'),
-                    ));
+                    Get.snackbar("Empty Fields", "Please fill all the details");
                     return;
                   }
                   if (snapshot.exists) {
                     if (snapshot.value.toString().toLowerCase() ==
                         nameController.text.toString().toLowerCase()) {
+                      await prefs.setString('device_id', deviceSerialNo.text);
                       final userdata = <String, dynamic>{
+                        "uid": user.uid,
                         "deviceSerialNo": deviceSerialNo.text.toString(),
                         "devicePassword": null,
                         "appPin": null,
                         "name": nameController.text.toString(),
                         "phoneNumber": phoneNumberController.text,
                         "email": emailController.text.toString(),
-                        "rooftop": null,
-                        "reservoir": null,
-                        "savingMode": null,
-                        "Motor": null,
+                        "rooftop": 0,
+                        "reservoir": 0,
+                        "savingMode": false,
+                        "Motor": false,
+                        "isFetching": false,
                       };
-                      await widget.db
+                      await db
                           .collection('users')
-                          .doc(widget.user.uid)
+                          .doc(deviceSerialNo.text.toString())
                           .set(userdata);
-                      await ref.update({
-                        deviceSerialNo.text.toString():
-                            widget.user.uid.toString()
-                      });
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => passwordRegistrationScreen(
-                                    user: widget.user,
-                                  )));
+                      Get.to(const PasswordRegistrationScreen());
                       return;
                     }
                   }
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content:
-                        Text('The Device ID is invalid, please try again!'),
-                  ));
+                  Get.snackbar("Invalid Details",
+                      "The Device ID is invalid, please try again!");
                 },
-                child: Text('Next')),
+                child: const Text('Next')),
           ],
         ),
       ),
