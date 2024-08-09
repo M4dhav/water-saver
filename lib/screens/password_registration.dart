@@ -1,50 +1,56 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:water_saver/screens/homepage.dart';
-import 'package:water_saver/screens/onboarding.dart';
+import 'dart:developer';
 
-class passwordRegistrationScreen extends StatefulWidget {
-  passwordRegistrationScreen({
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:water_saver/screens/homepage.dart';
+
+class PasswordRegistrationScreen extends StatefulWidget {
+  const PasswordRegistrationScreen({
     super.key,
-    required this.user,
   });
-  final User user;
-  final db = FirebaseFirestore.instance;
 
   @override
-  State<passwordRegistrationScreen> createState() =>
-      _passwordRegistrationScreenState();
+  State<PasswordRegistrationScreen> createState() =>
+      _PasswordRegistrationScreenState();
 }
 
-class _passwordRegistrationScreenState
-    extends State<passwordRegistrationScreen> {
+class _PasswordRegistrationScreenState
+    extends State<PasswordRegistrationScreen> {
+  final db = FirebaseFirestore.instance;
   TextEditingController devicePassword = TextEditingController();
   TextEditingController reenterDevicePassword = TextEditingController();
   TextEditingController appPin = TextEditingController();
   TextEditingController reenterAppPin = TextEditingController();
-  late var doc;
+  final SharedPreferences prefs = Get.find();
+
+  String? deviceId;
+  late DocumentSnapshot<Map<String, dynamic>> doc;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        deviceId = prefs.getString('device_id');
+        log("this has been set$deviceId");
+      });
       _fetchDocs();
     });
   }
 
   Future<void> _fetchDocs() async {
-    doc = await widget.db.collection("users").doc(widget.user.uid).get();
+    doc = await db.collection("users").doc(deviceId).get();
+    setState(() {
+      doc = doc;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
-      appBar: AppBar(title: Text("Password Registration")),
+    return Scaffold(
+      appBar: AppBar(title: const Text("Password Registration")),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Center(
@@ -78,13 +84,13 @@ class _passwordRegistrationScreenState
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(25)),
-                                  borderSide: const BorderSide(
+                                  borderSide: BorderSide(
                                       color: Colors.black, width: 1.0),
                                 ),
                                 border: OutlineInputBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(25)),
-                                  borderSide: const BorderSide(
+                                  borderSide: BorderSide(
                                       color: Colors.black, width: 1.0),
                                 ),
                               ),
@@ -106,13 +112,13 @@ class _passwordRegistrationScreenState
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(25)),
-                                  borderSide: const BorderSide(
+                                  borderSide: BorderSide(
                                       color: Colors.black, width: 1.0),
                                 ),
                                 border: OutlineInputBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(25)),
-                                  borderSide: const BorderSide(
+                                  borderSide: BorderSide(
                                       color: Colors.black, width: 1.0),
                                 ),
                               ),
@@ -125,9 +131,9 @@ class _passwordRegistrationScreenState
                             onPressed: () async {
                               if (devicePassword.text.toString() ==
                                   reenterDevicePassword.text.toString()) {
-                                await widget.db
+                                await db
                                     .collection('users')
-                                    .doc(widget.user.uid)
+                                    .doc(deviceId)
                                     .update({
                                   "devicePassword":
                                       devicePassword.text.toString()
@@ -135,12 +141,7 @@ class _passwordRegistrationScreenState
                                 await _fetchDocs();
                                 if (doc.data()!['devicePassword'] != null &&
                                     doc.data()!['appPin'] != null) {
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            HomeScreen(user: widget.user)),
-                                  );
+                                  Get.to(const HomeScreen());
                                 }
                                 return;
                               } else {
@@ -151,7 +152,7 @@ class _passwordRegistrationScreenState
                                 );
                               }
                             },
-                            child: Text(
+                            child: const Text(
                               'Change Device Password',
                               style: TextStyle(
                                   color: Colors.black,
@@ -164,7 +165,7 @@ class _passwordRegistrationScreenState
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Material(
@@ -193,13 +194,13 @@ class _passwordRegistrationScreenState
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(25)),
-                                  borderSide: const BorderSide(
+                                  borderSide: BorderSide(
                                       color: Colors.black, width: 1.0),
                                 ),
                                 border: OutlineInputBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(25)),
-                                  borderSide: const BorderSide(
+                                  borderSide: BorderSide(
                                       color: Colors.black, width: 1.0),
                                 ),
                               ),
@@ -221,13 +222,13 @@ class _passwordRegistrationScreenState
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(25)),
-                                  borderSide: const BorderSide(
+                                  borderSide: BorderSide(
                                       color: Colors.black, width: 1.0),
                                 ),
                                 border: OutlineInputBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(25)),
-                                  borderSide: const BorderSide(
+                                  borderSide: BorderSide(
                                       color: Colors.black, width: 1.0),
                                 ),
                               ),
@@ -240,19 +241,14 @@ class _passwordRegistrationScreenState
                             onPressed: () async {
                               if (appPin.text.toString() ==
                                   reenterAppPin.text.toString()) {
-                                await widget.db
+                                await db
                                     .collection('users')
-                                    .doc(widget.user.uid)
+                                    .doc(deviceId)
                                     .update({"appPin": appPin.text.toString()});
                                 await _fetchDocs();
                                 if (doc.data()!['devicePassword'] != null &&
                                     doc.data()!['appPin'] != null) {
-                                  Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            HomeScreen(user: widget.user),
-                                      ));
+                                  Get.to(const HomeScreen());
                                 }
                                 return;
                               } else {
@@ -263,7 +259,7 @@ class _passwordRegistrationScreenState
                                 );
                               }
                             },
-                            child: Text(
+                            child: const Text(
                               'Change App Pin',
                               style: TextStyle(
                                   color: Colors.black,
@@ -281,6 +277,6 @@ class _passwordRegistrationScreenState
           ),
         ),
       ),
-    ));
+    );
   }
 }

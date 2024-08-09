@@ -41,11 +41,13 @@ dependencies:
   firebase_storage: 
   firebase_database: 
   firebase_core: 
-  firebase_ui_oauth_google: 
-  flutter_blue_plus: 
+  firebase_ui_oauth_google:  
   fl_chart: 
   get: 
   sizer:
+  shared_preferences: 
+  animated_toggle_switch: 
+  interactive_slider: 
 
 dev_dependencies:
   flutter_test:
