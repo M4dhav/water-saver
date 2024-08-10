@@ -48,6 +48,7 @@ dependencies:
   shared_preferences: 
   animated_toggle_switch: 
   interactive_slider: 
+  cool_dropdown:
 
 dev_dependencies:
   flutter_test:
