@@ -25,9 +25,6 @@ class _HomeScreenState extends State<HomeScreen> {
   late String? deviceId = prefs.getString('device_id');
   User? user = FirebaseAuth.instance.currentUser;
   Map<String, dynamic> userdata = {};
-  bool motorValue = false;
-  bool savingValue = false;
-  bool ledValue = false;
   @override
   void initState() {
     super.initState();
@@ -39,6 +36,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
       setState(() {
         userdata = doc.data() as Map<String, dynamic>;
+      });
+    });
+    listenToChangeOfCategories();
+  }
+
+  void listenToChangeOfCategories() {
+    // collection we are going to listen
+    final document =
+        FirebaseFirestore.instance.collection('users').doc(deviceId);
+    // start to listen
+    document.snapshots().listen((change) async {
+      setState(() {
+        userdata = change.data() as Map<String, dynamic>;
       });
     });
   }
@@ -54,112 +64,125 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Home'),
-          centerTitle: true,
-          actions: [
-            ElevatedButton(
-              onPressed: () {
-                _logout();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const SignUpScreen()),
-                );
-              },
-              child: const Text('Logout'),
+    return userdata.isEmpty
+        ? const Center(
+            child: CircularProgressIndicator(),
+          )
+        : Scaffold(
+            appBar: AppBar(
+              title: const Text('Home'),
+              centerTitle: true,
+              actions: [
+                ElevatedButton(
+                  onPressed: () {
+                    _logout();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SignUpScreen()),
+                    );
+                  },
+                  child: const Text('Logout'),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    setState(() {
+                      userdata['isFetching'] = true;
+                    });
+                    await FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(deviceId)
+                        .update(userdata);
+                  },
+                  child: const Text('Fetch Data'),
+                ),
+              ],
             ),
-          ],
-        ),
-        body: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  TopBarButton(
-                    icon: Icons.auto_graph,
-                    buttonText: 'Usage Data',
-                    onTap: () {
-                      Get.to(const LineChartPage(isShowingMainData: true));
-                    },
+            body: Column(
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.only(left: 8.0, right: 8.0, top: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      TopBarButton(
+                        icon: Icons.auto_graph,
+                        buttonText: 'Usage Data',
+                        onTap: () {
+                          Get.to(const LineChartPage(isShowingMainData: true));
+                        },
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      TopBarButton(
+                        icon: Icons.settings,
+                        buttonText: "Device Settings",
+                        onTap: () {
+                          Get.to(const EnterPasswordScreen());
+                        },
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      TopBarButton(
+                          icon: Icons.calendar_today,
+                          buttonText: "Calendar",
+                          onTap: () {})
+                    ],
                   ),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  TopBarButton(
-                    icon: Icons.settings,
-                    buttonText: "Device Settings",
-                    onTap: () {
-                      Get.to(const EnterPasswordScreen());
-                    },
-                  ),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  TopBarButton(
-                      icon: Icons.calendar_today,
-                      buttonText: "Calendar",
-                      onTap: () {})
-                ],
-              ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                TankWidget(
+                  userdata: userdata,
+                  tankName: "Rooftop",
+                ),
+                TankWidget(
+                  userdata: userdata,
+                  tankName: "Reservoir",
+                ),
+                SettingsToggleWidget(
+                    settingName: "Saving Mode",
+                    toggleState: userdata['savingMode'],
+                    onChanged: (value) async {
+                      setState(() {
+                        userdata['savingMode'] = value;
+                      });
+                      await FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(deviceId)
+                          .update(userdata);
+                    }),
+                SettingsToggleWidget(
+                    settingName: "Motor",
+                    toggleState: userdata['Motor'],
+                    onChanged: (value) async {
+                      setState(() {
+                        userdata['Motor'] = value;
+                      });
+                      await FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(deviceId)
+                          .update(userdata);
+                    }),
+                SettingsToggleWidget(
+                    settingName: "Indicator LED",
+                    toggleState: userdata['ledMode'],
+                    onChanged: (value) async {
+                      setState(() {
+                        userdata['ledMode'] = value;
+                      });
+                      await FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(deviceId)
+                          .update(userdata);
+                    }),
+              ],
             ),
-            const SizedBox(
-              height: 20,
-            ),
-            TankWidget(
-              userdata: userdata,
-              tankName: "Rooftop",
-            ),
-            TankWidget(
-              userdata: userdata,
-              tankName: "Reservoir",
-            ),
-            SettingsToggleWidget(
-                settingName: "Saving Mode",
-                toggleState: savingValue,
-                onChanged: (value) async {
-                  setState(() {
-                    savingValue = value;
-                    userdata['savingMode'] = value;
-                  });
-                  await FirebaseFirestore.instance
-                      .collection('users')
-                      .doc(deviceId)
-                      .update(userdata);
-                }),
-            SettingsToggleWidget(
-                settingName: "Motor",
-                toggleState: motorValue,
-                onChanged: (value) async {
-                  setState(() {
-                    motorValue = value;
-                    userdata['Motor'] = value;
-                  });
-                  await FirebaseFirestore.instance
-                      .collection('users')
-                      .doc(deviceId)
-                      .update(userdata);
-                }),
-            SettingsToggleWidget(
-                settingName: "Indicator LED",
-                toggleState: ledValue,
-                onChanged: (value) async {
-                  setState(() {
-                    ledValue = value;
-                    // userdata['Motor'] = value;
-                  });
-                  //         await FirebaseFirestore.instance
-                  // .collection('users')
-                  // .doc(deviceId)
-                  // .update(userdata);
-                }),
-          ],
-        ),
-      ),
-    );
+          );
   }
 }
 
@@ -253,7 +276,7 @@ class TankWidget extends StatelessWidget {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               Text(
-                "${userdata[tankName.toLowerCase()]}%",
+                "${((userdata[tankName.toLowerCase()] / 4095) * 100).toInt()}%",
                 style:
                     const TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
               )

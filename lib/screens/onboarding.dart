@@ -134,6 +134,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         "savingMode": false,
                         "Motor": false,
                         "isFetching": false,
+                        "ledMode": false,
                       };
                       await db
                           .collection('users')
