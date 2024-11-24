@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:water_saver/screens/enter_password.dart';
 import 'package:water_saver/screens/signup_screen.dart';
@@ -69,8 +70,11 @@ class _HomeScreenState extends State<HomeScreen> {
             child: CircularProgressIndicator(),
           )
         : Scaffold(
+            backgroundColor: const Color(0xff081c5c),
             appBar: AppBar(
               title: const Text('Home'),
+              foregroundColor: Colors.white,
+              backgroundColor: const Color(0xff081c5c),
               centerTitle: true,
               actions: [
                 ElevatedButton(
@@ -98,89 +102,113 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
             ),
-            body: Column(
-              children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.only(left: 8.0, right: 8.0, top: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      TopBarButton(
-                        icon: Icons.auto_graph,
-                        buttonText: 'Usage Data',
-                        onTap: () {
-                          Get.to(const LineChartPage(isShowingMainData: true));
-                        },
-                      ),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      TopBarButton(
-                        icon: Icons.settings,
-                        buttonText: "Device Settings",
-                        onTap: () {
-                          Get.to(const EnterPasswordScreen());
-                        },
-                      ),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      TopBarButton(
-                          icon: Icons.calendar_today,
-                          buttonText: "Calendar",
-                          onTap: () {})
-                    ],
+            body: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 8.0, right: 8.0, top: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        TopBarButton(
+                          icon: Icons.auto_graph,
+                          buttonText: 'Usage Data',
+                          onTap: () {
+                            Get.to(const GraphPage());
+                          },
+                        ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        TopBarButton(
+                          icon: Icons.settings,
+                          buttonText: "Device Settings",
+                          onTap: () {
+                            Get.to(const EnterPasswordScreen());
+                          },
+                        ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        TopBarButton(
+                            icon: Icons.calendar_today,
+                            buttonText: "Calendar",
+                            onTap: () {})
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                TankWidget(
-                  userdata: userdata,
-                  tankName: "Rooftop",
-                ),
-                TankWidget(
-                  userdata: userdata,
-                  tankName: "Reservoir",
-                ),
-                SettingsToggleWidget(
-                    settingName: "Saving Mode",
-                    toggleState: userdata['savingMode'],
-                    onChanged: (value) async {
-                      setState(() {
-                        userdata['savingMode'] = value;
-                      });
-                      await FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(deviceId)
-                          .update(userdata);
-                    }),
-                SettingsToggleWidget(
-                    settingName: "Motor",
-                    toggleState: userdata['Motor'],
-                    onChanged: (value) async {
-                      setState(() {
-                        userdata['Motor'] = value;
-                      });
-                      await FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(deviceId)
-                          .update(userdata);
-                    }),
-                SettingsToggleWidget(
-                    settingName: "Indicator LED",
-                    toggleState: userdata['ledMode'],
-                    onChanged: (value) async {
-                      setState(() {
-                        userdata['ledMode'] = value;
-                      });
-                      await FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(deviceId)
-                          .update(userdata);
-                    }),
-              ],
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TankWidget(
+                    userdata: userdata,
+                    tankName: "Rooftop",
+                  ),
+                  TankWidget(
+                    userdata: userdata,
+                    tankName: "Reservoir",
+                  ),
+                  SettingsToggleWidget(
+                      settingName: const Text(
+                        'Saving Mode',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 25,
+                            color: Colors.white),
+                      ),
+                      toggleState: userdata['savingMode'],
+                      onChanged: (value) async {
+                        setState(() {
+                          userdata['savingMode'] = value;
+                          log(userdata['savingMode'].toString());
+                        });
+                        await FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(deviceId)
+                            .update(userdata);
+                      }),
+                  SettingsToggleWidget(
+                      settingName: const Text(
+                        'Motor',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 25,
+                            color: Colors.white),
+                      ),
+                      toggleState: userdata['Motor'],
+                      onChanged: (value) async {
+                        if (userdata['savingMode']) {
+                          Get.snackbar('Error',
+                              'Please turn off Saving Mode to access Motor Control');
+                          return;
+                        }
+                        setState(() {
+                          userdata['Motor'] = value;
+                        });
+                        await FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(deviceId)
+                            .update(userdata);
+                      }),
+                  SettingsToggleWidget(
+                      settingName: Icon(
+                        Icons.sunny,
+                        size: 40.px,
+                        color: Colors.yellow,
+                      ),
+                      toggleState: userdata['ledMode'],
+                      onChanged: (value) async {
+                        setState(() {
+                          userdata['ledMode'] = value;
+                        });
+                        await FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(deviceId)
+                            .update(userdata);
+                      }),
+                ],
+              ),
             ),
           );
   }
@@ -196,7 +224,7 @@ class SettingsToggleWidget extends StatelessWidget {
 
   final bool toggleState;
   final Function(bool)? onChanged;
-  final String settingName;
+  final Widget settingName;
 
   @override
   Widget build(BuildContext context) {
@@ -205,7 +233,8 @@ class SettingsToggleWidget extends StatelessWidget {
       child: Container(
         height: 90,
         decoration: BoxDecoration(
-          color: Colors.blue,
+          border: Border.all(color: const Color(0xff063793)),
+          color: const Color(0xff081c5c),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Padding(
@@ -213,11 +242,7 @@ class SettingsToggleWidget extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                settingName,
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
-              ),
+              settingName,
               AnimatedToggleSwitch<bool>.rolling(
                 current: toggleState,
                 values: const [false, true],
@@ -250,7 +275,8 @@ class TankWidget extends StatelessWidget {
           width: double.infinity,
           height: 160,
           decoration: BoxDecoration(
-              color: Colors.blue, borderRadius: BorderRadius.circular(20)),
+              color: const Color(0xff083464),
+              borderRadius: BorderRadius.circular(20)),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -260,7 +286,7 @@ class TankWidget extends StatelessWidget {
                 children: [
                   Text(
                     tankName,
-                    style: const TextStyle(fontSize: 20),
+                    style: const TextStyle(fontSize: 20, color: Colors.white),
                   ),
                   const SizedBox(
                     height: 20,
@@ -268,17 +294,23 @@ class TankWidget extends StatelessWidget {
                   const Icon(
                     Icons.water,
                     size: 60,
+                    color: Color(0xff0daa96),
                   )
                 ],
               ),
               const Text(
                 "Tank Fill",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
               ),
               Text(
                 "${((userdata[tankName.toLowerCase()] / 4095) * 100).toInt()}%",
-                style:
-                    const TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                    fontSize: 50,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
               )
             ],
           )),
@@ -305,18 +337,22 @@ class TopBarButton extends StatelessWidget {
           width: 100,
           //color: Colors.black,
           decoration: BoxDecoration(
-              color: Colors.grey, borderRadius: BorderRadius.circular(20)),
+              border: Border.all(color: const Color(0xff063793), width: 2),
+              color: const Color(0xff083464),
+              borderRadius: BorderRadius.circular(20)),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
                 icon,
                 size: 40,
+                color: Colors.white,
               ),
               Text(
                 buttonText,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
+                  color: Colors.white,
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
                 ),
