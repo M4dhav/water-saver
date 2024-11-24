@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:water_saver/firebase_options.dart';
 import 'package:water_saver/screens/homepage.dart';
@@ -37,10 +38,12 @@ class MainApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Water Saver',
-      home: loggedIn ? const HomeScreen() : const SignUpScreen(),
-    );
+    return ResponsiveSizer(builder: (context, orientation, screenType) {
+      return GetMaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Water Saver',
+        home: loggedIn ? const HomeScreen() : const SignUpScreen(),
+      );
+    });
   }
 }

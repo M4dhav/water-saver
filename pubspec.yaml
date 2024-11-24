@@ -49,6 +49,8 @@ dependencies:
   animated_toggle_switch: 
   interactive_slider: 
   cool_dropdown:
+  responsive_sizer:
+  liquid_progress_indicator_v2: ^0.5.0
 
 dev_dependencies:
   flutter_test:
