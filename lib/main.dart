@@ -7,6 +7,7 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:water_saver/firebase_options.dart';
+import 'package:water_saver/modals/nav_bar.dart';
 import 'package:water_saver/screens/homepage.dart';
 import 'package:water_saver/views/screens/home.dart';
 
@@ -43,7 +44,7 @@ class MainApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Water Saver',
         // home: loggedIn ? const HomeScreen() : const SignUpScreen(),
-        home: HomePage(),
+        home: BottomNavBar(),
       );
     });
   }
