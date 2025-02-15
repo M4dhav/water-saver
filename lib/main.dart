@@ -8,7 +8,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:water_saver/firebase_options.dart';
 import 'package:water_saver/screens/homepage.dart';
-import 'package:water_saver/screens/signup_screen.dart';
+import 'package:water_saver/views/screens/home.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,7 +42,8 @@ class MainApp extends StatelessWidget {
       return GetMaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Water Saver',
-        home: loggedIn ? const HomeScreen() : const SignUpScreen(),
+        // home: loggedIn ? const HomeScreen() : const SignUpScreen(),
+        home: HomePage(),
       );
     });
   }
