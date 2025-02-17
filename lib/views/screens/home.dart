@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:water_saver/controller/drop_controller.dart';
+import 'package:water_saver/controller/history_controller.dart';
+import 'package:water_saver/controller/refill_controller.dart';
 import 'package:water_saver/modals/arc.dart';
 import 'package:water_saver/modals/drop.dart';
 
@@ -8,40 +11,27 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _waveController;
-  double _waterLevel = 1650;
-  final double _maxCapacity = 2500;
-  double _wavePhase = 0.0;
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
+  late DropController _dropController;
+  late HistoryController _historyController;
+  late RefillController _refillController;
 
   @override
   void initState() {
     super.initState();
-    _waveController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 300), // Smooth wave transition
-    )..addListener(() {
-        setState(() {
-          _wavePhase += 0.05; // Slower & smoother wave movement
-          if (_wavePhase > 2 * 3.1415)
-            _wavePhase = 0; // Reset phase to avoid overflow
-        });
-      });
-
-    _waveController.repeat();
+    _dropController = DropController(this, () {
+      setState(() {}); // Rebuild UI when wavePhase updates
+    });
+    _historyController = HistoryController();
+    _refillController = RefillController();
+    _dropController.initAnimation();
+    _historyController.fetchWaterHistory();
   }
 
   @override
   void dispose() {
-    _waveController.dispose();
+    _dropController.dispose();
     super.dispose();
-  }
-
-  void _refillWater() {
-    setState(() {
-      _waterLevel = _maxCapacity;
-    });
   }
 
   @override
@@ -70,97 +60,199 @@ class _HomePageState extends State<HomePage>
           ),
         ],
       ),
-      body: Center(
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.2),
-                spreadRadius: 2,
-                blurRadius: 5,
+      body: Padding(
+        padding: EdgeInsets.only(left: 4.5.w, top: 2.h),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey,
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                  ),
+                ],
               ),
-            ],
-          ),
-          padding: EdgeInsets.all(5.w),
-          height: 56.h,
-          width: 90.w,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Stack(
-                alignment: Alignment.center,
+              height: 50.h,
+              width: 90.w,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CustomPaint(
-                    size: Size(30.h, 75.w),
-                    painter: WaterLevelArcPainter(
-                      progress: _waterLevel / _maxCapacity,
-                      color: Colors.blue,
-                    ),
-                  ),
-                  Container(
-                    width: 40.w,
-                    height: 18.h,
-                    child: CustomPaint(
-                      painter: WaterDropPainter(
-                        progress: _waterLevel / _maxCapacity,
-                        fillColor: Colors.blue,
-                        wavePhase: _wavePhase, // Now properly updating
-                      ),
-                    ),
-                  ),
-                  Column(
+                  Stack(
+                    alignment: Alignment.center,
                     children: [
-                      Padding(
-                        padding: EdgeInsets.only(top: 30.h),
-                        child: Text(
-                          '${((_waterLevel / _maxCapacity) * 100).toInt()}%',
-                          style: TextStyle(
-                              fontSize: 26.sp,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.blue),
+                      CustomPaint(
+                        size: Size(30.h, 75.w),
+                        painter: WaterLevelArcPainter(
+                          progress: _refillController.waterLevel /
+                              _refillController.maxCapacity,
+                          color: Colors.blue,
                         ),
                       ),
-                      Text(
-                        '${_waterLevel.toInt()} L / 2500 L',
-                        style: TextStyle(fontSize: 16.sp, color: Colors.grey),
+                      SizedBox(
+                        width: 36.w,
+                        height: 20.h,
+                        child: CustomPaint(
+                          painter: WaterDropPainter(
+                            progress: _refillController.waterLevel /
+                                _refillController.maxCapacity,
+                            fillColor: Colors.blue,
+                            wavePhase: _dropController.wavePhase,
+                          ),
+                        ),
+                      ),
+                      Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(top: 30.h),
+                            child: Text(
+                              '${((_refillController.waterLevel / _refillController.maxCapacity) * 100).toInt()}%',
+                              style: TextStyle(
+                                  fontSize: 26.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blue),
+                            ),
+                          ),
+                          Text(
+                            '${_refillController.waterLevel.toInt()} L / ${_refillController.maxCapacity.toInt()} L',
+                            style:
+                                TextStyle(fontSize: 16.sp, color: Colors.grey),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
-              SizedBox(height: 4.h),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: _refillWater,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 10.w, vertical: 1.5.h),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.all(1.h),
-                      child: Text(
-                        'Refill',
-                        style: TextStyle(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white),
-                      ),
+                  SizedBox(height: 3.h),
+                  Padding(
+                    padding: EdgeInsets.only(left: 6.w, bottom: 1.1.h),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () => _refillController.refillWater(() {
+                            setState(() {});
+                          }),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 9.w, vertical: 1.5.h),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.all(0.5.h),
+                            child: Text(
+                              'Refill',
+                              style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 4.w),
+                        Icon(Icons.autorenew, color: Colors.blue, size: 7.w),
+                      ],
                     ),
                   ),
-                  SizedBox(width: 4.w),
-                  Icon(Icons.autorenew, color: Colors.blue, size: 7.w),
                 ],
               ),
-            ],
-          ),
+            ),
+            SizedBox(height: 2.h),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey,
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                  ),
+                ],
+              ),
+              margin: EdgeInsets.only(right: 4.5.w, top: 1.h),
+              padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "History",
+                        style: TextStyle(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {},
+                        child: Text(
+                          "View All →",
+                          style: TextStyle(fontSize: 16.sp, color: Colors.blue),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 1.h),
+                  Divider(height: 1, thickness: 1, color: Colors.grey.shade300),
+                  ListView.separated(
+                    itemCount: _historyController.waterHistory.length,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    separatorBuilder: (context, index) => Divider(
+                      height: 1,
+                      thickness: 1,
+                      color: Colors.grey.shade300,
+                    ),
+                    itemBuilder: (context, index) {
+                      final record = _historyController.waterHistory[index];
+                      return Padding(
+                        padding: EdgeInsets.symmetric(vertical: 1.h),
+                        child: Row(
+                          children: [
+                            Image.asset(
+                              'assets/images/tank.png',
+                              width: 8.w,
+                              height: 8.w,
+                            ),
+                            SizedBox(width: 3.w),
+                            Expanded(
+                              child: Text(
+                                record["time"]!,
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            Text(
+                              record["quantity"]!,
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                            SizedBox(width: 2.w),
+                            Icon(Icons.more_vert, color: Colors.black)
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                  Divider(height: 1, thickness: 1, color: Colors.grey.shade300),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

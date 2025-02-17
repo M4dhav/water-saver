@@ -1,21 +1,32 @@
 import 'package:flutter/material.dart';
 
-class DropController extends ChangeNotifier {
-  AnimationController _controller;
+class DropController {
+  late AnimationController _waveController;
+  double wavePhase = 0.0;
+  final TickerProvider vsync;
+  final VoidCallback onUpdate; // Callback to notify UI
 
-  DropController({required TickerProvider vsync})
-      : _controller = AnimationController(
-          vsync: vsync,
-          duration: Duration(seconds: 2),
-        ) {
-    _controller.repeat(reverse: true);
+  DropController(this.vsync, this.onUpdate);
+
+  void initAnimation() {
+    _waveController = AnimationController(
+      vsync: vsync,
+      duration: const Duration(milliseconds: 300),
+    )..addListener(() {
+        _updateWavePhase();
+      });
+    _waveController.repeat();
   }
 
-  double get value => _controller.value;
+  void _updateWavePhase() {
+    wavePhase += 0.05;
+    if (wavePhase > 2 * 3.1415) {
+      wavePhase = 0;
+    }
+    onUpdate(); // Notify the UI
+  }
 
-  @override
   void dispose() {
-    _controller.dispose();
-    super.dispose();
+    _waveController.dispose();
   }
 }

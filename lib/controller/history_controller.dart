@@ -1,17 +1,10 @@
-import 'package:flutter/material.dart';
+class HistoryController {
+  List<Map<String, String>> waterHistory = [];
 
-class HistoryController extends ChangeNotifier {
-  List<String> _history = ['8:00AM 300L', '1:00PM 300L'];
-
-  List<String> get history => _history;
-
-  void addHistory(String entry) {
-    _history.add(entry);
-    notifyListeners();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
+  void fetchWaterHistory() {
+    waterHistory = [
+      {"time": "8:00AM", "quantity": "300 L"},
+      {"time": "1:00PM", "quantity": "300 L"},
+    ];
   }
 }
