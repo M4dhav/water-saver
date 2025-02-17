@@ -8,8 +8,6 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:water_saver/firebase_options.dart';
 import 'package:water_saver/modals/nav_bar.dart';
-import 'package:water_saver/screens/homepage.dart';
-import 'package:water_saver/views/screens/home.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
