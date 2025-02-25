@@ -6,6 +6,8 @@ import 'package:water_saver/views/screens/report.dart';
 import 'package:water_saver/views/screens/setup.dart';
 
 class BottomNavBar extends StatefulWidget {
+  const BottomNavBar({super.key});
+
   @override
   _BottomNavBarState createState() => _BottomNavBarState();
 }
@@ -14,11 +16,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = [
-    HomePage(),
+    const HomePage(),
     HistoryPage(),
-    ReportPage(),
-    Setup(),
-    Profile(),
+    const ReportPage(),
+    const Setup(),
+    const Profile(),
   ];
 
   void _onItemTapped(int index) {
@@ -32,6 +34,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     return Scaffold(
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.white,
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         type: BottomNavigationBarType.fixed,
