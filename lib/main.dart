@@ -38,7 +38,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ResponsiveSizer(builder: (context, orientation, screenType) {
-      return GetMaterialApp(
+      return const GetMaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Water Saver',
         // home: loggedIn ? const HomeScreen() : const SignUpScreen(),

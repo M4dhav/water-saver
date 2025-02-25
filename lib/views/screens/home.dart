@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:water_saver/controller/drop_controller.dart';
-import 'package:water_saver/controller/history_controller.dart';
+import 'package:water_saver/controller/home_history%20controller.dart';
 import 'package:water_saver/controller/refill_controller.dart';
 import 'package:water_saver/modals/arc.dart';
 import 'package:water_saver/modals/drop.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late DropController _dropController;
-  late HistoryController _historyController;
+  late HomeHistoryController _historyController;
   late RefillController _refillController;
 
   @override
@@ -22,7 +24,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     _dropController = DropController(this, () {
       setState(() {}); // Rebuild UI when wavePhase updates
     });
-    _historyController = HistoryController();
+    _historyController = HomeHistoryController();
     _refillController = RefillController();
     _dropController.initAnimation();
     _historyController.fetchWaterHistory();
@@ -37,12 +39,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF5F5F5),
+      backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 2,
         leading: IconButton(
-          icon: Icon(Icons.opacity, color: Colors.blue),
+          icon: const Icon(Icons.opacity, color: Colors.blue),
           onPressed: () {},
         ),
         title: Text(
@@ -55,7 +57,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(Icons.more_vert, color: Colors.black),
+            icon: const Icon(Icons.more_vert, color: Colors.black),
             onPressed: () {},
           ),
         ],
@@ -69,7 +71,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
-                boxShadow: [
+                boxShadow: const [
                   BoxShadow(
                     color: Colors.grey,
                     spreadRadius: 2,
@@ -168,7 +170,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
-                boxShadow: [
+                boxShadow: const [
                   BoxShadow(
                     color: Colors.grey,
                     spreadRadius: 2,
@@ -206,7 +208,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   ListView.separated(
                     itemCount: _historyController.waterHistory.length,
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     separatorBuilder: (context, index) => Divider(
                       height: 1,
                       thickness: 1,
@@ -242,7 +244,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               ),
                             ),
                             SizedBox(width: 2.w),
-                            Icon(Icons.more_vert, color: Colors.black)
+                            const Icon(Icons.more_vert, color: Colors.black)
                           ],
                         ),
                       );
