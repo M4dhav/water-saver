@@ -9,9 +9,9 @@ import 'package:get/get_navigation/get_navigation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:water_saver/screens/homepage.dart';
-import 'package:water_saver/screens/onboarding.dart';
-import 'package:water_saver/screens/otp_screen.dart';
+import 'package:water_saver/old_screens/homepage.dart';
+import 'package:water_saver/old_screens/onboarding.dart';
+import 'package:water_saver/old_screens/otp_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({

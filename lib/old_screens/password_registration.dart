@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:water_saver/screens/homepage.dart';
+import 'package:water_saver/old_screens/homepage.dart';
 
 class PasswordRegistrationScreen extends StatefulWidget {
   const PasswordRegistrationScreen({

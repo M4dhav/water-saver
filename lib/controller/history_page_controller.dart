@@ -1,16 +1,20 @@
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class HistoryPageController extends GetxController {
   var selectedDate = "2024-02-20".obs;
   var historyData = <String, List<Map<String, String>>>{}.obs;
-  var totalLitersPerDate =
-      <String, double>{}.obs; // Stores total refilled liters per date
+  var totalLitersPerDate = <String, double>{}.obs;
+  var isDropdownExpanded = false.obs;
+  var currentMonthDates = <String>[].obs;
+  var currentMonth = DateTime.now().obs;
 
   @override
   void onInit() {
     super.onInit();
     fetchWaterHistory();
-    calculateTotalLiters(); // Compute total liters per date
+    calculateTotalLiters();
+    updateMonthDates(); // ✅ Initialize dates based on current month
   }
 
   void fetchWaterHistory() {
@@ -36,13 +40,7 @@ class HistoryPageController extends GetxController {
         {"time": "3:00PM", "quantity": "150"},
         {"time": "6:00PM", "quantity": "400"},
       ],
-      "2024-02-21": [
-        {"time": "7:00AM", "quantity": "350"},
-        {"time": "12:00PM", "quantity": "500"},
-        {"time": "5:00PM", "quantity": "200"},
-      ],
     });
-
     calculateTotalLiters();
   }
 
@@ -56,8 +54,68 @@ class HistoryPageController extends GetxController {
   }
 
   void updateSelectedDate(String date) {
-    if (historyData.containsKey(date)) {
-      selectedDate.value = date;
+    selectedDate.value = date;
+  }
+
+  void toggleDropdown() {
+    isDropdownExpanded.value = !isDropdownExpanded.value;
+  }
+
+  void updateMonthDates() {
+    currentMonthDates.value = getCurrentMonthDates();
+  }
+
+  /// ✅ Get all dates for the currently selected month
+  List<String> getCurrentMonthDates() {
+    DateTime now = currentMonth.value;
+    int daysInMonth = DateTime(now.year, now.month + 1, 0).day;
+    return List.generate(daysInMonth, (index) {
+      return "${now.year}-${now.month.toString().padLeft(2, '0')}-${(index + 1).toString().padLeft(2, '0')}";
+    });
+  }
+
+  /// ✅ Get dates for the current week
+  List<String> getCurrentWeekDates(List<String> allDates) {
+    DateTime now = DateTime.now();
+    int todayIndex = allDates.indexOf(
+        "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}");
+
+    int weekStart = (todayIndex ~/ 7) * 7;
+    int weekEnd = (weekStart + 7 <= allDates.length) ? weekStart + 7 : allDates.length;
+
+    return allDates.sublist(weekStart, weekEnd);
+  }
+
+  /// ✅ Move to the previous month
+  void previousMonth() {
+    currentMonth.value = DateTime(currentMonth.value.year, currentMonth.value.month - 1, 1);
+    updateMonthDates();
+  }
+
+  /// ✅ Move to the next month
+  void nextMonth() {
+    currentMonth.value = DateTime(currentMonth.value.year, currentMonth.value.month + 1, 1);
+    updateMonthDates();
+  }
+
+  /// ✅ Get current month and year as "December 2025"
+  String getCurrentMonthYear() {
+    return DateFormat("MMMM yyyy").format(currentMonth.value);
+  }
+
+  void deleteHistoryEntry(String date, int index) {
+    historyData[date]?.removeAt(index);
+    if (historyData[date]?.isEmpty ?? true) {
+      historyData.remove(date);
     }
+    calculateTotalLiters();
+  }
+
+  void addHistoryEntry(String date, Map<String, String> entry) {
+    if (historyData[date] == null) {
+      historyData[date] = [];
+    }
+    historyData[date]?.add(entry);
+    historyData.refresh();
   }
 }

@@ -3,8 +3,8 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:water_saver/controller/drop_controller.dart';
 import 'package:water_saver/controller/home_history%20controller.dart';
 import 'package:water_saver/controller/refill_controller.dart';
-import 'package:water_saver/modals/arc.dart';
-import 'package:water_saver/modals/drop.dart';
+import 'package:water_saver/widgets/home_page/arc.dart';
+import 'package:water_saver/widgets/home_page/drop.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -71,13 +71,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.grey,
-                    spreadRadius: 2,
-                    blurRadius: 5,
-                  ),
-                ],
               ),
               height: 50.h,
               width: 90.w,
@@ -170,13 +163,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.grey,
-                    spreadRadius: 2,
-                    blurRadius: 5,
-                  ),
-                ],
               ),
               margin: EdgeInsets.only(right: 4.5.w, top: 1.h),
               padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),

@@ -6,7 +6,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:water_saver/screens/password_registration.dart';
+import 'package:water_saver/old_screens/password_registration.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({

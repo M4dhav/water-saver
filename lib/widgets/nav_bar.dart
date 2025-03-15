@@ -3,7 +3,7 @@ import 'package:water_saver/views/screens/history.dart';
 import 'package:water_saver/views/screens/home.dart';
 import 'package:water_saver/views/screens/profile.dart';
 import 'package:water_saver/views/screens/report.dart';
-import 'package:water_saver/views/screens/setup.dart';
+import 'package:water_saver/views/screens/adjustment.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({super.key});
@@ -19,7 +19,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     const HomePage(),
     HistoryPage(),
     const ReportPage(),
-    const Setup(),
+    AdjustmentsPage(),
     const Profile(),
   ];
 

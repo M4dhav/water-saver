@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:water_saver/screens/settings.dart';
+import 'package:water_saver/old_screens/settings.dart';
 
 class EnterPasswordScreen extends StatefulWidget {
   const EnterPasswordScreen({super.key, this.isAppPassword = false});

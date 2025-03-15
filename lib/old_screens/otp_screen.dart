@@ -7,8 +7,8 @@ import 'package:get/get_core/get_core.dart';
 import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:water_saver/screens/homepage.dart';
-import 'package:water_saver/screens/onboarding.dart';
+import 'package:water_saver/old_screens/homepage.dart';
+import 'package:water_saver/old_screens/onboarding.dart';
 
 class OtpScreen extends StatefulWidget {
   const OtpScreen({super.key, required this.verificationId});
