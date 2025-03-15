@@ -8,9 +8,9 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:water_saver/screens/enter_password.dart';
-import 'package:water_saver/screens/signup_screen.dart';
-import 'package:water_saver/screens/graph.dart';
+import 'package:water_saver/old_screens/enter_password.dart';
+import 'package:water_saver/old_screens/signup_screen.dart';
+import 'package:water_saver/old_screens/graph.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
