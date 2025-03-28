@@ -7,20 +7,25 @@ class CustomSliderWidget extends StatelessWidget {
   final String label;
   final RxDouble value;
 
-  const CustomSliderWidget({super.key, required this.label, required this.value});
+  const CustomSliderWidget(
+      {super.key, required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: TextStyle(fontSize: 14.sp, color: Colors.blue)),
+        Obx(() => Text(
+              "$label (${((value.value - 0.1) * 75 / 1.13 + 35).toStringAsFixed(0)}%)", // Corrected scale to map 0.1 to 35% and 1.0 to 95%
+              style: TextStyle(fontSize: 14.sp, color: Colors.blue),
+            )),
         SizedBox(height: 1.h),
         GestureDetector(
           onHorizontalDragUpdate: (details) {
             double newProgress =
                 (details.localPosition.dx / (80.w)).clamp(0.0, 1.0);
-            value.value = newProgress;
+            value.value =
+                newProgress < 0.1 ? 0.1 : newProgress; // Set minimum threshold
           },
           child: Obx(() => CustomPaint(
                 size: Size(80.w, 3.h),

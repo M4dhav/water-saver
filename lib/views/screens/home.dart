@@ -81,7 +81,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     alignment: Alignment.center,
                     children: [
                       CustomPaint(
-                        size: Size(30.h, 75.w),
+                        size: Size(30.h, 75.w),   
                         painter: WaterLevelArcPainter(
                           progress: _refillController.waterLevel /
                               _refillController.maxCapacity,

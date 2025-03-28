@@ -123,7 +123,6 @@ class _GraphPageState extends State<GraphPage> {
                         child: LiquidLinearProgressIndicator(
                           value: userData['rooftop'] / 4095,
                           // Defaults to 0.5.
-
                           valueColor: AlwaysStoppedAnimation(userData[
                                           'rooftop'] /
                                       4095 <
@@ -138,8 +137,7 @@ class _GraphPageState extends State<GraphPage> {
                           borderColor: Colors.red,
                           borderWidth: 5.0,
                           borderRadius: 12.0,
-                          direction: Axis.horizontal,
-                          // The direction the liquid moves (Axis.vertical = bottom to top, Axis.horizontal = left to right). Defaults to Axis.horizontal.
+                          direction: Axis.horizontal,// The direction the liquid moves (Axis.vertical = bottom to top, Axis.horizontal = left to right). Defaults to Axis.horizontal.
                         ),
                       ),
                       Text(
@@ -187,7 +185,6 @@ class _GraphPageState extends State<GraphPage> {
             ),
     );
   }
-
   LineChartData get sampleData1 => LineChartData(
         lineTouchData: lineTouchData1,
         gridData: gridData,
@@ -200,14 +197,12 @@ class _GraphPageState extends State<GraphPage> {
         maxY: 25,
         minY: 0,
       );
-
   LineTouchData get lineTouchData1 => LineTouchData(
         handleBuiltInTouches: true,
         touchTooltipData: LineTouchTooltipData(
           getTooltipColor: (touchedSpot) => Colors.blueGrey.withOpacity(0.8),
         ),
       );
-
   FlTitlesData get titlesData1 => FlTitlesData(
         bottomTitles: AxisTitles(
           sideTitles: bottomTitles,
@@ -222,12 +217,10 @@ class _GraphPageState extends State<GraphPage> {
           sideTitles: leftTitles(),
         ),
       );
-
   List<LineChartBarData> get lineBarsData1 => [
         lineChartBarData1_1,
         lineChartBarData1_2,
       ];
-
   Widget leftTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
       fontWeight: FontWeight.bold,
@@ -311,17 +304,14 @@ class _GraphPageState extends State<GraphPage> {
       default:
         return Container();
     }
-
     return Text(text, style: style, textAlign: TextAlign.center);
   }
-
   SideTitles leftTitles() => SideTitles(
         getTitlesWidget: leftTitleWidgets,
         showTitles: true,
         interval: 3,
         reservedSize: 40,
       );
-
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
     String text;
     const style = TextStyle(
@@ -355,14 +345,12 @@ class _GraphPageState extends State<GraphPage> {
         text = '';
         break;
     }
-
     return SideTitleWidget(
       axisSide: meta.axisSide,
       space: 10,
       child: Text(text, style: style),
     );
   }
-
   SideTitles get bottomTitles => SideTitles(
         showTitles: true,
         reservedSize: 32,

@@ -5,11 +5,9 @@ import 'package:water_saver/widgets/history_page/date_widget.dart';
 
 Widget buildDateSelector() {
   return SingleChildScrollView(
-    // Prevent overflow by making it scrollable
     child: Column(
-      mainAxisSize: MainAxisSize.min, // Prevent unnecessary height issues
+      mainAxisSize: MainAxisSize.min, 
       children: [
-        // Month & Year Selector
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -31,8 +29,6 @@ Widget buildDateSelector() {
         ),
 
         SizedBox(height: 1.h),
-
-        // Week Days Header
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
@@ -41,8 +37,6 @@ Widget buildDateSelector() {
         ),
 
         SizedBox(height: 1.h),
-
-        // Dates (Week View / Full Month Dropdown)
         Obx(() {
           List<String> dates = historyController.getCurrentMonthDates();
           List<String> currentWeekDates =
@@ -72,11 +66,11 @@ Widget buildDateSelector() {
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 1.h),
                       child: SizedBox(
-                        height: 30.h, // Set fixed height to prevent overflow
+                        height: 30.h, 
                         child: GridView.builder(
-                          shrinkWrap: true, // Prevent infinite height issues
+                          shrinkWrap: true, 
                           physics:
-                              const NeverScrollableScrollPhysics(), // Prevent double scrolling
+                              const NeverScrollableScrollPhysics(),
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 7,
