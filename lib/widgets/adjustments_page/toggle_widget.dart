@@ -7,7 +7,10 @@ class ToggleButtonWidget extends StatelessWidget {
   final VoidCallback onTap;
 
   const ToggleButtonWidget(
-      {super.key, required this.text, required this.isSelected, required this.onTap});
+      {super.key,
+      required this.text,
+      required this.isSelected,
+      required this.onTap});
 
   @override
   Widget build(BuildContext context) {

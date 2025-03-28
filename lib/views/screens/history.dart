@@ -60,23 +60,21 @@ class HistoryPage extends StatelessWidget {
                 ),
               ],
             ),
-
-            // Blurred background when dropdown is expanded
-            Obx(() {
-              if (historyController.isDropdownExpanded.value) {
-                return Positioned.fill(
-                  child: GestureDetector(
-                    onTap: historyController
-                        .toggleDropdown, // Close dropdown when tapped
-                    child: Container(
-                      color: Colors.black
-                          .withOpacity(0.3), // Semi-transparent overlay
-                    ),
-                  ),
-                );
-              }
-              return const SizedBox.shrink();
-            }),
+            // Obx(() {
+            //   if (historyController.isDropdownExpanded.value) {
+            //     return Positioned.fill(
+            //       child: GestureDetector(
+            //         onTap: historyController
+            //             .toggleDropdown, 
+            //         child: Container(
+            //           color: Colors.black
+            //               .withValues(alpha:0.3), 
+            //         ),
+            //       ),
+            //     );
+            //   }
+            //   return const SizedBox.shrink();
+            // }),
           ],
         ),
       ),

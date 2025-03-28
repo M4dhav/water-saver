@@ -8,7 +8,7 @@ import 'package:water_saver/widgets/adjustments_page/tank_setting.dart';
 class AdjustmentsPage extends StatelessWidget {
   final AdjustmentsController controller = Get.put(AdjustmentsController());
 
-   AdjustmentsPage({super.key});
+  AdjustmentsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -51,18 +51,142 @@ class AdjustmentsPage extends StatelessWidget {
             ),
             SizedBox(height: 2.h),
             TankSettingsWidget(
-                title: "Roof Top Tank",
-                motorOffValue: controller.motorOffThresholdTank,
-                motorOnValue: controller.motorOnThresholdTank),
-            TankSettingsWidget(
-                title: "Reservoir",
-                motorOffValue: controller.motorOffThresholdReservoir,
-                motorOnValue: controller.motorOnThresholdReservoir),
+              title: "Roof Top Tank",
+              motorOffValue: controller.motorOffThresholdTank,
+              motorOnValue: controller.motorOnThresholdTank,
+              isError: controller.isThresholdError,
+            ),
+            controller.isReservoirMotorOnRequired
+                ? TankSettingsWidget(
+                    title: "Reservoir",
+                    motorOffValue: controller.motorOffThresholdReservoir,
+                    motorOnValue: controller.motorOnThresholdReservoir,
+                  )
+                : TankSettingsWidget(
+                    title: "Reservoir",
+                    motorOffValue: controller.motorOffThresholdReservoir,
+                    motorOnValue: null,
+                  ),
             AutoDataLogWidget(controller: controller),
             SizedBox(height: 3.h),
             ElevatedButton(
               onPressed: () {
+                if (!controller.validateThresholds()) {
+                  showModalBottomSheet(
+                    context: context,
+                    backgroundColor: Colors.transparent,
+                    isDismissible: false,
+                    builder: (BuildContext context) {
+                      Future.delayed(Duration(seconds: 3), () {
+                        if (Navigator.canPop(context)) {
+                          Navigator.pop(context);
+                        }
+                      });
+                      return Container(
+                        margin: EdgeInsets.all(10),
+                        padding:
+                            EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(15),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 10,
+                              offset: Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(Icons.error, color: Colors.red, size: 24),
+                                SizedBox(width: 10),
+                                Text(
+                                  "Saving Unsuccessful!",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text(
+                                "OK",
+                                style: TextStyle(
+                                    color: Colors.blue,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                  return;
+                }
                 controller.saveAdjustments();
+                showModalBottomSheet(
+                  context: context,
+                  backgroundColor: Colors.transparent,
+                  isDismissible: false,
+                  builder: (BuildContext context) {
+                    Future.delayed(Duration(seconds: 3), () {
+                      if (Navigator.canPop(context)) {
+                        Navigator.pop(context);
+                      }
+                    });
+                    return Container(
+                      margin: EdgeInsets.all(10),
+                      padding:
+                          EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 10,
+                            offset: Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(Icons.check_circle,
+                                  color: Colors.blue, size: 24),
+                              SizedBox(width: 10),
+                              Text(
+                                "Saved Successfully!",
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text(
+                              "OK",
+                              style: TextStyle(
+                                  color: Colors.blue,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
@@ -71,7 +195,7 @@ class AdjustmentsPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20)),
               ),
               child: Text(
-                "Continue",
+                "Save",
                 style: TextStyle(fontSize: 16.sp, color: Colors.white),
               ),
             ),

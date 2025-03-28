@@ -6,12 +6,15 @@ import 'package:water_saver/widgets/adjustments_page/custom_slider.dart';
 class TankSettingsWidget extends StatelessWidget {
   final String title;
   final RxDouble motorOffValue;
-  final RxDouble motorOnValue;
+  final RxDouble? motorOnValue;
+  final RxBool? isError; // Optional error state
 
-  const TankSettingsWidget({super.key, 
+  const TankSettingsWidget({
+    super.key,
     required this.title,
     required this.motorOffValue,
-    required this.motorOnValue,
+    this.motorOnValue,
+    this.isError, // Optional parameter for error state
   });
 
   @override
@@ -27,10 +30,24 @@ class TankSettingsWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold)),
+          Text(title,
+              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold)),
           SizedBox(height: 1.h),
-          CustomSliderWidget(label: "Level Threshold: Motor Off", value: motorOffValue),
-          CustomSliderWidget(label: "Level Threshold: Motor On", value: motorOnValue),
+          CustomSliderWidget(
+              label: "Level Threshold: Motor Off", value: motorOffValue),
+          if (motorOnValue != null)
+            CustomSliderWidget(
+                label: "Level Threshold: Motor On", value: motorOnValue!),
+          if (isError != null)
+            Obx(() => isError!.value
+                ? Padding(
+                    padding: EdgeInsets.only(top: 1.h),
+                    child: Text(
+                      "Level threshold Motor off > Level threshold Motor on",
+                      style: TextStyle(color: Colors.red, fontSize: 14.sp),
+                    ),
+                  )
+                : SizedBox.shrink()),
         ],
       ),
     );

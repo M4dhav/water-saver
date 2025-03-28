@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 
 class WaterDropPainter extends CustomPainter {
-  final double progress; // 0.0 to 1.0 (fill percentage)
+  final double progress; 
   final Color fillColor;
-  final double wavePhase; // Phase for animation
-  final double waveHeight; // Height of the wave
+  final double wavePhase; 
+  final double waveHeight; 
 
   WaterDropPainter({
     required this.progress,
@@ -111,10 +111,8 @@ class WaterDropPainter extends CustomPainter {
     );
     dropPath.close();
 
-    // Draw drop outline
     canvas.drawPath(dropPath, dropPaint);
 
-    // **Create wavy water level effect**
     Path wavePath = Path();
     double waveStartY = size.height * (1 - progress);
 
