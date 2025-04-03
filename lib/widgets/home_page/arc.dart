@@ -13,8 +13,8 @@ class WaterLevelArcPainter extends CustomPainter {
     final radius = size.width / 2;
 
     double arcWidth = 30;
-    double startAngle = pi * 0.695; // Opening positioned at bottom
-    double sweepAngle = pi * 1.6; // Covers 80% of the drop
+    double startAngle = pi * 0.695; 
+    double sweepAngle = pi * 1.6; // change this according to backend
 
     // Background Arc
     final Paint arcBackgroundPaint = Paint()
@@ -45,25 +45,24 @@ class WaterLevelArcPainter extends CustomPainter {
       arcPaint,
     );
 
-    // Notches (placed between arc and drop)
     final Paint notchPaint = Paint()
       ..color = Colors.grey.shade500
       ..strokeWidth = 2;
 
     double notchRadius =
-        radius - (arcWidth / 2) - 10; // Adjusted radius for placement
+        radius - (arcWidth / 2) - 10; 
 
     for (int i = 0; i < 15; i++) {
       double angle = startAngle + (sweepAngle / 14) * i;
 
       Offset start = Offset(
-        center.dx + (notchRadius - 5) * cos(angle), // Adjusted position
+        center.dx + (notchRadius - 5) * cos(angle),
         center.dy + (notchRadius - 5) * sin(angle),
       );
 
       Offset end = Offset(
         center.dx +
-            (notchRadius + 5) * cos(angle), // Positioned between arc and drop
+            (notchRadius + 5) * cos(angle), 
         center.dy + (notchRadius + 5) * sin(angle),
       );
 

@@ -21,29 +21,26 @@ class DateCirclePainter extends CustomPainter {
     double progress = (litersRefilled / maxLiters).clamp(0.0, 1.0);
     double radius = size.width / 2;
     Offset center = Offset(size.width / 2, size.height / 2);
-
-    // **Selection Background (Only If Selected)**
     if (isSelected) {
       Paint selectionPaint = Paint()
-        ..color = activeColor.withOpacity(0.2)
+        ..color = activeColor.withValues(alpha: .2)
         ..style = PaintingStyle.fill;
       canvas.drawCircle(center, radius + 5, selectionPaint);
     }
 
-    // **Background Circle (White for Text Visibility)**
     Paint backgroundPaint = Paint()..color = Colors.white;
     canvas.drawCircle(center, radius, backgroundPaint);
 
-    // **Gray Border (Only if not selected)**
+    // Gray Border
     if (!isSelected) {
       Paint borderPaint = Paint()
-        ..color = inactiveColor.withOpacity(0.5)
+        ..color = inactiveColor.withValues(alpha: .5)
         ..strokeWidth = 2
         ..style = PaintingStyle.stroke;
       canvas.drawCircle(center, radius, borderPaint);
     }
 
-    // **Progress Arc (Tank Refilled)**
+    // Progress Arc
     if (progress > 0) {
       Paint progressPaint = Paint()
         ..color = activeColor

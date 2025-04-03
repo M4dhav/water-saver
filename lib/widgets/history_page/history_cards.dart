@@ -56,7 +56,6 @@ List<Widget> buildHistoryCards() {
                           color: Colors.white,
                           onSelected: (String value) {
                             if (value == 'delete') {
-                              // Show undo snackbar
                               if (historyEntry['id'] != null) {
                                 int entryId = historyEntry['id'] as int;
                                  HistoryPage().showUndoSnackbar(

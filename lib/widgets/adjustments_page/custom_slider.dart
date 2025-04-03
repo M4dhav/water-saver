@@ -16,7 +16,7 @@ class CustomSliderWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Obx(() => Text(
-              "$label (${((value.value - 0.1) * 75 / 1.13 + 35).toStringAsFixed(0)}%)", // Corrected scale to map 0.1 to 35% and 1.0 to 95%
+              "$label (${((value.value - 0.1) * 75 / 1.13 + 35).toStringAsFixed(0)}%)", 
               style: TextStyle(fontSize: 14.sp, color: Colors.blue),
             )),
         SizedBox(height: 1.h),
@@ -25,7 +25,7 @@ class CustomSliderWidget extends StatelessWidget {
             double newProgress =
                 (details.localPosition.dx / (80.w)).clamp(0.0, 1.0);
             value.value =
-                newProgress < 0.1 ? 0.1 : newProgress; // Set minimum threshold
+                newProgress < 0.1 ? 0.1 : newProgress; 
           },
           child: Obx(() => CustomPaint(
                 size: Size(80.w, 3.h),

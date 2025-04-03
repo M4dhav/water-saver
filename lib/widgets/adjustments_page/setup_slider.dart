@@ -16,15 +16,11 @@ class CustomSliderPainter extends CustomPainter {
       ..color = Colors.blue
       ..style = PaintingStyle.fill
       ..strokeCap = StrokeCap.round;
-
-    // Draw Background Track
     canvas.drawRRect(
       RRect.fromRectAndRadius(Rect.fromLTWH(0, 0, size.width, size.height),
           Radius.circular(size.height / 2)),
       trackPaint,
     );
-
-    // Draw Progress Bar
     canvas.drawRRect(
       RRect.fromRectAndRadius(
           Rect.fromLTWH(0, 0, size.width * progress, size.height),

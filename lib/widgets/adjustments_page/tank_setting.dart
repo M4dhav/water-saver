@@ -7,14 +7,14 @@ class TankSettingsWidget extends StatelessWidget {
   final String title;
   final RxDouble motorOffValue;
   final RxDouble? motorOnValue;
-  final RxBool? isError; // Optional error state
+  final RxBool? isError; 
 
   const TankSettingsWidget({
     super.key,
     required this.title,
     required this.motorOffValue,
     this.motorOnValue,
-    this.isError, // Optional parameter for error state
+    this.isError, 
   });
 
   @override

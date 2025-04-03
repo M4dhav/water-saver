@@ -45,7 +45,7 @@ class HistoryPage extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.symmetric(vertical: 1.h),
                   width: double.infinity,
-                  child: buildDateSelector(), // Date selector with dropdown
+                  child: buildDateSelector(),
                 ),
                 Expanded(
                   child: Obx(() {
@@ -65,10 +65,10 @@ class HistoryPage extends StatelessWidget {
             //     return Positioned.fill(
             //       child: GestureDetector(
             //         onTap: historyController
-            //             .toggleDropdown, 
+            //             .toggleDropdown,
             //         child: Container(
             //           color: Colors.black
-            //               .withValues(alpha:0.3), 
+            //               .withValues(alpha:0.3),
             //         ),
             //       ),
             //     );

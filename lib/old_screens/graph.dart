@@ -137,7 +137,8 @@ class _GraphPageState extends State<GraphPage> {
                           borderColor: Colors.red,
                           borderWidth: 5.0,
                           borderRadius: 12.0,
-                          direction: Axis.horizontal,// The direction the liquid moves (Axis.vertical = bottom to top, Axis.horizontal = left to right). Defaults to Axis.horizontal.
+                          direction: Axis
+                              .horizontal, // The direction the liquid moves (Axis.vertical = bottom to top, Axis.horizontal = left to right). Defaults to Axis.horizontal.
                         ),
                       ),
                       Text(
@@ -185,6 +186,7 @@ class _GraphPageState extends State<GraphPage> {
             ),
     );
   }
+
   LineChartData get sampleData1 => LineChartData(
         lineTouchData: lineTouchData1,
         gridData: gridData,
@@ -306,6 +308,7 @@ class _GraphPageState extends State<GraphPage> {
     }
     return Text(text, style: style, textAlign: TextAlign.center);
   }
+
   SideTitles leftTitles() => SideTitles(
         getTitlesWidget: leftTitleWidgets,
         showTitles: true,
@@ -345,12 +348,14 @@ class _GraphPageState extends State<GraphPage> {
         text = '';
         break;
     }
-    return SideTitleWidget(
-      axisSide: meta.axisSide,
-      space: 10,
-      child: Text(text, style: style),
+    return Text(text, style: style).paddingOnly(
+      top: meta.axisSide == AxisSide.bottom ? 10 : 0,
+      bottom: meta.axisSide == AxisSide.top ? 10 : 0,
+      left: meta.axisSide == AxisSide.right ? 10 : 0,
+      right: meta.axisSide == AxisSide.left ? 10 : 0,
     );
   }
+
   SideTitles get bottomTitles => SideTitles(
         showTitles: true,
         reservedSize: 32,
