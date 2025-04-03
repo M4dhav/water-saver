@@ -6,7 +6,7 @@ import 'package:water_saver/widgets/history_page/date_widget.dart';
 Widget buildDateSelector() {
   return SingleChildScrollView(
     child: Column(
-      mainAxisSize: MainAxisSize.min, 
+      mainAxisSize: MainAxisSize.min,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -27,7 +27,6 @@ Widget buildDateSelector() {
             ),
           ],
         ),
-
         SizedBox(height: 1.h),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -35,7 +34,6 @@ Widget buildDateSelector() {
               .map((day) => Text(day, style: TextStyle(fontSize: 15.sp)))
               .toList(),
         ),
-
         SizedBox(height: 1.h),
         Obx(() {
           List<String> dates = historyController.getCurrentMonthDates();
@@ -66,11 +64,10 @@ Widget buildDateSelector() {
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 1.h),
                       child: SizedBox(
-                        height: 30.h, 
+                        height: 30.h,
                         child: GridView.builder(
-                          shrinkWrap: true, 
-                          physics:
-                              const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 7,
@@ -92,8 +89,6 @@ Widget buildDateSelector() {
             ),
           );
         }),
-
-        // Expand/Collapse Button
         Obx(() {
           return IconButton(
             icon: Icon(historyController.isDropdownExpanded.value

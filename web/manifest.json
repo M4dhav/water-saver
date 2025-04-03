@@ -1,6 +1,6 @@
 {
-    "name": "water_saver",
-    "short_name": "water_saver",
+    "name": "water",
+    "short_name": "water",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

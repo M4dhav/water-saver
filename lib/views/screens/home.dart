@@ -22,7 +22,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _dropController = DropController(this, () {
-      setState(() {}); // Rebuild UI when wavePhase updates
+      setState(() {}); 
     });
     _historyController = HomeHistoryController();
     _refillController = RefillController();

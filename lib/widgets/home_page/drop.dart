@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 
 class WaterDropPainter extends CustomPainter {
-  final double progress; 
+  final double progress;
   final Color fillColor;
-  final double wavePhase; 
-  final double waveHeight; 
+  final double wavePhase;
+  final double waveHeight;
 
   WaterDropPainter({
     required this.progress,
     required this.fillColor,
     required this.wavePhase,
-    this.waveHeight = 8.0, // Controls wave height
+    this.waveHeight = 8.0,
   });
 
   @override
@@ -20,7 +20,7 @@ class WaterDropPainter extends CustomPainter {
     double hs = size.height / 216;
 
     final Paint dropPaint = Paint()
-      ..color = Colors.grey.shade300 // Background drop color
+      ..color = Colors.grey.shade300
       ..style = PaintingStyle.fill;
 
     final Paint fillPaint = Paint()
@@ -127,7 +127,6 @@ class WaterDropPainter extends CustomPainter {
     wavePath.lineTo(0, size.height);
     wavePath.close();
 
-    // Clip to water drop shape
     canvas.save();
     canvas.clipPath(dropPath);
     canvas.drawPath(wavePath, fillPaint);
