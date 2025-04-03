@@ -7,8 +7,7 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:water_saver/firebase_options.dart';
-import 'package:water_saver/screens/homepage.dart';
-import 'package:water_saver/screens/signup_screen.dart';
+import 'package:water_saver/widgets/nav_bar.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,10 +38,11 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ResponsiveSizer(builder: (context, orientation, screenType) {
-      return GetMaterialApp(
+      return const GetMaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Water Saver',
-        home: loggedIn ? const HomeScreen() : const SignUpScreen(),
+        // home: loggedIn ? const HomeScreen() : const SignUpScreen(),
+        home: BottomNavBar(),
       );
     });
   }
