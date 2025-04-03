@@ -135,6 +135,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         "Motor": false,
                         "isFetching": false,
                         "ledMode": false,
+                        'rooftopHeight': 0,
+                        'reservoirHeight': 0,
+                        'cableLength': 0,
+                        'rooftopThreshold': [100, 0],
+                        'reservoirThreshold': [100, 0],
                       };
                       await db
                           .collection('users')

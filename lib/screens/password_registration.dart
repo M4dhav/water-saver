@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:water_saver/screens/homepage.dart';
 
@@ -24,6 +25,7 @@ class _PasswordRegistrationScreenState
   TextEditingController appPin = TextEditingController();
   TextEditingController reenterAppPin = TextEditingController();
   final SharedPreferences prefs = Get.find();
+  final List<bool> obscureText = [true, true, true, true];
 
   String? deviceId;
   late DocumentSnapshot<Map<String, dynamic>> doc;
@@ -74,20 +76,30 @@ class _PasswordRegistrationScreenState
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 25),
                             child: TextField(
+                              obscureText: obscureText[0],
                               controller: devicePassword,
                               keyboardType: TextInputType.number,
-                              decoration: const InputDecoration(
-                                suffixIconColor: Colors.black,
+                              decoration: InputDecoration(
                                 hintText: 'Enter Device Password',
-                                hintStyle: TextStyle(color: Colors.black),
-                                suffixIcon: Icon(Icons.lock),
-                                enabledBorder: OutlineInputBorder(
+                                hintStyle: const TextStyle(color: Colors.black),
+                                suffixIcon: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        obscureText[0] = !obscureText[0];
+                                      });
+                                    },
+                                    icon: Icon(
+                                      Icons.remove_red_eye,
+                                      size: 20.px,
+                                      color: Colors.black,
+                                    )),
+                                enabledBorder: const OutlineInputBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(25)),
                                   borderSide: BorderSide(
                                       color: Colors.black, width: 1.0),
                                 ),
-                                border: OutlineInputBorder(
+                                border: const OutlineInputBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(25)),
                                   borderSide: BorderSide(
@@ -102,20 +114,30 @@ class _PasswordRegistrationScreenState
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 25),
                             child: TextField(
+                              obscureText: obscureText[1],
                               controller: reenterDevicePassword,
                               keyboardType: TextInputType.number,
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                 hintText: 'Re-enter Device Password',
-                                hintStyle: TextStyle(color: Colors.black),
-                                suffixIcon: Icon(Icons.lock),
-                                suffixIconColor: Colors.black,
-                                enabledBorder: OutlineInputBorder(
+                                hintStyle: const TextStyle(color: Colors.black),
+                                suffixIcon: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        obscureText[1] = !obscureText[1];
+                                      });
+                                    },
+                                    icon: Icon(
+                                      Icons.remove_red_eye,
+                                      color: Colors.black,
+                                      size: 20.px,
+                                    )),
+                                enabledBorder: const OutlineInputBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(25)),
                                   borderSide: BorderSide(
                                       color: Colors.black, width: 1.0),
                                 ),
-                                border: OutlineInputBorder(
+                                border: const OutlineInputBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(25)),
                                   borderSide: BorderSide(
@@ -143,6 +165,8 @@ class _PasswordRegistrationScreenState
                                     doc.data()!['appPin'] != null) {
                                   Get.to(const HomeScreen());
                                 }
+                                Get.snackbar('Password Changed',
+                                    'Device Password was changed successfully');
                                 return;
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -184,20 +208,29 @@ class _PasswordRegistrationScreenState
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 25),
                             child: TextField(
+                              obscureText: obscureText[2],
                               controller: appPin,
                               keyboardType: TextInputType.number,
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                 hintText: 'Enter App Pin',
-                                hintStyle: TextStyle(color: Colors.black),
-                                suffixIcon: Icon(Icons.lock),
-                                suffixIconColor: Colors.black,
-                                enabledBorder: OutlineInputBorder(
+                                hintStyle: const TextStyle(color: Colors.black),
+                                suffixIcon: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        obscureText[2] = !obscureText[2];
+                                      });
+                                    },
+                                    icon: const Icon(
+                                      Icons.remove_red_eye,
+                                      color: Colors.black,
+                                    )),
+                                enabledBorder: const OutlineInputBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(25)),
                                   borderSide: BorderSide(
                                       color: Colors.black, width: 1.0),
                                 ),
-                                border: OutlineInputBorder(
+                                border: const OutlineInputBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(25)),
                                   borderSide: BorderSide(
@@ -212,20 +245,29 @@ class _PasswordRegistrationScreenState
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 25),
                             child: TextField(
+                              obscureText: obscureText[3],
                               controller: reenterAppPin,
                               keyboardType: TextInputType.number,
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                 hintText: 'Re-enter App Pin',
-                                hintStyle: TextStyle(color: Colors.black),
-                                suffixIcon: Icon(Icons.lock),
-                                suffixIconColor: Colors.black,
-                                enabledBorder: OutlineInputBorder(
+                                hintStyle: const TextStyle(color: Colors.black),
+                                suffixIcon: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        obscureText[3] = !obscureText[3];
+                                      });
+                                    },
+                                    icon: const Icon(
+                                      Icons.remove_red_eye,
+                                      color: Colors.black,
+                                    )),
+                                enabledBorder: const OutlineInputBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(25)),
                                   borderSide: BorderSide(
                                       color: Colors.black, width: 1.0),
                                 ),
-                                border: OutlineInputBorder(
+                                border: const OutlineInputBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(25)),
                                   borderSide: BorderSide(
@@ -250,6 +292,8 @@ class _PasswordRegistrationScreenState
                                     doc.data()!['appPin'] != null) {
                                   Get.to(const HomeScreen());
                                 }
+                                Get.snackbar('Password Changed',
+                                    'App Pin was changed successfully');
                                 return;
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(

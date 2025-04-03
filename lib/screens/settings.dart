@@ -1,7 +1,11 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:interactive_slider/interactive_slider.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -13,35 +17,64 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   final TextEditingController rooftopTankHeightController =
       TextEditingController();
+  final SharedPreferences prefs = Get.find();
+  late String? deviceId = prefs.getString('device_id');
   final TextEditingController reservoirTankHeightController =
       TextEditingController();
   final TextEditingController cableLengthController = TextEditingController();
-  List<int> roofTopThreshold = [100, 0];
-  List<int> reservoirThreshold = [100, 0];
-  List<double> rooftopTankHeights = [
-    1.0,
-    2.0,
-    3.0,
-    4.0,
+  List<dynamic> roofTopThreshold = [100, 0];
+  List<dynamic> reservoirThreshold = [100, 0];
+  List<int> rooftopTankHeights = [
+    1,
+    2,
+    3,
+    4,
   ];
-  List<double> cableLengths = [15, 20, 25, 30];
-  List<double> reservoirTankHeights = [4.0, 5.0, 6.0, 7.0, 8.0];
+  List<int> cableLengths = [15, 20, 25, 30];
+  List<int> reservoirTankHeights = [4, 5, 6, 7, 8];
+  Map<String, dynamic> userData = {};
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      DocumentSnapshot doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(deviceId)
+          .get();
+
+      setState(() {
+        userData = doc.data() as Map<String, dynamic>;
+        roofTopThreshold = userData['rooftopThreshold'] as List<int>;
+        reservoirThreshold = userData['reservoirThreshold'] as List<int>;
+      });
+      rooftopTankHeightController.text = userData['rooftopHeight'].toString();
+      reservoirTankHeightController.text =
+          userData['reservoirHeight'].toString();
+      cableLengthController.text = userData['cableLength'].toString();
+      log('rooftop: ${rooftopTankHeightController.text}, reservoir ${reservoirTankHeightController.text}, cable ${cableLengthController.text}');
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: const Color(0xff081c5c),
         appBar: AppBar(
           title: const Text("Device Settings"),
+          backgroundColor: const Color(0xff081c5c),
+          foregroundColor: Colors.white,
         ),
         body: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: EdgeInsets.symmetric(vertical: 1.h, horizontal: 2.w),
           child: Column(
             children: [
               DropdownSettingsWidget(
                 paramText: "Rooftop Tank Height",
                 textController: rooftopTankHeightController,
                 hintText: "Rooftop Height",
-                dropdownMenuEntries: rooftopTankHeights
-                    .map<DropdownMenuEntry<double>>((double value) {
+                dropdownMenuEntries:
+                    rooftopTankHeights.map<DropdownMenuEntry<int>>((int value) {
                   return DropdownMenuEntry(value: value, label: "$value m");
                 }).toList(),
               ),
@@ -50,7 +83,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 textController: reservoirTankHeightController,
                 hintText: "Reservoir Height",
                 dropdownMenuEntries: reservoirTankHeights
-                    .map<DropdownMenuEntry<double>>((double value) {
+                    .map<DropdownMenuEntry<int>>((int value) {
                   return DropdownMenuEntry(value: value, label: "$value m");
                 }).toList(),
               ),
@@ -59,7 +92,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 textController: cableLengthController,
                 hintText: "Cable Length",
                 dropdownMenuEntries:
-                    cableLengths.map<DropdownMenuEntry<double>>((double value) {
+                    cableLengths.map<DropdownMenuEntry<int>>((int value) {
                   return DropdownMenuEntry(value: value, label: "$value m");
                 }).toList(),
               ),
@@ -80,10 +113,25 @@ class _SettingsPageState extends State<SettingsPage> {
                     setState(() => reservoirThreshold[1] = value.toInt()),
               ),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   log(rooftopTankHeightController.text);
                   log(reservoirTankHeightController.text);
                   log(cableLengthController.text);
+                  await FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(deviceId)
+                      .update({
+                    'rooftopThreshold': roofTopThreshold,
+                    'reservoirThreshold': reservoirThreshold,
+                    'rooftopHeight':
+                        int.parse(rooftopTankHeightController.text),
+                    'reservoirHeight':
+                        int.parse(reservoirTankHeightController.text),
+                    'cableLength': int.parse(cableLengthController.text),
+                  });
+                  Get.snackbar('Success',
+                      "Device Settings have been updated successfully");
+                  Get.back();
                 },
                 child: const Text("Save Settings"),
               )
@@ -102,7 +150,7 @@ class SliderSettingsWidget extends StatelessWidget {
     required this.onChangedOn,
   });
 
-  final List<int> tankThreshold;
+  final List<dynamic> tankThreshold;
   final String tankName;
   final void Function(double) onChangedOff;
   final void Function(double) onChangedOn;
@@ -110,65 +158,78 @@ class SliderSettingsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: EdgeInsets.symmetric(vertical: 0.5.h, horizontal: 2.w),
       child: Container(
-        height: 220,
+        height: 26.h,
         width: double.infinity,
         //  color: Colors.blue,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.blue.shade900),
-            color: Colors.blue.shade100),
+            border: Border.all(color: Colors.grey),
+            color: const Color(0xff083464)),
         child: Column(
           children: [
             Text(
               tankName,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20.px,
+                  color: Colors.white),
             ),
-            const Text("Level Threshold: Motor OFF",
-                style: TextStyle(fontSize: 20)),
+            Text("Level Threshold: Motor OFF",
+                style: TextStyle(fontSize: 17.px, color: Colors.white)),
             Row(
               children: [
                 Expanded(
                   child: InteractiveSlider(
                     initialProgress: tankThreshold[0].toDouble(),
-                    unfocusedHeight: 25,
-                    focusedHeight: 30,
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w900,
-                        fontSize: 15),
+                    unfocusedHeight: 3.h,
+                    focusedHeight: 4.h,
                     endIcon: Text(
                       "${tankThreshold[0].toInt()}%",
                     ),
                     min: 1.0,
                     max: 100.0,
                     onChanged: onChangedOff,
-                    backgroundColor: Colors.blue.shade300,
+                    endIconBuilder: (context, value, child) => Text(
+                      "${tankThreshold[0].toInt()}%",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w900,
+                          fontSize: 15.px),
+                    ),
+                    backgroundColor: const Color(0xffffccac),
+                    unfocusedOpacity: 1.0,
+                    foregroundColor: Colors.green,
                   ),
                 )
               ],
             ),
-            const Text("Level Threshold: Motor ON",
-                style: TextStyle(fontSize: 20)),
+            Text("Level Threshold: Motor ON",
+                style: TextStyle(fontSize: 17.px, color: Colors.white)),
             Row(
               children: [
                 Expanded(
                   child: InteractiveSlider(
                     initialProgress: tankThreshold[1].toDouble(),
-                    unfocusedHeight: 25,
-                    focusedHeight: 30,
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w900,
-                        fontSize: 15),
+                    unfocusedHeight: 3.h,
+                    focusedHeight: 4.h,
                     endIcon: Text(
                       "${tankThreshold[1].toInt()}%",
+                    ),
+                    endIconBuilder: (context, value, child) => Text(
+                      "${tankThreshold[1].toInt()}%",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w900,
+                          fontSize: 15.px),
                     ),
                     min: 1.0,
                     max: 100.0,
                     onChanged: onChangedOn,
-                    backgroundColor: Colors.blue.shade300,
+                    backgroundColor: const Color(0xffffccac),
+                    unfocusedOpacity: 1.0,
+                    foregroundColor: Colors.green,
                   ),
                 )
               ],
@@ -192,34 +253,38 @@ class DropdownSettingsWidget extends StatelessWidget {
   final TextEditingController textController;
   final String hintText;
   final String paramText;
-  final List<DropdownMenuEntry<double>> dropdownMenuEntries;
+  final List<DropdownMenuEntry<int>> dropdownMenuEntries;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 10.0, right: 10, bottom: 6),
+      padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
       child: Container(
-        height: 70,
+        height: 8.h,
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.blue.shade900),
-          color: Colors.blue.shade100,
+          border: Border.all(color: Colors.grey),
+          color: const Color(0xff083464),
           borderRadius: BorderRadius.circular(10),
         ),
         width: double.infinity,
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: EdgeInsets.symmetric(vertical: 0.5.h, horizontal: 1.w),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 paramText,
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 20.px,
+                    color: Colors.white),
               ),
-              DropdownMenu<double>(
+              DropdownMenu<int>(
+                //initialSelection: int.parse(textController.text),
                 dropdownMenuEntries: dropdownMenuEntries,
                 controller: textController,
+                textStyle: const TextStyle(color: Colors.white),
               )
             ],
           ),

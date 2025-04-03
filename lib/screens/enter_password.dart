@@ -43,10 +43,13 @@ class _EnterPasswordScreenState extends State<EnterPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xff081c5c),
       appBar: AppBar(
         title: Text(widget.isAppPassword
             ? 'Enter App Password'
             : 'Enter Device Password'),
+        backgroundColor: const Color(0xff081c5c),
+        foregroundColor: Colors.white,
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),

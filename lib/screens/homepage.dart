@@ -39,14 +39,12 @@ class _HomeScreenState extends State<HomeScreen> {
         userdata = doc.data() as Map<String, dynamic>;
       });
     });
-    listenToChangeOfCategories();
+    listenToDocumentChange();
   }
 
-  void listenToChangeOfCategories() {
-    // collection we are going to listen
+  void listenToDocumentChange() {
     final document =
         FirebaseFirestore.instance.collection('users').doc(deviceId);
-    // start to listen
     document.snapshots().listen((change) async {
       setState(() {
         userdata = change.data() as Map<String, dynamic>;
@@ -58,9 +56,10 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       await GoogleSignIn().disconnect();
     } catch (e) {
-      log(e.toString());
+      Get.snackbar('Error', e.toString());
     }
     await FirebaseAuth.instance.signOut();
+    await prefs.remove('device_id');
   }
 
   @override

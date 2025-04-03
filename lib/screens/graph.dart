@@ -25,11 +25,27 @@ class _GraphPageState extends State<GraphPage> {
   List<Map<String, dynamic>> filteredData = [];
   List<FlSpot> trueSpots = [];
   List<FlSpot> falseSpots = [];
+  bool isFetching = true;
+  final ButtonStyle style = ButtonStyle(
+      shape: WidgetStatePropertyAll(
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+      side: const WidgetStatePropertyAll(
+        BorderSide(
+          color: Color(0xff063793),
+          style: BorderStyle.solid,
+          width: 2,
+        ),
+      ));
+  PlotDuration duration = PlotDuration.sevenDays;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      log(deviceId.toString());
       DocumentSnapshot doc = await FirebaseFirestore.instance
           .collection('users')
           .doc(deviceId)
@@ -49,8 +65,35 @@ class _GraphPageState extends State<GraphPage> {
           motorData.add(doc.data() as Map<String, dynamic>);
         }
       });
+      updateSpots(PlotDuration.sevenDays);
+    });
+    listenToDocumentChange();
+  }
+
+  void updateSpots(PlotDuration inDuration) {
+    setState(() {
+      duration = inDuration;
+      filteredData.clear();
+    });
+    if (inDuration == PlotDuration.sevenDays) {
       filter7Days();
-      getSpots();
+    } else if (inDuration == PlotDuration.fifteenDays) {
+      filter15Days();
+    } else if (inDuration == PlotDuration.thirtyDays) {
+      filter30Days();
+    }
+    getSpots();
+  }
+
+  void listenToDocumentChange() {
+    // collection we are going to listen
+    final document =
+        FirebaseFirestore.instance.collection('users').doc(deviceId);
+    // start to listen
+    document.snapshots().listen((change) async {
+      userData = change.data() as Map<String, dynamic>;
+
+      setState(() {});
     });
   }
 
@@ -59,6 +102,36 @@ class _GraphPageState extends State<GraphPage> {
       DateTime date =
           DateTime.fromMillisecondsSinceEpoch(element['time'].toInt());
       if (DateTime.now().difference(date).inDays <= 7) {
+        filteredData.add(element);
+      }
+    }
+
+    setState(() {
+      filteredData = filteredData;
+    });
+    log(filteredData.toString());
+  }
+
+  void filter15Days() {
+    for (var element in motorData) {
+      DateTime date =
+          DateTime.fromMillisecondsSinceEpoch(element['time'].toInt());
+      if (DateTime.now().difference(date).inDays <= 15) {
+        filteredData.add(element);
+      }
+    }
+
+    setState(() {
+      filteredData = filteredData;
+    });
+    log(filteredData.toString());
+  }
+
+  void filter30Days() {
+    for (var element in motorData) {
+      DateTime date =
+          DateTime.fromMillisecondsSinceEpoch(element['time'].toInt());
+      if (DateTime.now().difference(date).inDays <= 30) {
         filteredData.add(element);
       }
     }
@@ -83,6 +156,7 @@ class _GraphPageState extends State<GraphPage> {
     setState(() {
       trueSpots = trueSpots;
       falseSpots = falseSpots;
+      isFetching = false;
     });
   }
 
@@ -95,12 +169,12 @@ class _GraphPageState extends State<GraphPage> {
         title: const Text('Data'),
         foregroundColor: Colors.white,
       ),
-      body: falseSpots.isEmpty
+      body: isFetching
           ? const Center(
               child: CircularProgressIndicator(),
             )
           : Padding(
-              padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
+              padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -114,6 +188,40 @@ class _GraphPageState extends State<GraphPage> {
                       ),
                     ),
                   ),
+                  OverflowBar(
+                    spacing: 6,
+                    alignment: MainAxisAlignment.spaceEvenly,
+                    overflowAlignment: OverflowBarAlignment.center,
+                    children: <Widget>[
+                      TextButton(
+                          onPressed: () => updateSpots(PlotDuration.sevenDays),
+                          style: style,
+                          child: Text(
+                            '7 Days',
+                            style: TextStyle(
+                                color: duration == PlotDuration.sevenDays
+                                    ? Colors.white
+                                    : Colors.grey),
+                          )),
+                      TextButton(
+                          onPressed: () =>
+                              updateSpots(PlotDuration.fifteenDays),
+                          style: style,
+                          child: Text('15 Days',
+                              style: TextStyle(
+                                  color: duration == PlotDuration.fifteenDays
+                                      ? Colors.white
+                                      : Colors.grey))),
+                      TextButton(
+                          onPressed: () => updateSpots(PlotDuration.thirtyDays),
+                          style: style,
+                          child: Text('30 Days',
+                              style: TextStyle(
+                                  color: duration == PlotDuration.thirtyDays
+                                      ? Colors.white
+                                      : Colors.grey))),
+                    ],
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -122,24 +230,22 @@ class _GraphPageState extends State<GraphPage> {
                         width: 70.w,
                         child: LiquidLinearProgressIndicator(
                           value: userData['rooftop'] / 4095,
+
                           // Defaults to 0.5.
 
-                          valueColor: AlwaysStoppedAnimation(userData[
-                                          'rooftop'] /
-                                      4095 <
-                                  0.1
-                              ? Colors.pink
-                              : userData['rooftop'] / 4095 > 0.6
-                                  ? Colors.green
-                                  : Colors
-                                      .yellow), // Defaults to the current Theme's accentColor.
-                          backgroundColor: Colors
-                              .white, // Defaults to the current Theme's backgroundColor.
-                          borderColor: Colors.red,
-                          borderWidth: 5.0,
-                          borderRadius: 12.0,
-                          direction: Axis.horizontal,
-                          // The direction the liquid moves (Axis.vertical = bottom to top, Axis.horizontal = left to right). Defaults to Axis.horizontal.
+                          valueColor: // Defaults to the current Theme's accentColor.
+                              AlwaysStoppedAnimation(
+                            userData['rooftop'] / 4095 > 0.3
+                                ? userData['rooftop'] / 4095 > 0.3
+                                    ? Colors.green
+                                    : Colors.yellow
+                                : Colors.red,
+                          ),
+                          backgroundColor: const Color(
+                              0xff081c5c), // Defaults to the current Theme's backgroundColor.
+                          borderColor: Colors.grey,
+                          borderWidth: 2,
+                          borderRadius: 12,
                         ),
                       ),
                       Text(
@@ -161,15 +267,18 @@ class _GraphPageState extends State<GraphPage> {
                         child: LiquidLinearProgressIndicator(
                           value:
                               userData['reservoir'] / 4095, // Defaults to 0.5.
-                          valueColor: const AlwaysStoppedAnimation(Colors
-                              .pink), // Defaults to the current Theme's accentColor.
-                          backgroundColor: Colors
-                              .white, // Defaults to the current Theme's backgroundColor.
-                          borderColor: Colors.red,
-                          borderWidth: 5.0,
-                          borderRadius: 12.0,
-                          direction: Axis
-                              .horizontal, // The direction the liquid moves (Axis.vertical = bottom to top, Axis.horizontal = left to right). Defaults to Axis.horizontal.
+                          valueColor: AlwaysStoppedAnimation(
+                            userData['reservoir'] / 4095 > 0.3
+                                ? userData['reservoir'] / 4095 > 0.6
+                                    ? Colors.green
+                                    : Colors.yellow
+                                : Colors.red,
+                          ),
+                          backgroundColor: const Color(
+                              0xff081c5c), // Defaults to the current Theme's backgroundColor.
+                          borderColor: Colors.grey,
+                          borderWidth: 2,
+                          borderRadius: 12,
                         ),
                       ),
                       Text(
@@ -196,7 +305,11 @@ class _GraphPageState extends State<GraphPage> {
         lineBarsData: lineBarsData1,
         backgroundColor: const Color(0xff083464),
         minX: 0,
-        maxX: 8,
+        maxX: duration == PlotDuration.sevenDays
+            ? 8
+            : duration == PlotDuration.fifteenDays
+                ? 16
+                : 32,
         maxY: 25,
         minY: 0,
       );
@@ -329,31 +442,45 @@ class _GraphPageState extends State<GraphPage> {
       color: Colors.white,
       fontSize: 14,
     );
-    switch (value.toInt()) {
-      case 1:
-        text = 'Mon';
-        break;
-      case 2:
-        text = 'Tue';
-        break;
-      case 3:
-        text = 'Wed';
-        break;
-      case 4:
-        text = 'Thu';
-        break;
-      case 5:
-        text = 'Fri';
-        break;
-      case 6:
-        text = 'Sat';
-        break;
-      case 7:
-        text = 'Sun';
-        break;
-      default:
+    if (duration == PlotDuration.sevenDays) {
+      switch (value.toInt()) {
+        case 1:
+          text = 'Mon';
+          break;
+        case 2:
+          text = 'Tue';
+          break;
+        case 3:
+          text = 'Wed';
+          break;
+        case 4:
+          text = 'Thu';
+          break;
+        case 5:
+          text = 'Fri';
+          break;
+        case 6:
+          text = 'Sat';
+          break;
+        case 7:
+          text = 'Sun';
+          break;
+        default:
+          text = '';
+          break;
+      }
+    } else if (duration == PlotDuration.fifteenDays) {
+      if (value.toInt() != 0 && value.toInt() != 16) {
+        text = value.toInt().toString();
+      } else {
         text = '';
-        break;
+      }
+    } else {
+      if (value.toInt() != 0 && value.toInt() != 32) {
+        text = value.toInt().toString();
+      } else {
+        text = '';
+      }
     }
 
     return SideTitleWidget(
@@ -366,7 +493,11 @@ class _GraphPageState extends State<GraphPage> {
   SideTitles get bottomTitles => SideTitles(
         showTitles: true,
         reservedSize: 32,
-        interval: 1,
+        interval: duration == PlotDuration.sevenDays
+            ? 1
+            : duration == PlotDuration.fifteenDays
+                ? 2
+                : 3,
         getTitlesWidget: bottomTitleWidgets,
       );
 
@@ -419,3 +550,5 @@ class _GraphPageState extends State<GraphPage> {
       dotData: const FlDotData(show: true),
       spots: falseSpots);
 }
+
+enum PlotDuration { sevenDays, fifteenDays, thirtyDays }

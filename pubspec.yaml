@@ -28,29 +28,30 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  google_sign_in:
-  firebase_phone_auth_handler: 
-  auth_buttons: 
-  firebase_ui_auth: 
+  google_sign_in: ^6.2.1
+  firebase_phone_auth_handler: ^1.0.8
+  auth_buttons: ^3.0.3
+  firebase_ui_auth: ^1.14.0
   flutter:
     sdk: flutter
-  cupertino_icons:
-  firebase_auth: 
-  cloud_firestore:
-  firebase_messaging:
-  firebase_storage: 
-  firebase_database: 
-  firebase_core: 
-  firebase_ui_oauth_google:  
-  fl_chart: 
-  get: 
-  sizer:
-  shared_preferences: 
-  animated_toggle_switch: 
-  interactive_slider: 
-  cool_dropdown:
-  responsive_sizer:
+  cupertino_icons: ^1.0.8
+  firebase_auth: ^4.20.0
+  cloud_firestore: ^4.17.5
+  firebase_messaging: ^14.9.4
+  firebase_storage: ^11.7.7
+  firebase_database: ^10.5.7
+  firebase_core: ^2.32.0
+  firebase_ui_oauth_google: ^1.3.2
+  fl_chart: ^0.67.0
+  get: ^4.6.6
+  shared_preferences: ^2.3.1
+  animated_toggle_switch: ^0.8.2
+  interactive_slider: ^0.2.2
+  cool_dropdown: ^2.1.0
+  responsive_sizer: ^3.3.1
   liquid_progress_indicator_v2: ^0.5.0
+  flutter_facebook_auth: ^7.1.0
+  
 
 dev_dependencies:
   flutter_test:
