@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:water_saver/views/screens/history.dart';
-import 'package:water_saver/views/screens/home.dart';
-import 'package:water_saver/views/screens/profile.dart';
-import 'package:water_saver/views/screens/report.dart';
-import 'package:water_saver/views/screens/adjustment.dart';
+import 'package:water_saver/screens/adjustment.dart';
+import 'package:water_saver/screens/history.dart';
+import 'package:water_saver/screens/home.dart';
+import 'package:water_saver/screens/profile.dart';
+import 'package:water_saver/screens/report.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({super.key});
@@ -20,7 +20,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     HistoryPage(),
     const ReportPage(),
     AdjustmentsPage(),
-    const Profile(),
+    const ProfilePage(),
   ];
 
   void _onItemTapped(int index) {

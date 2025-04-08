@@ -32,7 +32,6 @@ class HistoryPageController extends Notifier<HistoryPageData> {
     return allDates.sublist(weekStart, weekEnd);
   }
 
-  /// ✅ Move to the previous month
   void previousMonth() {
     state = state.copyWith(
         currentMonth:
@@ -40,7 +39,6 @@ class HistoryPageController extends Notifier<HistoryPageData> {
     updateMonthDates();
   }
 
-  /// ✅ Move to the next month
   void nextMonth() {
     state = state.copyWith(
         currentMonth:
@@ -48,7 +46,6 @@ class HistoryPageController extends Notifier<HistoryPageData> {
     updateMonthDates();
   }
 
-  /// ✅ Get current month and year as "December 2025"
   String getCurrentMonthYear() {
     return DateFormat("MMMM yyyy").format(state.currentMonth);
   }
