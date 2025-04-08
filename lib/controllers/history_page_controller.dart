@@ -14,7 +14,7 @@ class HistoryPageController extends GetxController {
     super.onInit();
     fetchWaterHistory();
     calculateTotalLiters();
-    updateMonthDates(); // ✅ Initialize dates based on current month
+    updateMonthDates();
   }
 
   void fetchWaterHistory() {
@@ -65,7 +65,6 @@ class HistoryPageController extends GetxController {
     currentMonthDates.value = getCurrentMonthDates();
   }
 
-  /// ✅ Get all dates for the currently selected month
   List<String> getCurrentMonthDates() {
     DateTime now = currentMonth.value;
     int daysInMonth = DateTime(now.year, now.month + 1, 0).day;
@@ -74,31 +73,30 @@ class HistoryPageController extends GetxController {
     });
   }
 
-  /// ✅ Get dates for the current week
   List<String> getCurrentWeekDates(List<String> allDates) {
     DateTime now = DateTime.now();
     int todayIndex = allDates.indexOf(
         "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}");
 
     int weekStart = (todayIndex ~/ 7) * 7;
-    int weekEnd = (weekStart + 7 <= allDates.length) ? weekStart + 7 : allDates.length;
+    int weekEnd =
+        (weekStart + 7 <= allDates.length) ? weekStart + 7 : allDates.length;
 
     return allDates.sublist(weekStart, weekEnd);
   }
 
-  /// ✅ Move to the previous month
   void previousMonth() {
-    currentMonth.value = DateTime(currentMonth.value.year, currentMonth.value.month - 1, 1);
+    currentMonth.value =
+        DateTime(currentMonth.value.year, currentMonth.value.month - 1, 1);
     updateMonthDates();
   }
 
-  /// ✅ Move to the next month
   void nextMonth() {
-    currentMonth.value = DateTime(currentMonth.value.year, currentMonth.value.month + 1, 1);
+    currentMonth.value =
+        DateTime(currentMonth.value.year, currentMonth.value.month + 1, 1);
     updateMonthDates();
   }
 
-  /// ✅ Get current month and year as "December 2025"
   String getCurrentMonthYear() {
     return DateFormat("MMMM yyyy").format(currentMonth.value);
   }

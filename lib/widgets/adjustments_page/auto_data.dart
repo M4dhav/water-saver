@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:get/get.dart';
-import 'package:water_saver/controller/adjustment_controller.dart';
+import 'package:water_saver/controllers/adjustment_controller.dart';
 import 'package:water_saver/widgets/adjustments_page/toggle_widget.dart';
 
 class AutoDataLogWidget extends StatelessWidget {

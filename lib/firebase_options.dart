@@ -50,12 +50,11 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCAQfG2HuJaQz_3CADJdWBVCi14VLtVGoc',
-    appId: '1:709894266438:android:e9c752b9e034d0ad2c7447',
-    messagingSenderId: '709894266438',
-    projectId: 'myesp32-e60de',
-    databaseURL: 'https://myesp32-e60de-default-rtdb.firebaseio.com',
-    storageBucket: 'myesp32-e60de.appspot.com',
+    apiKey: 'AIzaSyAqurxN0HL5xPSMkLOBDLnNvz4O5U2sH54',
+    appId: '1:441648971518:android:863ca05fcf616467ac6faf',
+    messagingSenderId: '441648971518',
+    projectId: 'myopamp-14c20',
+    storageBucket: 'myopamp-14c20.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(

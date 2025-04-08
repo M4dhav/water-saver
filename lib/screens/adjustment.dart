@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:get/get.dart';
-import 'package:water_saver/controller/adjustment_controller.dart';
+import 'package:water_saver/controllers/adjustment_controller.dart';
 import 'package:water_saver/widgets/adjustments_page/auto_data.dart';
 import 'package:water_saver/widgets/adjustments_page/tank_setting.dart';
 

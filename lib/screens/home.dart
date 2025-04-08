@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:water_saver/controller/drop_controller.dart';
-import 'package:water_saver/controller/home_history%20controller.dart';
-import 'package:water_saver/controller/refill_controller.dart';
+import 'package:water_saver/controllers/drop_controller.dart';
+import 'package:water_saver/controllers/home_history%20controller.dart';
+import 'package:water_saver/controllers/refill_controller.dart';
 import 'package:water_saver/widgets/home_page/arc.dart';
 import 'package:water_saver/widgets/home_page/drop.dart';
 

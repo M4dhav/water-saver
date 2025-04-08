@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:water_saver/controller/history_page_controller.dart';
+import 'package:water_saver/controllers/history_page_controller.dart';
 import 'package:water_saver/widgets/history_page/date_circles.dart';
 
 final HistoryPageController historyController =
