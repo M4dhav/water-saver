@@ -2,12 +2,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:water_saver/firebase_options.dart';
+import 'package:water_saver/screens/login_screen_1.dart';
+import 'package:water_saver/screens/splash.dart';
 import 'package:water_saver/widgets/nav_bar.dart';
-
+import 'package:go_router/go_router.dart';
 
 final sharedPreferencesProvider = Provider<SharedPreferencesAsync>((ref) {
   return SharedPreferencesAsync();
@@ -29,23 +30,39 @@ void main() async {
   ));
 }
 
-class MainApp extends ConsumerWidget {
-  const MainApp({
+class MainApp extends StatelessWidget {
+  final GoRouter _router;
+
+  MainApp({
     super.key,
     required this.loggedIn,
-  });
+  }) : _router = GoRouter(
+          routes: [
+            GoRoute(
+              path: '/',
+              builder: (context, state) =>
+                  loggedIn ? const BottomNavBar() : const SplashScreen(),
+            ),
+            GoRoute(
+              path: '/login',
+              builder: (context, state) => LoginScreen1(),
+            ),
+            GoRoute(
+              path: '/home',
+              builder: (context, state) => const BottomNavBar(),
+            ),
+          ],
+        );
+
   final bool loggedIn;
 
-  // This widget is the root of your application.
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return ProviderScope(
       child: ResponsiveSizer(builder: (context, orientation, screenType) {
-        return const GetMaterialApp(
+        return MaterialApp.router(
           debugShowCheckedModeBanner: false,
-          title: 'Water Saver',
-          // home: loggedIn ? const HomeScreen() : const SignUpScreen(),
-          home: BottomNavBar(),
+          routerConfig: _router,
         );
       }),
     );
