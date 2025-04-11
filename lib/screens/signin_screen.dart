@@ -10,7 +10,7 @@ class SignInScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AuthController _authController = AuthController();
+    final AuthController authController = AuthController();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -97,7 +97,7 @@ class SignInScreen extends StatelessWidget {
                   width: double.infinity,
                   borderRadius: 10,
                   onTap: () async {
-                    await _authController.signInWithGoogle(context);
+                    await authController.signInWithGoogle(context);
                   },
                 ),
                 SizedBox(height: 2.h),
