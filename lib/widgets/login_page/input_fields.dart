@@ -33,17 +33,18 @@ class InputField extends StatelessWidget {
           decoration: InputDecoration(
             labelText: hintText,
             prefixIcon: Icon(prefixIcon),
-            suffixIcon: isPassword ? Icon(Icons.visibility_off) : null,
+            suffixIcon: isPassword ? const Icon(Icons.visibility_off) : null,
             border: InputBorder.none,
             filled: true,
             fillColor: Colors.grey[200],
-            labelStyle: TextStyle(color: Colors.grey),
-            contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-            enabledBorder: OutlineInputBorder(
+            labelStyle: const TextStyle(color: Colors.grey),
+            contentPadding:
+                EdgeInsets.symmetric(vertical: 2.5.h, horizontal: 7.w),
+            enabledBorder: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(10)),
               borderSide: BorderSide.none,
             ),
-            focusedBorder: OutlineInputBorder(
+            focusedBorder: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(10)),
               borderSide: BorderSide.none,
             ),

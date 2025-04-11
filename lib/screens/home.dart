@@ -72,7 +72,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
               ),
-              height: 50.h,
+              height: 51.h,
               width: 90.w,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
