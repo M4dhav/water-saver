@@ -26,23 +26,23 @@ class CustomButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: height.h, // Use responsive height
-        width: width.w, // Use responsive width
+        height: height.h, 
+        width: width.w, 
         decoration: BoxDecoration(
           color: Colors.white,
           border: Border.all(color: Colors.grey.shade300),
           borderRadius: BorderRadius.circular(
-              borderRadius.w), // Use responsive border radius
+              borderRadius.w), 
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, color: color, size: 20.sp), // Use responsive icon size
-            SizedBox(width: 2.w), // Use responsive spacing
+            Icon(icon, color: color, size: 20.sp), 
+            SizedBox(width: 2.w), 
             Text(
               text,
               style: TextStyle(
-                fontSize: 16.sp, // Use responsive font size
+                fontSize: 16.sp, 
                 color: Colors.black,
               ),
             ),
