@@ -77,19 +77,19 @@ class AdjustmentsPage extends StatelessWidget {
                     backgroundColor: Colors.transparent,
                     isDismissible: false,
                     builder: (BuildContext context) {
-                      Future.delayed(Duration(seconds: 3), () {
+                      Future.delayed(const Duration(seconds: 3), () {
                         if (Navigator.canPop(context)) {
                           Navigator.pop(context);
                         }
                       });
                       return Container(
-                        margin: EdgeInsets.all(10),
-                        padding:
-                            EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                        margin: EdgeInsets.all(4.h),
+                        padding: EdgeInsets.symmetric(
+                            vertical: 5.h, horizontal: 9.w),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(15),
-                          boxShadow: [
+                          boxShadow: const [
                             BoxShadow(
                               color: Colors.black26,
                               blurRadius: 10,
@@ -102,12 +102,13 @@ class AdjustmentsPage extends StatelessWidget {
                           children: [
                             Row(
                               children: [
-                                Icon(Icons.error, color: Colors.red, size: 24),
-                                SizedBox(width: 10),
+                                Icon(Icons.error,
+                                    color: Colors.red, size: 18.sp),
+                                SizedBox(width: 2.h),
                                 Text(
                                   "Saving Unsuccessful!",
                                   style: TextStyle(
-                                      fontSize: 16,
+                                      fontSize: 18.sp,
                                       fontWeight: FontWeight.bold),
                                 ),
                               ],
@@ -116,7 +117,7 @@ class AdjustmentsPage extends StatelessWidget {
                               onPressed: () {
                                 Navigator.pop(context);
                               },
-                              child: Text(
+                              child: const Text(
                                 "OK",
                                 style: TextStyle(
                                     color: Colors.blue,
@@ -136,19 +137,19 @@ class AdjustmentsPage extends StatelessWidget {
                   backgroundColor: Colors.transparent,
                   isDismissible: false,
                   builder: (BuildContext context) {
-                    Future.delayed(Duration(seconds: 3), () {
+                    Future.delayed(const Duration(seconds: 3), () {
                       if (Navigator.canPop(context)) {
                         Navigator.pop(context);
                       }
                     });
                     return Container(
-                      margin: EdgeInsets.all(10),
+                      margin: EdgeInsets.all(4.h),
                       padding:
-                          EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                          EdgeInsets.symmetric(vertical: 5.h, horizontal: 9.w),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(15),
-                        boxShadow: [
+                        boxShadow: const [
                           BoxShadow(
                             color: Colors.black26,
                             blurRadius: 10,
@@ -162,12 +163,13 @@ class AdjustmentsPage extends StatelessWidget {
                           Row(
                             children: [
                               Icon(Icons.check_circle,
-                                  color: Colors.blue, size: 24),
-                              SizedBox(width: 10),
+                                  color: Colors.blue, size: 18.sp),
+                              SizedBox(width: 2.h),
                               Text(
                                 "Saved Successfully!",
                                 style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold),
+                                    fontSize: 18.sp,
+                                    fontWeight: FontWeight.bold),
                               ),
                             ],
                           ),
@@ -175,7 +177,7 @@ class AdjustmentsPage extends StatelessWidget {
                             onPressed: () {
                               Navigator.pop(context);
                             },
-                            child: Text(
+                            child: const Text(
                               "OK",
                               style: TextStyle(
                                   color: Colors.blue,

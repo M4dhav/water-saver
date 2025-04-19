@@ -7,7 +7,7 @@ class ProfilePage extends StatelessWidget {
 
   void _logout(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
-    context.go('/login'); // Redirect to login screen
+    context.go('/login'); 
   }
 
   @override

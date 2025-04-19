@@ -122,7 +122,7 @@ class LoginScreen1 extends StatelessWidget {
                 color: Colors.grey,
               ),
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 1.h),
           ],
         ),
       ),
