@@ -13,14 +13,15 @@ class WaterLevelArcPainter extends CustomPainter {
     final radius = size.width / 2;
 
     double arcWidth = 30;
-    double startAngle = pi * 0.695; 
-    double sweepAngle = pi * 1.6; // change this according to backend
+    double startAngle = pi * 0.695;
+    double sweepAngle = pi * 1.6;
 
     // Background Arc
     final Paint arcBackgroundPaint = Paint()
       ..color = Colors.grey.shade300
       ..style = PaintingStyle.stroke
-      ..strokeWidth = arcWidth;
+      ..strokeWidth = arcWidth
+      ..strokeCap = StrokeCap.round; 
 
     canvas.drawArc(
       Rect.fromCircle(center: center, radius: radius),
@@ -35,7 +36,7 @@ class WaterLevelArcPainter extends CustomPainter {
       ..color = color
       ..style = PaintingStyle.stroke
       ..strokeWidth = arcWidth
-      ..strokeCap = StrokeCap.round;
+      ..strokeCap = StrokeCap.round; 
 
     canvas.drawArc(
       Rect.fromCircle(center: center, radius: radius),
@@ -49,8 +50,7 @@ class WaterLevelArcPainter extends CustomPainter {
       ..color = Colors.grey.shade500
       ..strokeWidth = 2;
 
-    double notchRadius =
-        radius - (arcWidth / 2) - 10; 
+    double notchRadius = radius - (arcWidth / 2) - 10;
 
     for (int i = 0; i < 15; i++) {
       double angle = startAngle + (sweepAngle / 14) * i;
@@ -61,8 +61,7 @@ class WaterLevelArcPainter extends CustomPainter {
       );
 
       Offset end = Offset(
-        center.dx +
-            (notchRadius + 5) * cos(angle), 
+        center.dx + (notchRadius + 5) * cos(angle),
         center.dy + (notchRadius + 5) * sin(angle),
       );
 
