@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:water_saver/controllers/auth_controller.dart';
-import 'package:water_saver/screens/signin_screen.dart';
 import 'package:water_saver/widgets/login_page/custom_button.dart';
-import 'package:water_saver/screens/signup_screen.dart';
 
 class LoginScreen1 extends StatelessWidget {
   LoginScreen1({Key? key}) : super(key: key);
@@ -65,54 +63,6 @@ class LoginScreen1 extends StatelessWidget {
                   onTap: () {},
                 ),
               ],
-            ),
-            SizedBox(height: 5.h),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const SignUpScreen()),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                padding: const EdgeInsets.symmetric(vertical: 15),
-              ),
-              child: const Center(
-                child: Text(
-                  "Sign Up",
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 2.h),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const SignInScreen()),
-                );
-              },
-              style: TextButton.styleFrom(
-                backgroundColor: Colors.lightBlue[100],
-                padding: const EdgeInsets.symmetric(vertical: 15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
-              child: const Center(
-                child: Text(
-                  "Sign In",
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.blue,
-                  ),
-                ),
-              ),
             ),
             const Spacer(),
             const Text(

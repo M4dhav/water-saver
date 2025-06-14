@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class TankController extends ChangeNotifier {
@@ -10,4 +11,13 @@ class TankController extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> fetchWaterLevelFromUser(String userId) async {
+    final doc =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    if (doc.exists) {
+      final data = doc.data()!;
+      _waterLevel = (data['reservoir'] ?? 0).toDouble();
+      notifyListeners();
+    }
+  }
 }

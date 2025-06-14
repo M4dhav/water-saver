@@ -14,6 +14,8 @@ class Users {
   final String socket;
   final String state;
   final String surname;
+  final Int reservoir;
+  final Int tank;
 
   Users({
     required this.addOn,
@@ -29,6 +31,8 @@ class Users {
     required this.socket,
     required this.state,
     required this.surname,
+    required this.reservoir,
+    required this.tank,
   });
 
   Users.fromMap(Map<String, dynamic> map)
@@ -44,7 +48,9 @@ class Users {
         prodCat = map['prodCat'],
         socket = map['socket'],
         state = map['state'],
-        surname = map['surname'];
+        surname = map['surname'],
+        reservoir = map['reservoir'],
+        tank = map['tank'];
 
   Map<String, dynamic> toMap() {
     return {
@@ -61,6 +67,8 @@ class Users {
       'socket': socket,
       'state': state,
       'surname': surname,
+      'reservoir': reservoir,
+      'tank': tank,
     };
   }
 }
