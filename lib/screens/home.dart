@@ -183,7 +183,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               Text(
                                 hasReservoir
                                     ? '$currentReservoirLevel L / $reservoir L'
-                                    : '$tank L / $tank L',
+                                    : '$currentTankLevel L / $tank L',
                                 style: TextStyle(
                                     fontSize: 16.sp, color: Colors.grey),
                               ),
