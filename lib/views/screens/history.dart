@@ -1,18 +1,17 @@
+
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:water_saver/controller/history_page_controller.dart';
+import 'package:water_saver/providers/history_controller_provider.dart';
 import 'package:water_saver/widgets/history_page/date_selector.dart';
-import 'package:water_saver/widgets/history_page/history_cards.dart';
 
-class HistoryPage extends StatelessWidget {
-  final HistoryPageController historyController =
-      Get.put(HistoryPageController());
-
-  HistoryPage({super.key});
+class HistoryPage extends ConsumerWidget {
+  const HistoryPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final historyController = ref.watch(historyPageControllerProvider.notifier);
+    final data = ref.watch(historyPageControllerProvider);
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
@@ -45,18 +44,17 @@ class HistoryPage extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.symmetric(vertical: 1.h),
                   width: double.infinity,
-                  child: buildDateSelector(),
+                  child: BuildDateSelector(),
                 ),
                 Expanded(
-                  child: Obx(() {
-                    var historyData = historyController.historyData;
-                    return historyData.isEmpty
-                        ? const Center(child: Text("No history available"))
-                        : ListView(
-                            padding: EdgeInsets.symmetric(horizontal: 4.w),
-                            children: buildHistoryCards(),
-                          );
-                  }),
+                  child: data.historyData.isEmpty
+                      ? const Center(child: Text("No history available"))
+                      : ListView(
+                          padding: EdgeInsets.symmetric(horizontal: 4.w),
+                          children: buildHistoryCards(
+                            ref,
+                          ),
+                        ),
                 ),
               ],
             ),
@@ -81,23 +79,61 @@ class HistoryPage extends StatelessWidget {
     );
   }
 
-  void showUndoSnackbar(BuildContext context, String date, int entryId) {
-    final deletedEntry = historyController.historyData[date]
-        ?.firstWhere((entry) => entry['id'] == entryId);
-    historyController.deleteHistoryEntry(date, entryId);
+  List<Widget> buildHistoryCards(
+    WidgetRef ref,
+  ) {
+    final controller = ref.watch(historyPageControllerProvider.notifier);
+    final data = ref.watch(historyPageControllerProvider);
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('History deleted!'),
-        action: SnackBarAction(
-          label: 'Undo',
-          onPressed: () {
-            if (deletedEntry != null) {
-              historyController.addHistoryEntry(date, deletedEntry);
-            }
-          },
+    return data.historyData.entries.map((entry) {
+      String date = entry.key;
+      List<Map<String, dynamic>> historyEntries = entry.value;
+
+      return Card(
+        color: Colors.white,
+        margin: EdgeInsets.symmetric(vertical: 1.h),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
         ),
-      ),
-    );
+        child: Padding(
+          padding: EdgeInsets.all(2.h),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                date,
+                style: TextStyle(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const Divider(),
+              ...historyEntries.map((historyEntry) {
+                return Padding(
+                  padding: EdgeInsets.symmetric(vertical: 0.5.h),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.access_time, color: Colors.blue),
+                          SizedBox(width: 2.w),
+                          Text(historyEntry['time'] ?? '',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16.sp)),
+                        ],
+                      ),
+                      Text("${historyEntry['quantity']} L",
+                          style: TextStyle(fontSize: 14.sp)),
+                    ],
+                  ),
+                );
+              }),
+            ],
+          ),
+        ),
+      );
+    }).toList();
   }
 }

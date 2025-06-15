@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:water_saver/controller/history_page_controller.dart';
+import 'package:water_saver/providers/history_controller_provider.dart';
 import 'package:water_saver/widgets/history_page/date_circles.dart';
 
-final HistoryPageController historyController =
-    Get.put(HistoryPageController());
+class DateCircleWidget extends ConsumerWidget {
+  final String date;
+  const DateCircleWidget({super.key, required this.date});
 
-Widget dateCircleWidget(String date) {
-  double litersRefilled = historyController.totalLitersPerDate[date] ?? 1700; //fetch value accordaing to date from device
-
-  return Obx(() {
-    bool isSelected = historyController.selectedDate.value == date;
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final historyController = ref.watch(historyPageControllerProvider.notifier);
+    final data = ref.watch(historyPageControllerProvider);
+    double litersRefilled = data.totalLitersPerDate[date] ??
+        1700; //fetch value accordaing to date from device
 
     return GestureDetector(
       onTap: () => historyController.updateSelectedDate(date),
@@ -25,7 +27,7 @@ Widget dateCircleWidget(String date) {
                 size: const Size(40, 40),
                 painter: DateCirclePainter(
                   litersRefilled: litersRefilled,
-                  isSelected: isSelected,
+                  isSelected: data.selectedDate == date,
                 ),
               ),
               Text(
@@ -40,5 +42,5 @@ Widget dateCircleWidget(String date) {
         ],
       ),
     );
-  });
+  }
 }

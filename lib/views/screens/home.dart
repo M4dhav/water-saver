@@ -22,7 +22,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _dropController = DropController(this, () {
-      setState(() {}); 
+      setState(() {});
     });
     _historyController = HomeHistoryController();
     _refillController = RefillController();
@@ -81,7 +81,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     alignment: Alignment.center,
                     children: [
                       CustomPaint(
-                        size: Size(30.h, 75.w),   
+                        size: Size(30.h, 75.w),
                         painter: WaterLevelArcPainter(
                           progress: _refillController.waterLevel /
                               _refillController.maxCapacity,
@@ -121,7 +121,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       ),
                     ],
                   ),
-                  SizedBox(height: 3.h),
+                  SizedBox(height: 2.h),
                   Padding(
                     padding: EdgeInsets.only(left: 6.w, bottom: 1.1.h),
                     child: Row(
