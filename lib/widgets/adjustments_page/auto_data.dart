@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:get/get.dart';
-import 'package:water_saver/controller/adjustment_controller.dart';
+import 'package:water_saver/providers/adjustment_controller_provider.dart';
 import 'package:water_saver/widgets/adjustments_page/toggle_widget.dart';
 
-class AutoDataLogWidget extends StatelessWidget {
-  final AdjustmentsController controller;
-
-  const AutoDataLogWidget({super.key, required this.controller});
+class AutoDataLogWidget extends ConsumerWidget {
+  const AutoDataLogWidget({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.watch(adjustmentControllerProvider.notifier);
+    final adjustmentsData = ref.watch(adjustmentControllerProvider);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -30,18 +30,18 @@ class AutoDataLogWidget extends StatelessWidget {
                         fontSize: 16.sp, fontWeight: FontWeight.bold)),
                 Row(
                   children: [
-                    Obx(() => ToggleButtonWidget(
+                    ToggleButtonWidget(
                         text: "Off",
-                        isSelected: !controller.autoDataLog.value,
+                        isSelected: !adjustmentsData.autoDataLog,
                         onTap: () {
-                          controller.autoDataLog.value = false;
-                        })),
-                    Obx(() => ToggleButtonWidget(
+                          controller.toggleAutoDataLog(false);
+                        }),
+                    ToggleButtonWidget(
                         text: "On",
-                        isSelected: controller.autoDataLog.value,
+                        isSelected: adjustmentsData.autoDataLog,
                         onTap: () {
-                          controller.autoDataLog.value = true;
-                        })),
+                          controller.toggleAutoDataLog(true);
+                        }),
                   ],
                 ),
               ],

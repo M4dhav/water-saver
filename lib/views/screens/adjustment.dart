@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:get/get.dart';
-import 'package:water_saver/controller/adjustment_controller.dart';
+import 'package:water_saver/providers/adjustment_controller_provider.dart';
 import 'package:water_saver/widgets/adjustments_page/auto_data.dart';
 import 'package:water_saver/widgets/adjustments_page/tank_setting.dart';
 
-class AdjustmentsPage extends StatelessWidget {
-  final AdjustmentsController controller = Get.put(AdjustmentsController());
-
-  AdjustmentsPage({super.key});
+class AdjustmentsPage extends ConsumerWidget {
+  const AdjustmentsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.watch(adjustmentControllerProvider.notifier);
+    final adjustmentsData = ref.watch(adjustmentControllerProvider);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -52,22 +52,25 @@ class AdjustmentsPage extends StatelessWidget {
             SizedBox(height: 2.h),
             TankSettingsWidget(
               title: "Roof Top Tank",
-              motorOffValue: controller.motorOffThresholdTank,
-              motorOnValue: controller.motorOnThresholdTank,
-              isError: controller.isThresholdError,
+              motorOffValue: adjustmentsData.motorOffThresholdTank,
+              motorOnValue: adjustmentsData.motorOnThresholdTank,
+              isError: adjustmentsData.isThresholdError,
+              isReservoir: false,
             ),
-            controller.isReservoirMotorOnRequired
+            adjustmentsData.isReservoirMotorOnRequired
                 ? TankSettingsWidget(
                     title: "Reservoir",
-                    motorOffValue: controller.motorOffThresholdReservoir,
-                    motorOnValue: controller.motorOnThresholdReservoir,
+                    motorOffValue: adjustmentsData.motorOffThresholdReservoir,
+                    motorOnValue: adjustmentsData.motorOnThresholdReservoir,
+                    isReservoir: true,
                   )
                 : TankSettingsWidget(
                     title: "Reservoir",
-                    motorOffValue: controller.motorOffThresholdReservoir,
+                    motorOffValue: adjustmentsData.motorOffThresholdReservoir,
                     motorOnValue: null,
+                    isReservoir: true,
                   ),
-            AutoDataLogWidget(controller: controller),
+            AutoDataLogWidget(),
             SizedBox(height: 3.h),
             ElevatedButton(
               onPressed: () {

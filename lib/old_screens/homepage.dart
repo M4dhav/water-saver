@@ -1,6 +1,4 @@
 import 'dart:developer';
-
-import 'package:animated_toggle_switch/animated_toggle_switch.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -243,12 +241,12 @@ class SettingsToggleWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               settingName,
-              AnimatedToggleSwitch<bool>.rolling(
-                current: toggleState,
-                values: const [false, true],
-                onChanged: onChanged,
-                iconList: const [Text('Off'), Text('On')],
-              ),
+              // AnimatedToggleSwitch<bool>.rolling(
+              //   current: toggleState,
+              //   values: const [false, true],
+              //   onChanged: onChanged,
+              //   iconList: const [Text('Off'), Text('On')],
+              // ),
             ],
           ),
         ),

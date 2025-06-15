@@ -18,6 +18,8 @@ class _EnterPasswordScreenState extends State<EnterPasswordScreen> {
   TextEditingController reenterDevicePassword = TextEditingController();
   TextEditingController appPin = TextEditingController();
   TextEditingController reenterAppPin = TextEditingController();
+
+  // final sharedPreferences ref.watch
   final SharedPreferences prefs = Get.find();
   String? deviceId;
   late DocumentSnapshot<Map<String, dynamic>> doc;

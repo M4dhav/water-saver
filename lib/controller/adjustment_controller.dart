@@ -1,42 +1,66 @@
-import 'package:get/get.dart';
+import 'dart:developer';
 
-class AdjustmentsController extends GetxController {
-  var motorOffThresholdTank = 0.5.obs;
-  var motorOnThresholdTank = 0.2.obs;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:water_saver/models/adjustments_page_data.dart';
 
-  var motorOffThresholdReservoir = 0.5.obs;
-  var motorOnThresholdReservoir = 0.2.obs;
-  RxBool autoDataLog = false.obs;
-  RxBool isThresholdError = false.obs; // Add observable for error state
-
-  bool get isReservoirMotorOnRequired => false;
+class AdjustmentController extends Notifier<AdjustmentsPageData> {
+  @override
+  AdjustmentsPageData build() {
+    return AdjustmentsPageData();
+  }
 
   bool validateThresholds() {
-    if (motorOffThresholdTank.value <= motorOnThresholdTank.value) {
+    if (state.motorOffThresholdTank <= state.motorOnThresholdTank) {
       // Switched condition
-      isThresholdError.value = true; // Set error state
+      state = state.copyWith(isThresholdError: true); // Set error state
       return false;
     }
-    isThresholdError.value = false; // Clear error state
+    state = state.copyWith(isThresholdError: false); // Clear error state
     return true;
   }
 
   void updateSettings() {
     // Logic to update settings
-    print("Auto Data Log: ${autoDataLog.value}");
+    log("Auto Data Log: ${state.autoDataLog}");
+  }
+
+  void toggleAutoDataLog(bool value) {
+    state = state.copyWith(autoDataLog: value);
+    log("Auto Data Log toggled: ${state.autoDataLog}");
+  }
+
+  void updateMotorOffThresholdTank(
+    double value,
+  ) {
+    state = state.copyWith(motorOffThresholdTank: value);
+    log("Roof Top Tank - Motor Off Threshold: ${state.motorOffThresholdTank}");
+  }
+
+  void updateMotorOnThresholdTank(double value) {
+    state = state.copyWith(motorOnThresholdTank: value);
+    log("Roof Top Tank - Motor On Threshold: ${state.motorOnThresholdTank}");
+  }
+
+  void updateMotorOffThresholdReservoir(double value) {
+    state = state.copyWith(motorOffThresholdReservoir: value);
+    log("Reservoir - Motor Off Threshold: ${state.motorOffThresholdReservoir}");
+  }
+
+  void updateMotorOnThresholdReservoir(double value) {
+    state = state.copyWith(motorOnThresholdReservoir: value);
+    log("Reservoir - Motor On Threshold: ${state.motorOnThresholdReservoir}");
   }
 
   void saveAdjustments() {
     if (!validateThresholds()) {
-      print(
-          "Saving Unsuccessful: Level threshold Motor off > Level threshold Motor on");
+      log("Saving Unsuccessful: Level threshold Motor off > Level threshold Motor on");
       return;
     }
     // Logic to save slider values
-    print("Roof Top Tank - Motor Off: ${motorOffThresholdTank.value}");
-    print("Roof Top Tank - Motor On: ${motorOnThresholdTank.value}");
-    print("Reservoir - Motor Off: ${motorOffThresholdReservoir.value}");
-    print("Reservoir - Motor On: ${motorOnThresholdReservoir.value}");
-    print("Adjustments saved!");
+    log("Roof Top Tank - Motor Off: ${state.motorOffThresholdTank}");
+    log("Roof Top Tank - Motor On: ${state.motorOnThresholdTank}");
+    log("Reservoir - Motor Off: ${state.motorOffThresholdReservoir}");
+    log("Reservoir - Motor On: ${state.motorOnThresholdReservoir}");
+    log("Adjustments saved!");
   }
 }
