@@ -19,7 +19,8 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=3.2.3 <4.0.0"
+  sdk: ">=3.6.1 <4.0.0"
+  flutter: ">=3.27.3"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -28,32 +29,27 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  google_sign_in:
-  firebase_phone_auth_handler:
-  auth_buttons:
-  firebase_ui_auth:
+  google_sign_in: ^6.3.0
+  auth_buttons: ^3.0.3
   flutter:
     sdk: flutter
-  cupertino_icons:
-  firebase_auth:
-  cloud_firestore:
-  firebase_messaging:
-  firebase_storage:
-  firebase_database:
-  firebase_core:
-  firebase_ui_oauth_google:
-  fl_chart:
+  cupertino_icons: ^1.0.8
+  firebase_auth: ^5.5.2
+  cloud_firestore: ^5.6.6
+  firebase_messaging: ^15.2.5
+  firebase_storage: ^12.4.5
+  firebase_database: ^11.3.5
+  firebase_core: ^3.13.0
+  fl_chart: 0.70.2
   get:
-  sizer:
-  shared_preferences:
-  animated_toggle_switch:
-  interactive_slider:
-  cool_dropdown:
-  responsive_sizer:
+  shared_preferences: ^2.5.3
+  interactive_slider: ^0.5.1
+  responsive_sizer: ^3.3.1
   liquid_progress_indicator_v2: ^0.5.0
-  intl: ^0.19.0
   go_router: ^14.8.1
-  font_awesome_flutter: ^10.8.0
+  intl: ^0.20.2
+  flutter_riverpod: ^2.6.1
+  riverpod_annotation: ^2.6.1
 
 dev_dependencies:
   flutter_test:
@@ -64,7 +60,11 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^5.0.0
+  riverpod_generator: ^2.6.5
+  build_runner: ^2.4.15
+  custom_lint: ^0.7.5
+  riverpod_lint: ^2.6.5
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
