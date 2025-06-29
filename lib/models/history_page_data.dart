@@ -1,5 +1,5 @@
 class HistoryPageData {
-  String selectedDate = "2024-02-20";
+  String selectedDate = DateTime.now().toIso8601String().substring(0, 10);
   Map<String, List<Map<String, String>>> historyData = {};
   Map<String, double> totalLitersPerDate = {};
   bool isDropdownExpanded = false;
@@ -7,13 +7,15 @@ class HistoryPageData {
   DateTime currentMonth = DateTime.now();
 
   HistoryPageData({
-    this.selectedDate = "2024-02-20",
+    String? selectedDate,
     Map<String, List<Map<String, String>>>? historyData,
     Map<String, double>? totalLitersPerDate,
     this.isDropdownExpanded = false,
     List<String>? currentMonthDates,
     DateTime? currentMonth,
-  })  : historyData = historyData ?? {},
+  })  : selectedDate =
+            selectedDate ?? DateTime.now().toIso8601String().substring(0, 10),
+        historyData = historyData ?? {},
         totalLitersPerDate = totalLitersPerDate ?? {},
         currentMonthDates = currentMonthDates ?? [],
         currentMonth = currentMonth ?? DateTime.now() {

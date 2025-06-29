@@ -36,43 +36,47 @@ class HistoryPage extends ConsumerWidget {
         ],
       ),
       body: SafeArea(
-        child: Stack(
-          children: [
-            Column(
+        child: OrientationBuilder(
+          builder: (context, orientation) {
+            return Stack(
               children: [
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 1.h),
-                  width: double.infinity,
-                  child: BuildDateSelector(),
+                Column(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.symmetric(vertical: 1.h),
+                      width: double.infinity,
+                      child: BuildDateSelector(),
+                    ),
+                    Expanded(
+                      child: data.historyData.isEmpty
+                          ? const Center(child: Text("No history available"))
+                          : ListView(
+                              padding: EdgeInsets.symmetric(horizontal: 4.w),
+                              children: buildHistoryCards(
+                                ref,
+                              ),
+                            ),
+                    ),
+                  ],
                 ),
-                Expanded(
-                  child: data.historyData.isEmpty
-                      ? const Center(child: Text("No history available"))
-                      : ListView(
-                          padding: EdgeInsets.symmetric(horizontal: 4.w),
-                          children: buildHistoryCards(
-                            ref,
-                          ),
-                        ),
-                ),
+                // Obx(() {
+                //   if (historyController.isDropdownExpanded.value) {
+                //     return Positioned.fill(
+                //       child: GestureDetector(
+                //         onTap: historyController
+                //             .toggleDropdown,
+                //         child: Container(
+                //           color: Colors.black
+                //               .withValues(alpha:0.3),
+                //         ),
+                //       ),
+                //     );
+                //   }
+                //   return const SizedBox.shrink();
+                // }),
               ],
-            ),
-            // Obx(() {
-            //   if (historyController.isDropdownExpanded.value) {
-            //     return Positioned.fill(
-            //       child: GestureDetector(
-            //         onTap: historyController
-            //             .toggleDropdown,
-            //         child: Container(
-            //           color: Colors.black
-            //               .withValues(alpha:0.3),
-            //         ),
-            //       ),
-            //     );
-            //   }
-            //   return const SizedBox.shrink();
-            // }),
-          ],
+            );
+          },
         ),
       ),
     );
@@ -81,7 +85,6 @@ class HistoryPage extends ConsumerWidget {
   List<Widget> buildHistoryCards(
     WidgetRef ref,
   ) {
-    final controller = ref.watch(historyPageControllerProvider.notifier);
     final data = ref.watch(historyPageControllerProvider);
 
     return data.historyData.entries.map((entry) {

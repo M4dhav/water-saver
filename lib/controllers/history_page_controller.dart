@@ -21,11 +21,9 @@ class HistoryPageController extends Notifier<HistoryPageData> {
   }
 
   List<String> getCurrentWeekDates(List<String> allDates) {
-    DateTime now = DateTime.now();
-    int todayIndex = allDates.indexOf(
-        "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}");
+    int selectedIndex = allDates.indexOf(state.selectedDate);
 
-    int weekStart = (todayIndex ~/ 7) * 7;
+    int weekStart = (selectedIndex ~/ 7) * 7;
     int weekEnd =
         (weekStart + 7 <= allDates.length) ? weekStart + 7 : allDates.length;
 

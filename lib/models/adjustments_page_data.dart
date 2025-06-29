@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 class AdjustmentsPageData {
   double motorOffThresholdTank = 0.5;
   double motorOnThresholdTank = 0.2;
