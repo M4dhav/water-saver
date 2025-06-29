@@ -108,217 +108,228 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ),
           body: Padding(
             padding: EdgeInsets.only(left: 4.5.w, top: 2.h),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  height: 51.h,
-                  width: 90.w,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          CustomPaint(
-                            size: Size(30.h, 75.w),
-                            painter: WaterLevelArcPainter(
-                              progress: arcProgress,
-                              color: Colors.blue,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 36.w,
-                            height: 20.h,
-                            child: Stack(
-                              fit: StackFit.expand,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Builder(
+                    builder: (context) {
+                      final isLandscape = MediaQuery.of(context).orientation ==
+                          Orientation.landscape;
+                      final double arcHeight = isLandscape ? 70.h : 30.h;
+                      final double arcWidth = isLandscape ? 85.w : 75.w;
+                      final double dropWidth = isLandscape ? 18.w : 36.w;
+                      final double dropHeight = isLandscape ? 50.h : 20.h;
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        width: 90.w,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Stack(
                               alignment: Alignment.center,
                               children: [
                                 CustomPaint(
-                                  size: Size(36.w, 20.h),
-                                  painter: WaterDropPainter(
-                                    progress: dropProgress,
-                                    fillColor: Colors.blue,
-                                    wavePhase: _dropController.wavePhase,
+                                  size: Size(arcHeight, arcWidth),
+                                  painter: WaterLevelArcPainter(
+                                    progress: arcProgress,
+                                    color: Colors.blue,
                                   ),
                                 ),
-                                if ((hasReservoir && reservoir > 0) ||
-                                    (!hasReservoir && tank > 0))
-                                  Center(
-                                    child: Text(
-                                      '${(dropProgress * 100).toInt()}%',
-                                      style: TextStyle(
-                                        fontSize: 18.sp,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                        shadows: [
-                                          Shadow(
-                                            blurRadius: 4,
-                                            color: Colors.black26,
-                                            offset: Offset(1, 1),
+                                SizedBox(
+                                  width: dropWidth,
+                                  height: dropHeight,
+                                  child: Stack(
+                                    fit: StackFit.expand,
+                                    alignment: Alignment.center,
+                                    children: [
+                                      CustomPaint(
+                                        size: Size(dropWidth, dropHeight),
+                                        painter: WaterDropPainter(
+                                          progress: dropProgress,
+                                          fillColor: Colors.blue,
+                                          wavePhase: _dropController.wavePhase,
+                                        ),
+                                      ),
+                                      if ((hasReservoir && reservoir > 0) ||
+                                          (!hasReservoir && tank > 0))
+                                        Center(
+                                          child: Text(
+                                            '${(dropProgress * 100).toInt()}%',
+                                            style: TextStyle(
+                                              fontSize: 18.sp,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                              shadows: [
+                                                Shadow(
+                                                  blurRadius: 4,
+                                                  color: Colors.black26,
+                                                  offset: Offset(1, 1),
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        ],
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            if (isLandscape) SizedBox(height: 0.05.h),
+                            Text(
+                              '${(arcProgress * 100).toInt()}%',
+                              style: TextStyle(
+                                  fontSize: 26.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blue),
+                            ),
+                            Text(
+                              '$currentTankLevel L / $tank L',
+                              style: TextStyle(
+                                  fontSize: 16.sp, color: Colors.grey),
+                            ),
+                            SizedBox(height: 3.h),
+                            Padding(
+                              padding:
+                                  EdgeInsets.only(left: 6.w, bottom: 1.1.h),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () async {
+                                      await FirebaseFirestore.instance
+                                          .collection('users')
+                                          .doc(userId)
+                                          .update({'reservoir': reservoir});
+                                      _refetchUserDoc();
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.blue,
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 9.w, vertical: 1.5.h),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                    ),
+                                    child: Padding(
+                                      padding: EdgeInsets.all(0.5.h),
+                                      child: Text(
+                                        'Refill',
+                                        style: TextStyle(
+                                            fontSize: 16.sp,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.white),
                                       ),
                                     ),
                                   ),
-                              ],
-                            ),
-                          ),
-                          Column(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(top: 30.h),
-                                child: Text(
-                                  '${(arcProgress * 100).toInt()}%',
-                                  style: TextStyle(
-                                      fontSize: 26.sp,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.blue),
-                                ),
-                              ),
-                              Text(
-                                hasReservoir
-                                    ? '$currentReservoirLevel L / $reservoir L'
-                                    : '$currentTankLevel L / $tank L',
-                                style: TextStyle(
-                                    fontSize: 16.sp, color: Colors.grey),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 3.h),
-                      Padding(
-                        padding: EdgeInsets.only(left: 6.w, bottom: 1.1.h),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            ElevatedButton(
-                              onPressed: () async {
-                                await FirebaseFirestore.instance
-                                    .collection('users')
-                                    .doc(userId)
-                                    .update({'reservoir': tank});
-                                _refetchUserDoc();
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.blue,
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 9.w, vertical: 1.5.h),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                              ),
-                              child: Padding(
-                                padding: EdgeInsets.all(0.5.h),
-                                child: Text(
-                                  'Refill',
-                                  style: TextStyle(
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.white),
-                                ),
+                                  SizedBox(width: 4.w),
+                                  Icon(Icons.autorenew,
+                                      color: Colors.blue, size: 7.w),
+                                ],
                               ),
                             ),
-                            SizedBox(width: 4.w),
-                            Icon(Icons.autorenew,
-                                color: Colors.blue, size: 7.w),
                           ],
                         ),
-                      ),
-                    ],
+                      );
+                    },
                   ),
-                ),
-                SizedBox(height: 2.h),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  margin: EdgeInsets.only(right: 4.5.w, top: 1.h),
-                  padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "History",
-                            style: TextStyle(
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {},
-                            child: Text(
-                              "View All →",
+                  SizedBox(height: 2.h),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    margin: EdgeInsets.only(right: 4.5.w, top: 1.h),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "History",
                               style: TextStyle(
-                                  fontSize: 16.sp, color: Colors.blue),
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 1.h),
-                      Divider(
-                          height: 1, thickness: 1, color: Colors.grey.shade300),
-                      ListView.separated(
-                        itemCount: _historyController.waterHistory.length,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        separatorBuilder: (context, index) => Divider(
-                          height: 1,
-                          thickness: 1,
-                          color: Colors.grey.shade300,
+                            GestureDetector(
+                              onTap: () {},
+                              child: Text(
+                                "View All →",
+                                style: TextStyle(
+                                    fontSize: 16.sp, color: Colors.blue),
+                              ),
+                            ),
+                          ],
                         ),
-                        itemBuilder: (context, index) {
-                          final record = _historyController.waterHistory[index];
-                          return Padding(
-                            padding: EdgeInsets.symmetric(vertical: 1.h),
-                            child: Row(
-                              children: [
-                                Image.asset(
-                                  'assets/images/tank.png',
-                                  width: 8.w,
-                                  height: 8.w,
-                                ),
-                                SizedBox(width: 3.w),
-                                Expanded(
-                                  child: Text(
-                                    record["time"]!,
+                        SizedBox(height: 1.h),
+                        Divider(
+                            height: 1,
+                            thickness: 1,
+                            color: Colors.grey.shade300),
+                        ListView.separated(
+                          itemCount: _historyController.waterHistory.length,
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          separatorBuilder: (context, index) => Divider(
+                            height: 1,
+                            thickness: 1,
+                            color: Colors.grey.shade300,
+                          ),
+                          itemBuilder: (context, index) {
+                            final record =
+                                _historyController.waterHistory[index];
+                            return Padding(
+                              padding: EdgeInsets.symmetric(vertical: 1.h),
+                              child: Row(
+                                children: [
+                                  Image.asset(
+                                    'assets/images/tank.png',
+                                    width: 8.w,
+                                    height: 8.w,
+                                  ),
+                                  SizedBox(width: 3.w),
+                                  Expanded(
+                                    child: Text(
+                                      record["time"]!,
+                                      style: TextStyle(
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  Text(
+                                    record["quantity"]!,
                                     style: TextStyle(
                                       fontSize: 16.sp,
                                       fontWeight: FontWeight.bold,
+                                      color: Colors.black,
                                     ),
                                   ),
-                                ),
-                                Text(
-                                  record["quantity"]!,
-                                  style: TextStyle(
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                SizedBox(width: 2.w),
-                                const Icon(Icons.more_vert, color: Colors.black)
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                      Divider(
-                          height: 1, thickness: 1, color: Colors.grey.shade300),
-                    ],
+                                  SizedBox(width: 2.w),
+                                  const Icon(Icons.more_vert,
+                                      color: Colors.black)
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                        Divider(
+                            height: 1,
+                            thickness: 1,
+                            color: Colors.grey.shade300),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );
