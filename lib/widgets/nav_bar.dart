@@ -46,7 +46,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
           BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Report'),
           BottomNavigationBarItem(
               icon: Icon(Icons.settings), label: 'Adjustments'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Account'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
     );

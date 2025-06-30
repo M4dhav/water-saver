@@ -5,7 +5,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class OnboardingScreen3 extends StatefulWidget {
-  const OnboardingScreen3({super.key});
+  final bool showProgressBar;
+  final bool isFromProfile;
+
+  const OnboardingScreen3({
+    super.key,
+    this.showProgressBar = true,
+    this.isFromProfile = false,
+  });
 
   @override
   State<OnboardingScreen3> createState() => _OnboardingScreen3State();
@@ -17,6 +24,29 @@ class _OnboardingScreen3State extends State<OnboardingScreen3> {
   final FocusNode _focusNode = FocusNode();
 
   @override
+  void initState() {
+    super.initState();
+    if (widget.isFromProfile) {
+      showInput = true; 
+      _loadCurrentReservoirSize();
+    }
+  }
+
+  Future<void> _loadCurrentReservoirSize() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userId = prefs.getString('userId');
+    if (userId != null) {
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
+      if (doc.exists && doc.data()?['reservoir'] != null) {
+        _controller.text = doc.data()!['reservoir'].toString();
+      }
+    }
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     _focusNode.dispose();
@@ -24,13 +54,15 @@ class _OnboardingScreen3State extends State<OnboardingScreen3> {
   }
 
   void _onOkPressed() async {
-    final prefs = await SharedPreferences.getInstance();
-    final userId = prefs.getString('userId');
-    if (userId != null) {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userId)
-          .update({'hasReservoir': true});
+    if (!widget.isFromProfile) {
+      final prefs = await SharedPreferences.getInstance();
+      final userId = prefs.getString('userId');
+      if (userId != null) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .update({'hasReservoir': true});
+      }
     }
     setState(() {
       showInput = true;
@@ -50,39 +82,58 @@ class _OnboardingScreen3State extends State<OnboardingScreen3> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(height: 3.h),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back),
-                    onPressed: () => GoRouter.of(context).pop(),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 2.w),
-                      child: LinearProgressIndicator(
-                        value: 0.5,
-                        backgroundColor: Colors.grey[300],
-                        color: const Color(0xFF21A5FD),
+              if (widget.showProgressBar) ...[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back),
+                      onPressed: () => GoRouter.of(context).pop(),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 2.w),
+                        child: LinearProgressIndicator(
+                          value: 0.5,
+                          backgroundColor: Colors.grey[300],
+                          color: const Color(0xFF21A5FD),
+                        ),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(right: 4.w),
-                    child: Text('1 / 2',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16.sp)),
-                  ),
-                ],
-              ),
-              SizedBox(height: 3.h),
-              Text(
-                'Do You Have a Reservoir',
-                style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.w500),
-                textAlign: TextAlign.center,
-              ),
+                    Padding(
+                      padding: EdgeInsets.only(right: 4.w),
+                      child: Text('1 / 2',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16.sp)),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 3.h),
+                Text(
+                  'Do You Have a Reservoir',
+                  style:
+                      TextStyle(fontSize: 22.sp, fontWeight: FontWeight.w500),
+                  textAlign: TextAlign.center,
+                ),
+              ] else ...[
+                Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back),
+                      onPressed: () => GoRouter.of(context).pop(),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 2.h),
+                Text(
+                  'Update Reservoir Size',
+                  style:
+                      TextStyle(fontSize: 22.sp, fontWeight: FontWeight.w500),
+                  textAlign: TextAlign.center,
+                ),
+              ],
               SizedBox(height: 4.h),
-              if (!showInput)
+              if (!showInput && !widget.isFromProfile)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -125,9 +176,11 @@ class _OnboardingScreen3State extends State<OnboardingScreen3> {
                   ],
                 ),
               if (showInput) ...[
-                SizedBox(height: 8.h),
+                SizedBox(height: widget.isFromProfile ? 4.h : 8.h),
                 Text(
-                  'Kindly Specify Your Reservoir Size',
+                  widget.isFromProfile
+                      ? 'Update Your Reservoir Size'
+                      : 'Kindly Specify Your Reservoir Size',
                   style:
                       TextStyle(fontWeight: FontWeight.bold, fontSize: 17.sp),
                   textAlign: TextAlign.center,
@@ -178,7 +231,11 @@ class _OnboardingScreen3State extends State<OnboardingScreen3> {
                             .doc(userId)
                             .update({'reservoir': int.parse(value)});
                       }
-                      GoRouter.of(context).go('/onboarding4');
+                      if (widget.isFromProfile) {
+                        GoRouter.of(context).pop(); 
+                      } else {
+                        GoRouter.of(context).go('/onboarding4');
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF21A5FD),
@@ -188,7 +245,8 @@ class _OnboardingScreen3State extends State<OnboardingScreen3> {
                       ),
                       minimumSize: Size.fromHeight(6.5.h),
                     ),
-                    child: Text('Continue', style: TextStyle(fontSize: 17.sp)),
+                    child: Text(widget.isFromProfile ? 'UPDATE' : 'Continue',
+                        style: TextStyle(fontSize: 17.sp)),
                   ),
                 ),
               ],

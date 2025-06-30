@@ -5,7 +5,14 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class OnboardingScreen4 extends StatefulWidget {
-  const OnboardingScreen4({super.key});
+  final bool showProgressBar;
+  final bool isFromProfile;
+
+  const OnboardingScreen4({
+    super.key,
+    this.showProgressBar = true,
+    this.isFromProfile = false,
+  });
 
   @override
   State<OnboardingScreen4> createState() => _OnboardingScreen4State();
@@ -14,6 +21,28 @@ class OnboardingScreen4 extends StatefulWidget {
 class _OnboardingScreen4State extends State<OnboardingScreen4> {
   final TextEditingController _controller = TextEditingController();
   bool isEditing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.isFromProfile) {
+      _loadCurrentTankHeight();
+    }
+  }
+
+  Future<void> _loadCurrentTankHeight() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userId = prefs.getString('userId');
+    if (userId != null) {
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
+      if (doc.exists && doc.data()?['tank'] != null) {
+        _controller.text = doc.data()!['tank'].toString();
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -27,12 +56,20 @@ class _OnboardingScreen4State extends State<OnboardingScreen4> {
     final prefs = await SharedPreferences.getInstance();
     final userId = prefs.getString('userId');
     if (userId != null) {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userId)
-          .update({'tank': int.parse(value), 'onboardingComplete': true});
+      if (widget.isFromProfile) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .update({'tank': int.parse(value)});
+        GoRouter.of(context).pop(); 
+      } else {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .update({'tank': int.parse(value), 'onboardingComplete': true});
+        GoRouter.of(context).go('/home');
+      }
     }
-    GoRouter.of(context).go('/home');
   }
 
   @override
@@ -45,34 +82,48 @@ class _OnboardingScreen4State extends State<OnboardingScreen4> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(height: 3.h),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back),
-                    onPressed: () => GoRouter.of(context).pop(),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 2.w),
-                      child: LinearProgressIndicator(
-                        value: 1.0,
-                        backgroundColor: Colors.grey[300],
-                        color: const Color(0xFF21A5FD),
+              if (widget.showProgressBar) ...[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back),
+                      onPressed: () => GoRouter.of(context).pop(),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 2.w),
+                        child: LinearProgressIndicator(
+                          value: 1.0,
+                          backgroundColor: Colors.grey[300],
+                          color: const Color(0xFF21A5FD),
+                        ),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(right: 4.w),
-                    child: Text('2 / 2',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16.sp)),
-                  ),
-                ],
-              ),
-              SizedBox(height: 4.h),
+                    Padding(
+                      padding: EdgeInsets.only(right: 4.w),
+                      child: Text('2 / 2',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16.sp)),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 4.h),
+              ] else ...[
+                Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back),
+                      onPressed: () => GoRouter.of(context).pop(),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 2.h),
+              ],
               Text(
-                'Specify Your Tank Size',
+                widget.isFromProfile
+                    ? 'Update Tank Size'
+                    : 'Specify Your Tank Size',
                 style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.w500),
                 textAlign: TextAlign.center,
               ),
@@ -119,7 +170,7 @@ class _OnboardingScreen4State extends State<OnboardingScreen4> {
                     ),
                     minimumSize: Size.fromHeight(6.5.h),
                   ),
-                  child: Text('SAVE',
+                  child: Text(widget.isFromProfile ? 'UPDATE' : 'SAVE',
                       style: TextStyle(fontSize: 17.sp, letterSpacing: 1.5)),
                 ),
               ),

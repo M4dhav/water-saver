@@ -18,6 +18,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late DropController _dropController;
   late HomeHistoryController _historyController;
   late Future<DocumentSnapshot<Map<String, dynamic>>> _userDocFuture;
+  bool _isMotorOn = false;
+  DateTime? _motorStartTime;
 
   @override
   void initState() {
@@ -32,15 +34,36 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     if (userId != null) {
       _userDocFuture =
           FirebaseFirestore.instance.collection('users').doc(userId).get();
+      _loadMotorState(userId);
     }
   }
 
-  void _refetchUserDoc() {
-    final userId = FirebaseAuth.instance.currentUser?.uid;
-    if (userId != null) {
+  Future<void> _loadMotorState(String userId) async {
+    try {
+      const String deviceId = "WFRFTNRV32851105A1000315V1";
+      final docSnapshot = await FirebaseFirestore.instance
+          .collection('user_data_upload')
+          .doc(deviceId)
+          .get();
+
+      if (docSnapshot.exists) {
+        final data = docSnapshot.data() as Map<String, dynamic>;
+        final motorOn = data['MotorOn'] as String?;
+
+        setState(() {
+          _isMotorOn = motorOn == 'yes';
+        });
+        if (_isMotorOn) {
+          _motorStartTime = DateTime.now();
+        }
+      } else {
+        setState(() {
+          _isMotorOn = false;
+        });
+      }
+    } catch (e) {
       setState(() {
-        _userDocFuture =
-            FirebaseFirestore.instance.collection('users').doc(userId).get();
+        _isMotorOn = false;
       });
     }
   }
@@ -126,112 +149,187 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         width: 90.w,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                CustomPaint(
-                                  size: Size(arcHeight, arcWidth),
-                                  painter: WaterLevelArcPainter(
-                                    progress: arcProgress,
-                                    color: Colors.blue,
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 1.h),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  CustomPaint(
+                                    size: Size(arcHeight, arcWidth),
+                                    painter: WaterLevelArcPainter(
+                                      progress: arcProgress,
+                                      color: Colors.blue,
+                                    ),
                                   ),
-                                ),
-                                SizedBox(
-                                  width: dropWidth,
-                                  height: dropHeight,
-                                  child: Stack(
-                                    fit: StackFit.expand,
-                                    alignment: Alignment.center,
-                                    children: [
-                                      CustomPaint(
-                                        size: Size(dropWidth, dropHeight),
-                                        painter: WaterDropPainter(
-                                          progress: dropProgress,
-                                          fillColor: Colors.blue,
-                                          wavePhase: _dropController.wavePhase,
-                                        ),
-                                      ),
-                                      if ((hasReservoir && reservoir > 0) ||
-                                          (!hasReservoir && tank > 0))
-                                        Center(
-                                          child: Text(
-                                            '${(dropProgress * 100).toInt()}%',
-                                            style: TextStyle(
-                                              fontSize: 18.sp,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white,
-                                              shadows: [
-                                                Shadow(
-                                                  blurRadius: 4,
-                                                  color: Colors.black26,
-                                                  offset: Offset(1, 1),
-                                                ),
-                                              ],
-                                            ),
+                                  SizedBox(
+                                    width: dropWidth,
+                                    height: dropHeight,
+                                    child: Stack(
+                                      fit: StackFit.expand,
+                                      alignment: Alignment.center,
+                                      children: [
+                                        CustomPaint(
+                                          size: Size(dropWidth, dropHeight),
+                                          painter: WaterDropPainter(
+                                            progress: dropProgress,
+                                            fillColor: Colors.blue,
+                                            wavePhase:
+                                                _dropController.wavePhase,
                                           ),
                                         ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            if (isLandscape) SizedBox(height: 0.05.h),
-                            Text(
-                              '${(arcProgress * 100).toInt()}%',
-                              style: TextStyle(
-                                  fontSize: 26.sp,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.blue),
-                            ),
-                            Text(
-                              '$currentTankLevel L / $tank L',
-                              style: TextStyle(
-                                  fontSize: 16.sp, color: Colors.grey),
-                            ),
-                            SizedBox(height: 3.h),
-                            Padding(
-                              padding:
-                                  EdgeInsets.only(left: 6.w, bottom: 1.1.h),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  ElevatedButton(
-                                    onPressed: () async {
-                                      await FirebaseFirestore.instance
-                                          .collection('users')
-                                          .doc(userId)
-                                          .update({'reservoir': reservoir});
-                                      _refetchUserDoc();
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.blue,
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 9.w, vertical: 1.5.h),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(30),
-                                      ),
-                                    ),
-                                    child: Padding(
-                                      padding: EdgeInsets.all(0.5.h),
-                                      child: Text(
-                                        'Refill',
-                                        style: TextStyle(
-                                            fontSize: 16.sp,
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.white),
-                                      ),
+                                        if ((hasReservoir && reservoir > 0) ||
+                                            (!hasReservoir && tank > 0))
+                                          Center(
+                                            child: Text(
+                                              '${(dropProgress * 100).toInt()}%',
+                                              style: TextStyle(
+                                                fontSize: 18.sp,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white,
+                                                shadows: [
+                                                  Shadow(
+                                                    blurRadius: 4,
+                                                    color: Colors.black26,
+                                                    offset: Offset(1, 1),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                      ],
                                     ),
                                   ),
-                                  SizedBox(width: 4.w),
-                                  Icon(Icons.autorenew,
-                                      color: Colors.blue, size: 7.w),
                                 ],
                               ),
-                            ),
-                          ],
+                              if (isLandscape) SizedBox(height: 0.05.h),
+                              Text(
+                                '${(arcProgress * 100).toInt()}%',
+                                style: TextStyle(
+                                    fontSize: 26.sp,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.blue),
+                              ),
+                              Text(
+                                '$currentTankLevel L / $tank L',
+                                style: TextStyle(
+                                    fontSize: 16.sp, color: Colors.grey),
+                              ),
+                              SizedBox(height: 3.h),
+                              Padding(
+                                padding:
+                                    EdgeInsets.only(left: 6.w, bottom: 1.1.h),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 4.w, vertical: 1.h),
+                                      decoration: BoxDecoration(
+                                        color: _isMotorOn
+                                            ? Colors.blue.withValues(alpha: 0.1)
+                                            : Colors.grey
+                                                .withValues(alpha: 0.1),
+                                        borderRadius: BorderRadius.circular(30),
+                                        border: Border.all(
+                                          color: _isMotorOn
+                                              ? Colors.blue
+                                              : Colors.grey,
+                                          width: 2,
+                                        ),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            'Motor: ${_isMotorOn ? 'ON' : 'OFF'}',
+                                            style: TextStyle(
+                                              fontSize: 16.sp,
+                                              fontWeight: FontWeight.w600,
+                                              color: _isMotorOn
+                                                  ? Colors.blue
+                                                  : Colors.grey[700],
+                                            ),
+                                          ),
+                                          SizedBox(width: 3.w),
+                                          Switch(
+                                            value: _isMotorOn,
+                                            onChanged: (bool value) async {
+                                              setState(() {
+                                                _isMotorOn = value;
+                                              });
+                                              try {
+                                                const String deviceId =
+                                                    "WFRFTNRV32851105A1000315V1";
+                                                if (value) {
+                                                  _motorStartTime =
+                                                      DateTime.now();
+                                                  await FirebaseFirestore
+                                                      .instance
+                                                      .collection(
+                                                          'user_data_upload')
+                                                      .doc(deviceId)
+                                                      .update({
+                                                    'MotorOn': "yes",
+                                                    'MotorOff': "no",
+                                                  });
+                                                } else {
+                                                  int durationInSeconds = 0;
+                                                  if (_motorStartTime != null) {
+                                                    final duration = DateTime
+                                                            .now()
+                                                        .difference(
+                                                            _motorStartTime!);
+                                                    durationInSeconds =
+                                                        duration.inSeconds;
+                                                  }
+                                                  await FirebaseFirestore
+                                                      .instance
+                                                      .collection(
+                                                          'user_data_upload')
+                                                      .doc(deviceId)
+                                                      .update({
+                                                    'MotorOn': "no",
+                                                    'MotorOff': "yes",
+                                                    'MotorOnDuration':
+                                                        durationInSeconds,
+                                                  });
+                                                  _motorStartTime = null;
+                                                }
+                                              } catch (e) {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                        'Failed to update motor data: $e'),
+                                                    backgroundColor: Colors.red,
+                                                  ),
+                                                );
+                                              }
+                                            },
+                                            activeColor: Colors.blue,
+                                            activeTrackColor: Colors.blue
+                                                .withValues(alpha: 0.3),
+                                            inactiveThumbColor: Colors.grey,
+                                            inactiveTrackColor: Colors.grey
+                                                .withValues(alpha: 0.3),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(width: 4.w),
+                                    // Icon(Icons.power_settings_new,
+                                    //     color: _isMotorOn
+                                    //         ? Colors.blue
+                                    //         : Colors.grey,
+                                    //     size: 7.w),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       );
                     },
