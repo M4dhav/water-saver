@@ -9,7 +9,7 @@ class HistoryPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final historyController = ref.watch(historyPageControllerProvider.notifier);
+    ref.watch(historyPageControllerProvider.notifier);
     final data = ref.watch(historyPageControllerProvider);
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),

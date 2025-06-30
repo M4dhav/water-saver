@@ -8,6 +8,8 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:water_saver/firebase_options.dart';
 import 'package:water_saver/screens/login_screen_1.dart';
+import 'package:water_saver/screens/personal_info.dart';
+import 'package:water_saver/screens/profile.dart';
 import 'package:water_saver/screens/splash.dart';
 import 'package:water_saver/widgets/nav_bar.dart';
 import 'package:go_router/go_router.dart';
@@ -78,6 +80,14 @@ class MainApp extends StatelessWidget {
             GoRoute(
               path: '/onboarding4',
               builder: (context, state) => const OnboardingScreen4(),
+            ),
+            GoRoute(
+              path: '/profile',
+              builder: (context, state) => const ProfilePage(),
+            ),
+            GoRoute(
+              path:'/personal_info',
+              builder: (context, state) => const PersonalInfo(),
             ),
           ],
         );
