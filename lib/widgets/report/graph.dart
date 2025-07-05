@@ -67,6 +67,7 @@ class MotorStateGraph extends StatelessWidget {
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           value: controller.selectedPeriod,
+          dropdownColor: Colors.white,
           items: controller.availablePeriods.map((String period) {
             return DropdownMenuItem<String>(
               value: period,
@@ -91,7 +92,10 @@ class MotorStateGraph extends StatelessWidget {
     return SizedBox(
       height: 35.h,
       child: const Center(
-        child: CircularProgressIndicator(),
+        child: CircularProgressIndicator(
+          strokeWidth: 6.0,
+          color: Colors.blue,
+        ),
       ),
     );
   }
@@ -114,8 +118,8 @@ class MotorStateGraph extends StatelessWidget {
         lineBarsData: motorLineBarsData,
         backgroundColor: Colors.grey.shade50,
         minX: 1,
-        maxX: 7,
-        maxY: 23,
+        maxX: _getMaxX(),
+        maxY: _getMaxY(),
         minY: 0,
       );
 
@@ -126,15 +130,12 @@ class MotorStateGraph extends StatelessWidget {
               Colors.blueGrey.withValues(alpha: 0.8),
           getTooltipItems: (List<LineBarSpot> touchedBarSpots) {
             return touchedBarSpots.map((barSpot) {
-              final day = _getDayLabel(barSpot.x);
-              final hour = barSpot.y.floor();
-              final minutes = ((barSpot.y - hour) * 60).round();
-              final time =
-                  '${hour.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}';
               final isMotorOn = barSpot.barIndex == 0;
               final status = isMotorOn ? 'Motor ON' : 'Motor OFF';
+              String timeInfo =
+                  controller.getTooltipTimeInfo(barSpot.x, barSpot.y);
               return LineTooltipItem(
-                '$status\n$day at $time',
+                '$status\n$timeInfo',
                 const TextStyle(
                     color: Colors.white, fontWeight: FontWeight.bold),
               );
@@ -187,7 +188,7 @@ class MotorStateGraph extends StatelessWidget {
   SideTitles get motorBottomTitles => SideTitles(
         showTitles: true,
         reservedSize: 32,
-        interval: 1,
+        interval: _getBottomTitleInterval(),
         getTitlesWidget: (double value, TitleMeta meta) {
           const style = TextStyle(
             fontWeight: FontWeight.bold,
@@ -195,7 +196,7 @@ class MotorStateGraph extends StatelessWidget {
             fontSize: 12,
           );
 
-          String text = _getDayLabel(value);
+          String text = _getBottomTitleText(value);
           return Padding(
             padding: const EdgeInsets.only(top: 10),
             child: Text(text, style: style),
@@ -205,7 +206,7 @@ class MotorStateGraph extends StatelessWidget {
 
   FlGridData get motorGridData => FlGridData(
         show: true,
-        verticalInterval: 1,
+        verticalInterval: _getVerticalGridInterval(),
         horizontalInterval: 2,
         drawHorizontalLine: true,
         drawVerticalLine: true,
@@ -247,7 +248,7 @@ class MotorStateGraph extends StatelessWidget {
             },
           ),
           belowBarData: BarAreaData(show: false),
-          spots: _getMotorOnSpots(),
+          spots: controller.getMotorOnSpots(),
         ),
         LineChartBarData(
           isCurved: false,
@@ -266,31 +267,84 @@ class MotorStateGraph extends StatelessWidget {
             },
           ),
           belowBarData: BarAreaData(show: false),
-          spots: _getMotorOffSpots(),
+          spots: controller.getMotorOffSpots(),
         ),
       ];
-  List<FlSpot> _getMotorOnSpots() {
-    return [
-      FlSpot(1, 13),
-      FlSpot(2, 14),
-      FlSpot(3, 12),
-      FlSpot(4, 15),
-      FlSpot(5, 13),
-      FlSpot(6, 11),
-      FlSpot(7, 16),
-    ];
+  double _getMaxX() {
+    switch (controller.selectedPeriod) {
+      case 'Today':
+        return 6;
+      case 'Week':
+        return 7;
+      case '15days':
+        return 15;
+      case 'This Month':
+        return 30;
+      default:
+        return 7;
+    }
   }
 
-  List<FlSpot> _getMotorOffSpots() {
-    return [
-      FlSpot(1, 13.5),
-      FlSpot(2, 14.5),
-      FlSpot(3, 12.75),
-      FlSpot(4, 15.25),
-      FlSpot(5, 13.55),
-      FlSpot(6, 11.5),
-      FlSpot(7, 16.55),
-    ];
+  double _getMaxY() {
+    switch (controller.selectedPeriod) {
+      case 'Today':
+        return 23;
+      case 'Week':
+        return 23;
+      case '15days':
+        return 23;
+      case 'This Month':
+        return 23;
+      default:
+        return 23;
+    }
+  }
+
+  double _getBottomTitleInterval() {
+    switch (controller.selectedPeriod) {
+      case 'Today':
+        return 1;
+      case 'Week':
+        return 1;
+      case '15days':
+        return 3;
+      case 'This Month':
+        return 5;
+      default:
+        return 1;
+    }
+  }
+
+  String _getBottomTitleText(double value) {
+    switch (controller.selectedPeriod) {
+      case 'Today':
+        List<String> times = ['8AM', '10AM', '1PM', '3PM', '6PM', '8PM'];
+        int index = (value.toInt() - 1).clamp(0, times.length - 1);
+        return times[index];
+      case 'Week':
+        return _getDayLabel(value);
+      case '15days':
+        return 'Day ${value.toInt()}';
+      case 'This Month':
+        return '${value.toInt()}';
+      default:
+        return _getDayLabel(value);
+    }
+  }
+
+  double _getVerticalGridInterval() {
+    switch (controller.selectedPeriod) {
+      case 'Today':
+        return 1;
+      case 'Week':
+        return 1;
+      case '15days':
+        return 3;
+      case 'This Month':
+        return 5;
+      default:
+        return 1;
+    }
   }
 
   Widget _buildLegend() {
