@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:water_saver/providers/adjustment_controller_provider.dart';
-import 'package:water_saver/widgets/adjustments_page/auto_data.dart';
+import 'package:water_saver/providers/app_user_controller_provider.dart';
 import 'package:water_saver/widgets/adjustments_page/tank_setting.dart';
 
 class AdjustmentsPage extends ConsumerWidget {
@@ -10,34 +9,10 @@ class AdjustmentsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = ref.watch(adjustmentControllerProvider.notifier);
-    final adjustmentsData = ref.watch(adjustmentControllerProvider);
+    final controller = ref.watch(appUserControllerProvider.notifier);
+    final appUserData = ref.watch(appUserControllerProvider);
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        leading: IconButton(
-          icon: const Icon(Icons.opacity, color: Colors.blue),
-          onPressed: () {},
-        ),
-        title: Padding(
-          padding: EdgeInsets.only(top: 2.h),
-          child: Text(
-            'Setup',
-            style: TextStyle(
-                fontSize: 20.sp,
-                fontWeight: FontWeight.bold,
-                color: Colors.black),
-          ),
-        ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.more_vert, color: Colors.black),
-            onPressed: () {},
-          ),
-        ],
-      ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 3.h),
         child: SingleChildScrollView(
@@ -53,25 +28,22 @@ class AdjustmentsPage extends ConsumerWidget {
               SizedBox(height: 2.h),
               TankSettingsWidget(
                 title: "Roof Top Tank",
-                motorOffValue: adjustmentsData.motorOffThresholdTank,
-                motorOnValue: adjustmentsData.motorOnThresholdTank,
-                isError: adjustmentsData.isThresholdError,
-                isReservoir: false,
+                motorOffValue: double.parse(
+                    appUserData.requireValue.userDataReceive.rftThUpPercent),
+                motorOnValue: double.parse(
+                    appUserData.requireValue.userDataReceive.rftThDnPercent),
+                onMotorOffChanged: controller.updateMotorOffThresholdTank,
+                onMotorOnChanged: controller.updateMotorOnThresholdTank,
               ),
-              adjustmentsData.isReservoirMotorOnRequired
-                  ? TankSettingsWidget(
-                      title: "Reservoir",
-                      motorOffValue: adjustmentsData.motorOffThresholdReservoir,
-                      motorOnValue: adjustmentsData.motorOnThresholdReservoir,
-                      isReservoir: true,
-                    )
-                  : TankSettingsWidget(
-                      title: "Reservoir",
-                      motorOffValue: adjustmentsData.motorOffThresholdReservoir,
-                      motorOnValue: null,
-                      isReservoir: true,
-                    ),
-              AutoDataLogWidget(),
+              TankSettingsWidget(
+                title: "Reservoir",
+                motorOffValue: null,
+                motorOnValue: double.parse(
+                    appUserData.requireValue.userDataReceive.rsvThDnPercent),
+                onMotorOnChanged: controller.updateMotorOnThresholdReservoir,
+                onMotorOffChanged: null,
+              ),
+              // AutoDataLogWidget(),
               SizedBox(height: 3.h),
               ElevatedButton(
                 onPressed: () {
@@ -79,13 +51,7 @@ class AdjustmentsPage extends ConsumerWidget {
                     showModalBottomSheet(
                       context: context,
                       backgroundColor: Colors.transparent,
-                      isDismissible: false,
                       builder: (BuildContext context) {
-                        Future.delayed(const Duration(seconds: 3), () {
-                          if (Navigator.canPop(context)) {
-                            Navigator.pop(context);
-                          }
-                        });
                         return Container(
                           margin: EdgeInsets.all(2.h),
                           padding: EdgeInsets.symmetric(
@@ -151,13 +117,7 @@ class AdjustmentsPage extends ConsumerWidget {
                   showModalBottomSheet(
                     context: context,
                     backgroundColor: Colors.transparent,
-                    isDismissible: false,
                     builder: (BuildContext context) {
-                      Future.delayed(const Duration(seconds: 3), () {
-                        if (Navigator.canPop(context)) {
-                          Navigator.pop(context);
-                        }
-                      });
                       return Container(
                         margin: EdgeInsets.all(2.h),
                         padding: EdgeInsets.symmetric(

@@ -13,28 +13,6 @@ class HistoryPage extends ConsumerWidget {
     final data = ref.watch(historyPageControllerProvider);
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 2,
-        leading: IconButton(
-          icon: const Icon(Icons.opacity, color: Colors.blue),
-          onPressed: () {},
-        ),
-        title: Text(
-          'History',
-          style: TextStyle(
-              fontSize: 20.sp,
-              fontWeight: FontWeight.bold,
-              color: Colors.black),
-        ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.more_vert, color: Colors.black),
-            onPressed: () {},
-          ),
-        ],
-      ),
       body: SafeArea(
         child: OrientationBuilder(
           builder: (context, orientation) {

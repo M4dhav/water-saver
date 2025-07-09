@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:water_saver/controllers/graph_controller.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:water_saver/models/graph_page_model.dart';
 
 class MotorStateGraph extends StatelessWidget {
   final GraphController controller;
+  final GraphPageModel pageData;
 
   const MotorStateGraph({
     super.key,
     required this.controller,
+    required this.pageData,
   });
 
   @override
@@ -45,10 +48,7 @@ class MotorStateGraph extends StatelessWidget {
             ],
           ),
           SizedBox(height: 2.h),
-          if (controller.isLoading)
-            _buildLoadingIndicator()
-          else
-            _buildFlLineChart(),
+          _buildFlLineChart(),
           SizedBox(height: 2.h),
           _buildLegend(),
         ],
@@ -65,36 +65,23 @@ class MotorStateGraph extends StatelessWidget {
         color: Colors.white,
       ),
       child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: controller.selectedPeriod,
+        child: DropdownButton<SelectedPeriod>(
+          value: pageData.selectedPeriod,
           dropdownColor: Colors.white,
-          items: controller.availablePeriods.map((String period) {
-            return DropdownMenuItem<String>(
+          items: SelectedPeriod.values.map((SelectedPeriod period) {
+            return DropdownMenuItem<SelectedPeriod>(
               value: period,
               child: Text(
-                period,
-                style: TextStyle(fontSize: 14.sp),
+                period.label,
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: Colors.black87,
+                ),
               ),
             );
           }).toList(),
-          onChanged: (String? newValue) {
-            if (newValue != null) {
-              controller.changePeriod(newValue);
-            }
-          },
+          onChanged: (value) => controller.changeSelectedPeriod(value!),
           icon: Icon(Icons.keyboard_arrow_down, size: 5.w),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLoadingIndicator() {
-    return SizedBox(
-      height: 35.h,
-      child: const Center(
-        child: CircularProgressIndicator(
-          strokeWidth: 6.0,
-          color: Colors.blue,
         ),
       ),
     );
@@ -117,9 +104,9 @@ class MotorStateGraph extends StatelessWidget {
         borderData: motorBorderData,
         lineBarsData: motorLineBarsData,
         backgroundColor: Colors.grey.shade50,
-        minX: 1,
+        minX: 0,
         maxX: _getMaxX(),
-        maxY: _getMaxY(),
+        maxY: 24,
         minY: 0,
       );
 
@@ -132,10 +119,9 @@ class MotorStateGraph extends StatelessWidget {
             return touchedBarSpots.map((barSpot) {
               final isMotorOn = barSpot.barIndex == 0;
               final status = isMotorOn ? 'Motor ON' : 'Motor OFF';
-              String timeInfo =
-                  controller.getTooltipTimeInfo(barSpot.x, barSpot.y);
+
               return LineTooltipItem(
-                '$status\n$timeInfo',
+                '$status\n${barSpot.x}, ${barSpot.y}',
                 const TextStyle(
                     color: Colors.white, fontWeight: FontWeight.bold),
               );
@@ -145,7 +131,14 @@ class MotorStateGraph extends StatelessWidget {
       );
 
   String _getDayLabel(double x) {
-    List<String> days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    // Get the last 7 days labels ending with today (e.g., ['Tue', 'Wed', ..., 'Mon'] if today is Mon)
+    List<String> days = List.generate(7, (index) {
+      final date = DateTime.now().subtract(Duration(days: 6 - index));
+      // Use DateFormat if you want localized/short names, but for simplicity:
+      const weekdayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      // DateTime.weekday: 1=Mon, ..., 7=Sun
+      return weekdayLabels[date.weekday - 1];
+    });
     int dayIndex = (x.toInt() - 1).clamp(0, 6);
     return days[dayIndex];
   }
@@ -206,7 +199,7 @@ class MotorStateGraph extends StatelessWidget {
 
   FlGridData get motorGridData => FlGridData(
         show: true,
-        verticalInterval: _getVerticalGridInterval(),
+        verticalInterval: 1,
         horizontalInterval: 2,
         drawHorizontalLine: true,
         drawVerticalLine: true,
@@ -248,7 +241,7 @@ class MotorStateGraph extends StatelessWidget {
             },
           ),
           belowBarData: BarAreaData(show: false),
-          spots: controller.getMotorOnSpots(),
+          spots: controller.returnFlSpotFromMotorStateDataOn(),
         ),
         LineChartBarData(
           isCurved: false,
@@ -267,83 +260,39 @@ class MotorStateGraph extends StatelessWidget {
             },
           ),
           belowBarData: BarAreaData(show: false),
-          spots: controller.getMotorOffSpots(),
+          spots: controller.returnFlSpotFromMotorStateDataOff(),
         ),
       ];
   double _getMaxX() {
-    switch (controller.selectedPeriod) {
-      case 'Today':
-        return 6;
-      case 'Week':
+    switch (pageData.selectedPeriod) {
+      case SelectedPeriod.week:
         return 7;
-      case '15days':
+      case SelectedPeriod.fifteenDays:
         return 15;
-      case 'This Month':
+      case SelectedPeriod.month:
         return 30;
-      default:
-        return 7;
-    }
-  }
-
-  double _getMaxY() {
-    switch (controller.selectedPeriod) {
-      case 'Today':
-        return 23;
-      case 'Week':
-        return 23;
-      case '15days':
-        return 23;
-      case 'This Month':
-        return 23;
-      default:
-        return 23;
     }
   }
 
   double _getBottomTitleInterval() {
-    switch (controller.selectedPeriod) {
-      case 'Today':
+    switch (pageData.selectedPeriod) {
+      case SelectedPeriod.week:
         return 1;
-      case 'Week':
-        return 1;
-      case '15days':
+      case SelectedPeriod.fifteenDays:
         return 3;
-      case 'This Month':
+      case SelectedPeriod.month:
         return 5;
-      default:
-        return 1;
     }
   }
 
   String _getBottomTitleText(double value) {
-    switch (controller.selectedPeriod) {
-      case 'Today':
-        List<String> times = ['8AM', '10AM', '1PM', '3PM', '6PM', '8PM'];
-        int index = (value.toInt() - 1).clamp(0, times.length - 1);
-        return times[index];
-      case 'Week':
+    switch (pageData.selectedPeriod) {
+      case SelectedPeriod.week:
         return _getDayLabel(value);
-      case '15days':
-        return 'Day ${value.toInt()}';
-      case 'This Month':
+      case SelectedPeriod.fifteenDays:
         return '${value.toInt()}';
-      default:
-        return _getDayLabel(value);
-    }
-  }
-
-  double _getVerticalGridInterval() {
-    switch (controller.selectedPeriod) {
-      case 'Today':
-        return 1;
-      case 'Week':
-        return 1;
-      case '15days':
-        return 3;
-      case 'This Month':
-        return 5;
-      default:
-        return 1;
+      case SelectedPeriod.month:
+        return '${value.toInt()}';
     }
   }
 

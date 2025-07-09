@@ -1,46 +1,30 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:get_it/get_it.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:water_saver/firebase_options.dart';
-import 'package:water_saver/screens/login_screen_1.dart';
-import 'package:water_saver/screens/personal_info.dart';
-import 'package:water_saver/screens/profile.dart';
+import 'package:water_saver/screens/login_screen.dart';
+import 'package:water_saver/screens/onboarding_screens.dart';
+import 'package:water_saver/screens/settings.dart';
 import 'package:water_saver/screens/splash.dart';
 import 'package:water_saver/widgets/nav_bar.dart';
 import 'package:go_router/go_router.dart';
-import 'package:water_saver/screens/onboarding_screen_1.dart';
-import 'package:water_saver/screens/onboarding_screen_2.dart';
-import 'package:water_saver/screens/onboarding_screen_3.dart';
-import 'package:water_saver/screens/onboarding_screen_4.dart';
-
-final sharedPreferencesProvider = Provider<SharedPreferencesAsync>((ref) {
-  return SharedPreferencesAsync();
-});
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  final prefs = await SharedPreferences.getInstance();
-  Get.put(prefs);
+  GetIt.I.registerSingleton<FlutterSecureStorage>(FlutterSecureStorage(
+    aOptions: AndroidOptions(
+      encryptedSharedPreferences: true,
+    ),
+  ));
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  bool loggedIn = false;
-  bool isFirstTime = prefs.getBool('isFirstTime') ?? true;
-  User? user = FirebaseAuth.instance.currentUser;
-  if (user != null) {
-    loggedIn = true;
-  }
-  runApp(MainApp(
-    loggedIn: loggedIn,
-    isFirstTime: isFirstTime,
-  ));
+
+  runApp(MainApp());
 }
 
 class MainApp extends StatelessWidget {
@@ -48,8 +32,6 @@ class MainApp extends StatelessWidget {
 
   MainApp({
     super.key,
-    required this.loggedIn,
-    required this.isFirstTime,
   }) : _router = GoRouter(
           initialLocation: '/splash',
           routes: [
@@ -59,41 +41,22 @@ class MainApp extends StatelessWidget {
             ),
             GoRoute(
               path: '/login',
-              builder: (context, state) => LoginScreen1(),
+              builder: (context, state) => LoginScreen(),
             ),
             GoRoute(
               path: '/home',
               builder: (context, state) => const BottomNavBar(),
             ),
             GoRoute(
-              path: '/onboarding1',
-              builder: (context, state) => const OnboardingScreen1(),
+              path: '/onboarding',
+              builder: (context, state) => const OnboardingScreens(),
             ),
             GoRoute(
-              path: '/onboarding2',
-              builder: (context, state) => const OnboardingScreen2(),
-            ),
-            GoRoute(
-              path: '/onboarding3',
-              builder: (context, state) => const OnboardingScreen3(),
-            ),
-            GoRoute(
-              path: '/onboarding4',
-              builder: (context, state) => const OnboardingScreen4(),
-            ),
-            GoRoute(
-              path: '/profile',
-              builder: (context, state) => const ProfilePage(),
-            ),
-            GoRoute(
-              path:'/personal_info',
-              builder: (context, state) => const PersonalInfo(),
+              path: '/settings',
+              builder: (context, state) => const SettingsPage(),
             ),
           ],
         );
-
-  final bool loggedIn;
-  final bool isFirstTime;
 
   @override
   Widget build(BuildContext context) {

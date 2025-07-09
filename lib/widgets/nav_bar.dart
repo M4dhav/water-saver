@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:water_saver/screens/adjustment.dart';
 import 'package:water_saver/screens/history.dart';
 import 'package:water_saver/screens/home.dart';
-import 'package:water_saver/screens/profile.dart';
+import 'package:water_saver/screens/settings.dart';
 import 'package:water_saver/screens/report.dart';
 
 class BottomNavBar extends StatefulWidget {
@@ -17,10 +18,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
   final List<Widget> _pages = [
     const HomePage(),
-    HistoryPage(),
+    const HistoryPage(),
     const ReportPage(),
-    AdjustmentsPage(),
-    const ProfilePage(),
+    const AdjustmentsPage(),
+    const SettingsPage(),
   ];
 
   void _onItemTapped(int index) {
@@ -31,7 +32,28 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
   @override
   Widget build(BuildContext context) {
+    String title = switch (_selectedIndex) {
+      0 => 'Home',
+      1 => 'History',
+      2 => 'Water Usage Report',
+      3 => 'Device Adjustments',
+      4 => 'Settings',
+      _ => 'Profile', // Default case
+    };
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 2,
+        title: Text(
+          title,
+          style: TextStyle(
+            fontSize: 20.sp,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
+        centerTitle: true,
+      ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
@@ -45,8 +67,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
           BottomNavigationBarItem(icon: Icon(Icons.history), label: 'History'),
           BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Report'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.settings), label: 'Adjustments'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+              icon: Icon(Icons.handyman), label: 'Adjustments'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.settings), label: 'Settings'),
         ],
       ),
     );

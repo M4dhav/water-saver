@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key? key}) : super(key: key);
+  const SplashScreen({super.key});
 
   @override
-  _SplashScreenState createState() => _SplashScreenState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> {
@@ -22,14 +24,23 @@ class _SplashScreenState extends State<SplashScreen> {
     if (FirebaseAuth.instance.currentUser != null) {
       context.go('/home');
     } else {
-      context.go('/login');
+      bool isOnboardingComplete = bool.parse(
+          await GetIt.I<FlutterSecureStorage>()
+                  .read(key: "isOnboardingComplete") ??
+              'false');
+
+      if (isOnboardingComplete) {
+        context.go('/login');
+      } else {
+        context.go('/onboarding');
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:const Color(0xFF369FFF),
+      backgroundColor: const Color(0xFF369FFF),
       body: Stack(
         children: [
           Padding(

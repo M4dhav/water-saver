@@ -1,88 +1,80 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../models/userdata.dart';
+import 'package:water_saver/models/firebase_model.dart';
 
 class AuthController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
+  final FlutterSecureStorage prefs = GetIt.I<FlutterSecureStorage>();
 
-  Future<User?> signInWithGoogle(BuildContext context) async {
+  Future<User?> signInWithGoogle() async {
+    await _googleSignIn.initialize();
     try {
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      if (googleUser == null) {
-        return null;
-      }
+      final GoogleSignInAccount googleUser =
+          await _googleSignIn.authenticate(scopeHint: [
+        'profile',
+        'email',
+        'openid',
+        'https://www.googleapis.com/auth/user.phonenumbers.read'
+      ]);
 
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-
+      final authClient = _googleSignIn.authorizationClient;
+      final authorization = await authClient.authorizationForScopes([
+        'profile',
+        'email',
+        'openid',
+        'https://www.googleapis.com/auth/user.phonenumbers.read'
+      ]);
       final AuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
+        accessToken: authorization?.accessToken,
+        idToken: googleUser.authentication.idToken,
       );
 
       final UserCredential userCredential =
           await _auth.signInWithCredential(credential);
 
-      final user = userCredential.user;
-      if (user != null) {
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('userId', user.uid);
-        final doc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
-        if (!doc.exists) {
-          await createUserData(
-            userId: user.uid,
-            name: user.displayName ?? '',
-            email: user.email ?? '',
-            reservoir: 0,
-            tank: 0,
-          );
-        }
-        await handlePostLogin(context, user.uid);
-      }
-
       return userCredential.user;
     } catch (e) {
-      print('Error during Google Sign-In: $e');
+      log('Error during Google Sign-In: $e');
       return null;
     }
   }
 
-  Future<void> signOut() async {
-    await _auth.signOut();
-    await _googleSignIn.signOut();
-  }
+  Future<bool> checkIfUserExists(String email) async {
+    try {
+      QuerySnapshot query = await FBCollections.userProfile
+          .where('Email', isEqualTo: email)
+          .get();
+      if (query.docs.isNotEmpty) {
+        final userDoc = query.docs.first;
 
-  Future<void> handlePostLogin(BuildContext context, String userId) async {
-    final doc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
-    if (doc.exists && doc.data()?['onboardingComplete'] == true) {
-      GoRouter.of(context).go('/home');
-    } else {
-      GoRouter.of(context).go('/onboarding1');
+        await prefs.write(key: 'deviceId', value: userDoc.id);
+        String id = await prefs.read(key: 'deviceId') ?? '';
+        log("DEVICE ID IS HERE$id");
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      log('Error checking if user exists: $e');
+      return false;
     }
   }
 
-  Future<void> createUserData({
-    required String userId,
-    required String name,
-    required String email,
-    required int reservoir,
-    required int tank,
-  }) async {
-    final userData = UserData(
-      name: name,
-      email: email,
-      reservoir: reservoir,
-      tank: tank,
-      onboardingComplete: false,
-    );
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(userId)
-        .set(userData.toMap());
+  Future<bool> signOut() async {
+    try {
+      await _auth.signOut();
+      await _googleSignIn.signOut();
+      await prefs.delete(key: 'deviceId');
+      return true;
+    } catch (e) {
+      log('Error signing out: $e');
+      return false;
+    }
   }
 }

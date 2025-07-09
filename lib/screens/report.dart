@@ -1,69 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:water_saver/controllers/graph_controller.dart';
+import 'package:water_saver/models/graph_page_model.dart';
+import 'package:water_saver/providers/graph_controller_provider.dart';
 import 'package:water_saver/widgets/report/graph.dart';
 
-class ReportPage extends StatefulWidget {
+class ReportPage extends ConsumerWidget {
   const ReportPage({super.key});
 
   @override
-  State<ReportPage> createState() => _ReportPageState();
-}
-
-class _ReportPageState extends State<ReportPage> {
-  late GraphController _graphController;
-
-  @override
-  void initState() {
-    super.initState();
-    _graphController = GraphController();
-  }
-
-  @override
-  void dispose() {
-    _graphController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.watch(graphControllerProvider.notifier);
+    final pageData = ref.watch(graphControllerProvider);
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 2,
-        leading: IconButton(
-          icon: const Icon(Icons.analytics_outlined, color: Colors.blue),
-          onPressed: () {},
-        ),
-        title: Text(
-          'Water Usage Report',
-          style: TextStyle(
-            fontSize: 20.sp,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-          ),
-        ),
-        centerTitle: true,
+      body: pageData.when(
+        data: (data) => buildReportBody(controller, data),
+        error: (error, stackTrace) => Center(child: Text('Error: $error')),
+        loading: () => Center(child: CircularProgressIndicator()),
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(4.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ListenableBuilder(
-              listenable: _graphController,
-              builder: (context, child) {
-                return MotorStateGraph(
-                  controller: _graphController,
-                );
-              },
-            ),
+    );
+  }
 
-            SizedBox(height: 3.h),
-            _buildRecentActivitySection(),
-          ],
-        ),
+  Widget buildReportBody(GraphController controller, GraphPageModel pageData) {
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(4.w),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          MotorStateGraph(
+            controller: controller,
+            pageData: pageData,
+          ),
+          SizedBox(height: 3.h),
+          _buildRecentActivitySection(),
+        ],
       ),
     );
   }
@@ -127,7 +99,7 @@ class _ReportPageState extends State<ReportPage> {
                     width: 8.w,
                     height: 8.w,
                     decoration: BoxDecoration(
-                      color: Colors.blue.withValues(alpha:0.1),
+                      color: Colors.blue.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(

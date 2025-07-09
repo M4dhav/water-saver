@@ -1,247 +1,158 @@
-import 'package:flutter/material.dart';
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:get_it/get_it.dart';
+import 'package:water_saver/models/firebase_model.dart';
+import 'package:water_saver/models/graph_page_model.dart';
+import 'package:water_saver/models/motor_state_data.dart';
 
-class GraphController extends ChangeNotifier {
-  List<MotorStateData> _motorStateData = [];
-  bool _isLoading = false;
-  String _selectedPeriod = 'Today';
-  List<MotorStateData> get motorStateData => _motorStateData;
-  bool get isLoading => _isLoading;
-  String get selectedPeriod => _selectedPeriod;
-  final List<String> availablePeriods = [
-    'Today',
-    'Week',
-    '15days',
-    'This Month'
-  ];
+class GraphController extends AsyncNotifier<GraphPageModel> {
+  @override
+  Future<GraphPageModel> build() async {
+    List<MotorStateData> motorStateData = await getMotorStateData();
+    log(motorStateData.toString());
 
-  GraphController() {
-    loadGraphData();
-  }
-  Future<void> loadGraphData() async {
-    _isLoading = true;
-    notifyListeners();
-    await Future.delayed(const Duration(milliseconds: 800));
-    _motorStateData = _generateSampleMotorData();
-
-    _isLoading = false;
-    notifyListeners();
+    return GraphPageModel(
+        motorStateData: motorStateData,
+        motorStateDataOff: filterMotorStateDataOff(motorStateData),
+        motorStateDataOn: filterMotorStateDataOn(motorStateData));
   }
 
-  void changePeriod(String period) {
-    if (_selectedPeriod != period) {
-      _selectedPeriod = period;
-      loadGraphData();
+  List<MotorStateData> filterMotorStateDataOn(List<MotorStateData> allData) {
+    return allData
+        .where((data) => data.motorOn == "yes" && data.motorOff == "no")
+        .toList();
+  }
+
+  List<MotorStateData> filterMotorStateDataOff(List<MotorStateData> allData) {
+    return allData
+        .where((data) => data.motorOn == "no" && data.motorOff == "yes")
+        .toList();
+  }
+
+  Future<List<MotorStateData>> getMotorStateData() async {
+    String deviceId =
+        await GetIt.I<FlutterSecureStorage>().read(key: 'deviceId') ?? "";
+
+    CollectionReference motorStateCollection =
+        FBCollections.userDataUpload.doc(deviceId).collection('motorData');
+
+    QuerySnapshot snapshot = await motorStateCollection.get();
+
+    List<MotorStateData> motorStateData = [];
+
+    for (var doc in snapshot.docs) {
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+
+      motorStateData.add(MotorStateData.fromJson(data));
     }
+
+    return motorStateData;
   }
 
-  List<MotorStateData> _generateSampleMotorData() {
-    List<MotorStateData> data = [];
-    DateTime now = DateTime.now();
-
-    switch (_selectedPeriod) {
-      case 'Today':
-        for (int i = 0; i < 12; i++) {
-          DateTime time = DateTime(now.year, now.month, now.day)
-              .add(Duration(hours: i * 2));
-          bool isOn = _getRandomMotorState(i);
-          data.add(MotorStateData(time, isOn));
-        }
+  List<FlSpot> returnFlSpotFromMotorStateDataOn() {
+    List<MotorStateData> motorStateDataOn = state.requireValue.motorStateDataOn;
+    switch (state.requireValue.selectedPeriod) {
+      case (SelectedPeriod.week):
+        motorStateDataOn = motorStateDataOn
+            .where((data) =>
+                data.time.isAfter(DateTime.now().subtract(Duration(days: 7))))
+            .toList();
+      case (SelectedPeriod.fifteenDays):
+        motorStateDataOn = motorStateDataOn
+            .where((data) =>
+                data.time.isAfter(DateTime.now().subtract(Duration(days: 15))))
+            .toList();
+      case (SelectedPeriod.month):
+        motorStateDataOn = motorStateDataOn
+            .where((data) =>
+                data.time.isAfter(DateTime.now().subtract(Duration(days: 30))))
+            .toList();
+    }
+    final now = DateTime.now();
+    int range;
+    switch (state.requireValue.selectedPeriod) {
+      case SelectedPeriod.week:
+        range = 7;
         break;
-      case 'Week':
-        for (int i = 0; i < 7; i++) {
-          DateTime day = now.subtract(Duration(days: now.weekday - 1 - i));
-          bool isOn = _getRandomMotorState(i);
-          data.add(MotorStateData(day, isOn));
-        }
+      case SelectedPeriod.fifteenDays:
+        range = 15;
         break;
-      case '15days':
-        for (int i = 0; i < 15; i++) {
-          DateTime day = now.subtract(Duration(days: i));
-          bool isOn = _getRandomMotorState(i);
-          data.add(MotorStateData(day, isOn));
-        }
-        break;
-      case 'This Month':
-        int daysInMonth = DateTime(now.year, now.month + 1, 0).day;
-        for (int i = 1; i <= daysInMonth; i++) {
-          DateTime day = DateTime(now.year, now.month, i);
-          bool isOn = _getRandomMotorState(i);
-          data.add(MotorStateData(day, isOn));
-        }
+      case SelectedPeriod.month:
+        range = 30;
         break;
     }
-
-    return data;
+    return motorStateDataOn
+        .map((data) {
+          // Calculate X: days ago (0 = N days ago, N-1 = today)
+          final daysAgo = now
+              .difference(
+                  DateTime(data.time.year, data.time.month, data.time.day))
+              .inDays;
+          final x = (range - 1) - daysAgo; // (range-1) = today, 0 = N days ago
+          // Calculate Y: hour + fraction of hour
+          final y = data.time.hour + (data.time.minute / 60);
+          return FlSpot(x.toDouble(), y);
+        })
+        .where((spot) => spot.x >= 0 && spot.x < range)
+        .toList();
   }
 
-  //generates a random static motor state.
-  //remove after firebase logic is implemented
-  bool _getRandomMotorState(int index) {
-    List<bool> patterns = [
-      false,
-      true,
-      true,
-      false,
-      true,
-      false,
-      true,
-      false,
-      true,
-      true,
-      false,
-      false
-    ];
-    return patterns[index % patterns.length];
-  }
-
-  String getTimeFormat() {
-    switch (_selectedPeriod) {
-      case 'Today':
-        return 'HH:mm';
-      case 'Week':
-        return 'EEE';
-      case '15days':
-        return 'dd/MM';
-      case 'This Month':
-        return 'dd';
-      default:
-        return 'HH:mm';
+  List<FlSpot> returnFlSpotFromMotorStateDataOff() {
+    List<MotorStateData> motorStateDataOff =
+        state.requireValue.motorStateDataOff;
+    switch (state.requireValue.selectedPeriod) {
+      case (SelectedPeriod.week):
+        motorStateDataOff = motorStateDataOff
+            .where((data) =>
+                data.time.isAfter(DateTime.now().subtract(Duration(days: 7))))
+            .toList();
+      case (SelectedPeriod.fifteenDays):
+        motorStateDataOff = motorStateDataOff
+            .where((data) =>
+                data.time.isAfter(DateTime.now().subtract(Duration(days: 15))))
+            .toList();
+      case (SelectedPeriod.month):
+        motorStateDataOff = motorStateDataOff
+            .where((data) =>
+                data.time.isAfter(DateTime.now().subtract(Duration(days: 30))))
+            .toList();
     }
-  }
-
-  //get these from firebase
-  //filter by date range based on _selectedPeriod
-  List<FlSpot> getMotorOnSpots() {
-    switch (_selectedPeriod) {
-      case 'Today':
-        return [
-          FlSpot(1, 8), FlSpot(2, 10), FlSpot(3, 13), FlSpot(4, 15),
-          FlSpot(5, 18),
-          FlSpot(6, 20), 
-        ];
-      case 'Week':
-        return [
-          FlSpot(1, 13),
-          FlSpot(2, 14),
-          FlSpot(3, 12),
-          FlSpot(4, 15),
-          FlSpot(5, 13),
-          FlSpot(6, 11),
-          FlSpot(7, 16),
-        ];
-      case '15days':
-        return List.generate(
-            15,
-            (index) =>
-                FlSpot((index + 1).toDouble(), 12 + (index % 8).toDouble()));
-      case 'This Month':
-        return List.generate(
-            30,
-            (index) =>
-                FlSpot((index + 1).toDouble(), 11 + (index % 10).toDouble()));
-      default:
-        return [FlSpot(1, 13)];
+    final now = DateTime.now();
+    int range;
+    switch (state.requireValue.selectedPeriod) {
+      case SelectedPeriod.week:
+        range = 7;
+        break;
+      case SelectedPeriod.fifteenDays:
+        range = 15;
+        break;
+      case SelectedPeriod.month:
+        range = 30;
+        break;
     }
+    return motorStateDataOff
+        .map((data) {
+          // Calculate X: days ago (0 = N days ago, N-1 = today)
+          final daysAgo = now
+              .difference(
+                  DateTime(data.time.year, data.time.month, data.time.day))
+              .inDays;
+          final x = (range - 1) - daysAgo; // (range-1) = today, 0 = N days ago
+          // Calculate Y: hour + fraction of hour
+          final y = data.time.hour + (data.time.minute / 60);
+          return FlSpot(x.toDouble(), y);
+        })
+        .where((spot) => spot.x >= 0 && spot.x < range)
+        .toList();
   }
 
-  //add the firebase logic here
-  //filter by date range based on _selectedPeriod
-  List<FlSpot> getMotorOffSpots() {
-    switch (_selectedPeriod) {
-      case 'Today':
-        return [
-          FlSpot(1, 8.5),
-          FlSpot(2, 10.75),
-          FlSpot(3, 13.5),
-          FlSpot(4, 15.33),
-          FlSpot(5, 18.25),
-          FlSpot(6, 20.5),
-        ];
-      case 'Week':
-        return [
-          FlSpot(1, 13.5),
-          FlSpot(2, 14.5),
-          FlSpot(3, 12.75),
-          FlSpot(4, 15.25),
-          FlSpot(5, 13.55),
-          FlSpot(6, 11.5),
-          FlSpot(7, 16.55),
-        ];
-      case '15days':
-        return List.generate(
-            15,
-            (index) =>
-                FlSpot((index + 1).toDouble(), 12.5 + (index % 8).toDouble()));
-      case 'This Month':
-        return List.generate(
-            30,
-            (index) =>
-                FlSpot((index + 1).toDouble(), 11.5 + (index % 10).toDouble()));
-      default:
-        return [FlSpot(1, 13.5)];
-    }
-  }
-
-  String getTooltipTimeInfo(double x, double y) {
-    switch (_selectedPeriod) {
-      case 'Today':
-        List<String> times = ['8AM', '10AM', '1PM', '3PM', '6PM', '8PM'];
-        int index = (x.toInt() - 1).clamp(0, times.length - 1); //implemented clamping to keep the value in bounds
-        final hour = y.floor();
-        final minutes = ((y - hour) * 60).round();
-        final time =
-            '${hour.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}';
-        return '${times[index]} at $time';
-      case 'Week':
-        final day = _getDayLabel(x);
-        final hour = y.floor();
-        final minutes = ((y - hour) * 60).round();
-        final time =
-            '${hour.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}';
-        return '$day at $time';
-      case '15days':
-        final hour = y.floor();
-        final minutes = ((y - hour) * 60).round();
-        final time =
-            '${hour.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}';
-        return 'Day ${x.toInt()} at $time';
-      case 'This Month':
-        final hour = y.floor();
-        final minutes = ((y - hour) * 60).round();
-        final time =
-            '${hour.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}';
-        return 'Day ${x.toInt()} at $time';
-      default:
-        return 'Unknown time';
-    }
-  }
-  
-  String _getDayLabel(double x) {
-    List<String> days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    int dayIndex = (x.toInt() - 1).clamp(0, 6);
-    return days[dayIndex];
-  }
-}
-
-class MotorStateData {
-  final DateTime time;
-  final bool isMotorOn;
-
-  MotorStateData(this.time, this.isMotorOn);
-  String getDisplayLabel(String period) {
-    switch (period) {
-      case 'Today':
-        return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
-      case 'Week':
-        List<String> days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-        return days[time.weekday - 1];
-      case '15days':
-        return '${time.day.toString().padLeft(2, '0')}/${time.month.toString().padLeft(2, '0')}';
-      case 'This Month':
-        return time.day.toString();
-      default:
-        return '${time.hour}:${time.minute}';
-    }
+  void changeSelectedPeriod(SelectedPeriod period) {
+    state = AsyncValue.data(
+      state.requireValue.copyWith(selectedPeriod: period),
+    );
   }
 }

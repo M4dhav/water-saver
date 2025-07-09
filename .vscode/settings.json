@@ -1,3 +1,4 @@
 {
-    "dart.flutterSdkPath": "~/Development/flutter"
+    "dart.flutterSdkPath": "~/Development/flutter",
+    "cmake.sourceDirectory": "D:/development/GitHub/water-saver/linux"
 }
