@@ -5,9 +5,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:water_saver/controllers/auth_controller.dart';
 import 'package:water_saver/providers/app_user_controller_provider.dart';
 import 'package:water_saver/providers/graph_controller_provider.dart';
-import 'package:water_saver/providers/history_controller_provider.dart';
-import 'package:water_saver/screens/personal_info_screen.dart';
-
+import 'package:water_saver/screens/personal_info.dart';
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
@@ -15,7 +13,7 @@ class SettingsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: const Color(0xFF071526),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(4.w),
@@ -23,7 +21,7 @@ class SettingsPage extends ConsumerWidget {
             children: [
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: const Color(0xFF0F1C2E),
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: Column(
@@ -52,7 +50,7 @@ class SettingsPage extends ConsumerWidget {
               SizedBox(height: 2.h),
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: const Color(0xFF0F1C2E),
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: Column(
@@ -74,17 +72,11 @@ class SettingsPage extends ConsumerWidget {
               SizedBox(height: 2.h),
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: const Color(0xFF0F1C2E),
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: Column(
                   children: [
-                    _buildProfileOption(
-                      icon: Icons.palette_outlined,
-                      title: 'App Appearance',
-                      onTap: () {},
-                    ),
-                    _buildDivider(),
                     _buildProfileOption(
                       icon: Icons.analytics_outlined,
                       title: 'Data & Analytics',
@@ -102,7 +94,7 @@ class SettingsPage extends ConsumerWidget {
               SizedBox(height: 2.h),
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: const Color(0xFF0F1C2E),
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: _buildProfileOption(
@@ -112,7 +104,6 @@ class SettingsPage extends ConsumerWidget {
                     if (value) {
                       ref.invalidate(appUserControllerProvider);
                       ref.invalidate(graphControllerProvider);
-                      ref.invalidate(historyPageControllerProvider);
                       context.go('/login');
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -146,7 +137,7 @@ class SettingsPage extends ConsumerWidget {
           children: [
             Icon(
               icon,
-              color: isLogout ? Colors.red : Colors.grey[600],
+              color: isLogout ? Colors.red : Colors.white70,
               size: 6.w,
             ),
             SizedBox(width: 4.w),
@@ -156,14 +147,14 @@ class SettingsPage extends ConsumerWidget {
                 style: TextStyle(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w500,
-                  color: isLogout ? Colors.red : Colors.black,
+                  color: isLogout ? Colors.red : Colors.white,
                 ),
               ),
             ),
             if (!isLogout)
               Icon(
                 Icons.arrow_forward_ios,
-                color: Colors.grey[400],
+                color: Colors.white54,
                 size: 4.w,
               ),
           ],
@@ -176,7 +167,7 @@ class SettingsPage extends ConsumerWidget {
     return Divider(
       height: 1,
       thickness: 1,
-      color: Colors.grey.shade200,
+      color: Colors.white24,
       indent: 4.w,
       endIndent: 4.w,
     );

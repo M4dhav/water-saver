@@ -14,7 +14,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFF071526),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 7.w),
         child: SizedBox(
@@ -25,7 +25,7 @@ class LoginScreen extends StatelessWidget {
             children: [
               const Spacer(),
               Image(
-                  image: AssetImage("assets/images/logo_blue.png"),
+                  image: AssetImage("assets/images/logo_white.png"),
                   height: 15.h),
               SizedBox(height: 5.w),
               Text(
@@ -33,7 +33,7 @@ class LoginScreen extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 22.sp,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: Colors.white,
                 ),
               ),
               const SizedBox(height: 10),
@@ -41,7 +41,7 @@ class LoginScreen extends StatelessWidget {
                 "Let's dive in into your account",
                 style: TextStyle(
                   fontSize: 16,
-                  color: Colors.grey,
+                  color: Colors.white70,
                 ),
               ),
               SizedBox(height: 2.h),
@@ -86,7 +86,7 @@ class LoginScreen extends StatelessWidget {
                 "Privacy Policy  ·  Terms of Service",
                 style: TextStyle(
                   fontSize: 12,
-                  color: Colors.grey,
+                  color: Colors.white54,
                 ),
               ),
               SizedBox(height: 1.h),

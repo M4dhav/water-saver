@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:water_saver/screens/adjustment.dart';
-import 'package:water_saver/screens/history.dart';
 import 'package:water_saver/screens/home.dart';
 import 'package:water_saver/screens/settings.dart';
 import 'package:water_saver/screens/report.dart';
@@ -18,7 +17,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
   final List<Widget> _pages = [
     const HomePage(),
-    const HistoryPage(),
     const ReportPage(),
     const AdjustmentsPage(),
     const SettingsPage(),
@@ -34,29 +32,28 @@ class _BottomNavBarState extends State<BottomNavBar> {
   Widget build(BuildContext context) {
     String title = switch (_selectedIndex) {
       0 => 'Home',
-      1 => 'History',
-      2 => 'Water Usage Report',
-      3 => 'Device Adjustments',
-      4 => 'Settings',
+      1 => 'Analytics',
+      2 => 'Device Adjustments',
+      3 => 'Settings',
       _ => 'Profile', // Default case
     };
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 2,
+        backgroundColor: Color(0xFF071526),
+        scrolledUnderElevation: 0,
         title: Text(
           title,
           style: TextStyle(
             fontSize: 20.sp,
             fontWeight: FontWeight.bold,
-            color: Colors.black,
+            color: Colors.white,
           ),
         ),
         centerTitle: true,
       ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Color(0xFF071526),
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         type: BottomNavigationBarType.fixed,
@@ -64,8 +61,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
         unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.history), label: 'History'),
-          BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Report'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.bar_chart), label: 'Analytics'),
           BottomNavigationBarItem(
               icon: Icon(Icons.handyman), label: 'Adjustments'),
           BottomNavigationBarItem(

@@ -10,12 +10,13 @@ class PersonalInfoScreen extends ConsumerWidget {
     final appUserAsync = ref.watch(appUserControllerProvider);
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: const Color(0xFF071526),
       appBar: AppBar(
         title: const Text('Profile'),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        elevation: 0.5,
+        backgroundColor: const Color(0xFF071526),
+        foregroundColor: Colors.white,
+        elevation: 0,
+        scrolledUnderElevation: 0,
         centerTitle: true,
       ),
       body: appUserAsync.when(
@@ -25,19 +26,19 @@ class PersonalInfoScreen extends ConsumerWidget {
             children: [
               // Profile Avatar Section
               Container(
-                color: Colors.white,
+                color: const Color(0xFF0F1C2E),
                 padding: const EdgeInsets.all(24),
                 child: Column(
                   children: [
                     CircleAvatar(
                       radius: 50,
-                      backgroundColor: Colors.blue[100],
+                      backgroundColor: Colors.blue[800],
                       child: Text(
                         _getInitials(profile.name, profile.surname),
                         style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
-                          color: Colors.blue,
+                          color: Colors.white,
                         ),
                       ),
                     ),
@@ -47,6 +48,7 @@ class PersonalInfoScreen extends ConsumerWidget {
                       style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -54,20 +56,18 @@ class PersonalInfoScreen extends ConsumerWidget {
                       profile.email.isEmpty
                           ? 'No email provided'
                           : profile.email,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
-                        color: Colors.grey[600],
+                        color: Colors.white70,
                       ),
                     ),
                   ],
                 ),
               ),
-
               const SizedBox(height: 8),
-
               // Personal Information Section
               Container(
-                color: Colors.white,
+                color: const Color(0xFF0F1C2E),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -78,7 +78,7 @@ class PersonalInfoScreen extends ConsumerWidget {
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
-                          color: Colors.black87,
+                          color: Colors.white,
                         ),
                       ),
                     ),
@@ -89,12 +89,10 @@ class PersonalInfoScreen extends ConsumerWidget {
                   ],
                 ),
               ),
-
               const SizedBox(height: 8),
-
               // Address Section
               Container(
-                color: Colors.white,
+                color: const Color(0xFF0F1C2E),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -105,7 +103,7 @@ class PersonalInfoScreen extends ConsumerWidget {
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
-                          color: Colors.black87,
+                          color: Colors.white,
                         ),
                       ),
                     ),
@@ -116,12 +114,10 @@ class PersonalInfoScreen extends ConsumerWidget {
                   ],
                 ),
               ),
-
               const SizedBox(height: 8),
-
               // Device Information Section
               Container(
-                color: Colors.white,
+                color: const Color(0xFF0F1C2E),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -132,7 +128,7 @@ class PersonalInfoScreen extends ConsumerWidget {
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
-                          color: Colors.black87,
+                          color: Colors.white,
                         ),
                       ),
                     ),
@@ -140,7 +136,6 @@ class PersonalInfoScreen extends ConsumerWidget {
                   ],
                 ),
               ),
-
               const SizedBox(height: 24),
             ],
           );
@@ -173,7 +168,7 @@ class PersonalInfoScreen extends ConsumerWidget {
         label,
         style: const TextStyle(
           fontSize: 14,
-          color: Colors.grey,
+          color: Colors.white70,
           fontWeight: FontWeight.w500,
         ),
       ),
@@ -181,7 +176,7 @@ class PersonalInfoScreen extends ConsumerWidget {
         value.isEmpty ? 'Not provided' : value,
         style: const TextStyle(
           fontSize: 16,
-          color: Colors.black87,
+          color: Colors.white,
           fontWeight: FontWeight.w400,
         ),
       ),

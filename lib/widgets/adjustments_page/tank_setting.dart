@@ -22,7 +22,7 @@ class TankSettingsWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return SliderTheme(
       data: SliderThemeData(
-          trackHeight: 20,
+          trackHeight: 25,
           padding: EdgeInsets.all(10),
           activeTrackColor: Colors.blue,
           inactiveTrackColor: Colors.grey.shade300,
@@ -34,14 +34,17 @@ class TankSettingsWidget extends ConsumerWidget {
         padding: EdgeInsets.all(3.w),
         margin: EdgeInsets.only(bottom: 3.h),
         decoration: BoxDecoration(
-          color: Colors.grey.shade200,
+          color: Color(0xFF071526),
           borderRadius: BorderRadius.circular(15),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(title,
-                style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold)),
+                style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white)),
             SizedBox(height: 1.h),
             if (motorOffValue != null && onMotorOffChanged != null)
               Column(

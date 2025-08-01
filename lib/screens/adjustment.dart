@@ -12,7 +12,7 @@ class AdjustmentsPage extends ConsumerWidget {
     final controller = ref.watch(appUserControllerProvider.notifier);
     final appUserData = ref.watch(appUserControllerProvider);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Color(0xFF071526),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 3.h),
         child: SingleChildScrollView(
@@ -22,7 +22,7 @@ class AdjustmentsPage extends ConsumerWidget {
                 padding: EdgeInsets.all(1.5.h),
                 child: Text(
                   "Kindly fill the required details below",
-                  style: TextStyle(fontSize: 18.sp, color: Colors.grey),
+                  style: TextStyle(fontSize: 18.sp, color: Colors.white70),
                 ),
               ),
               SizedBox(height: 2.h),
@@ -43,7 +43,6 @@ class AdjustmentsPage extends ConsumerWidget {
                 onMotorOnChanged: controller.updateMotorOnThresholdReservoir,
                 onMotorOffChanged: null,
               ),
-              // AutoDataLogWidget(),
               SizedBox(height: 3.h),
               ElevatedButton(
                 onPressed: () {
