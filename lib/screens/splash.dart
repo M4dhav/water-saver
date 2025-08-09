@@ -4,6 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:water_saver/models/firebase_model.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -22,7 +23,34 @@ class _SplashScreenState extends State<SplashScreen> {
   void _checkLoginStatus() async {
     await Future.delayed(const Duration(seconds: 1));
     if (FirebaseAuth.instance.currentUser != null) {
-      context.go('/home');
+      final storage = GetIt.I<FlutterSecureStorage>();
+      final deviceId = await storage.read(key: 'deviceId') ?? '';
+      if (deviceId.isEmpty) {
+        context.go('/login');
+        return;
+      }
+
+      try {
+        final snap = await FBCollections.userDataReceive.doc(deviceId).get();
+        final data = snap.data() as Map<String, dynamic>?;
+        final calibDone =
+            (data?['CALIB_DONE'] ?? 'no').toString().toLowerCase();
+        if (calibDone == 'yes') {
+          final isOnboardingComplete = bool.parse(
+              await GetIt.I<FlutterSecureStorage>()
+                      .read(key: "isOnboardingComplete") ??
+                  'false');
+          if (isOnboardingComplete) {
+            context.go('/home');
+          } else {
+            context.go('/onboarding');
+          }
+        } else {
+          context.go('/calibration');
+        }
+      } catch (e) {
+        context.go('/home');
+      }
     } else {
       bool isOnboardingComplete = bool.parse(
           await GetIt.I<FlutterSecureStorage>()

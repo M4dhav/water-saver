@@ -41,20 +41,24 @@ class MotorControlsWidget extends StatelessWidget {
                     ),
                   ),
                   SizedBox(width: 4.w),
-                  Switch(
-                    value: isMotorOn,
-                    onChanged: (_) => onMotorToggle(),
-                    activeColor: const Color(0xFF4ADE80),
-                    activeTrackColor: const Color(0xFF1E40AF),
-                    inactiveThumbColor: Colors.white,
-                    inactiveTrackColor: Colors.grey[700],
+                  Tooltip(
+                    message: isAutoMode ? 'Disabled in Auto mode' : '',
+                    triggerMode: TooltipTriggerMode.tap,
+                    child: Switch(
+                      value: isMotorOn,
+                      onChanged: (_) => onMotorToggle(),
+                      activeColor: const Color(0xFF4ADE80),
+                      activeTrackColor: const Color(0xFF1E40AF),
+                      inactiveThumbColor: Colors.white,
+                      inactiveTrackColor: Colors.grey[700],
+                    ),
                   ),
                 ],
               ),
               Row(
                 children: [
                   Text(
-                    'Auto',
+                    isAutoMode ? 'Auto' : 'Manual',
                     style: TextStyle(
                       fontSize: 18.sp,
                       color: Colors.white,

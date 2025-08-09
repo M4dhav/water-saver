@@ -56,19 +56,15 @@ class LoginScreen extends StatelessWidget {
                             .checkIfUserExists(user.email ?? '')
                             .then((exists) {
                           if (!exists) {
-                            // Navigate to personal info screen if user does not exist
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                   content: Text('User does not exist')),
                             );
                           } else {
-                            // Navigate to home screen if user exists
-                            GoRouter.of(context).go('/home');
+                            GoRouter.of(context).go('/calibration');
                           }
                         });
-                        // Navigate to the next screen or perform any action after successful login
                       } else {
-                        // Handle the case where login failed
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Login failed')),
                         );

@@ -14,6 +14,8 @@ T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$UserDataReceive {
+  @JsonKey(name: 'Auto_toggle_consent')
+  String get toggleConsent;
   @JsonKey(name: 'CALIB_DONE')
   String get calibDone;
   @JsonKey(name: 'Calibration_repeat')
@@ -51,6 +53,8 @@ mixin _$UserDataReceive {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is UserDataReceive &&
+            (identical(other.toggleConsent, toggleConsent) ||
+                other.toggleConsent == toggleConsent) &&
             (identical(other.calibDone, calibDone) ||
                 other.calibDone == calibDone) &&
             (identical(other.calibrationRepeat, calibrationRepeat) ||
@@ -77,6 +81,7 @@ mixin _$UserDataReceive {
   @override
   int get hashCode => Object.hash(
       runtimeType,
+      toggleConsent,
       calibDone,
       calibrationRepeat,
       rftCalibChkInt,
@@ -90,7 +95,7 @@ mixin _$UserDataReceive {
 
   @override
   String toString() {
-    return 'UserDataReceive(calibDone: $calibDone, calibrationRepeat: $calibrationRepeat, rftCalibChkInt: $rftCalibChkInt, rftConnChkInt: $rftConnChkInt, rftHeight: $rftHeight, rftThDnPercent: $rftThDnPercent, rftThUpPercent: $rftThUpPercent, rsvConnChkInt: $rsvConnChkInt, rsvHeight: $rsvHeight, rsvThDnPercent: $rsvThDnPercent)';
+    return 'UserDataReceive(toggleConsent: $toggleConsent, calibDone: $calibDone, calibrationRepeat: $calibrationRepeat, rftCalibChkInt: $rftCalibChkInt, rftConnChkInt: $rftConnChkInt, rftHeight: $rftHeight, rftThDnPercent: $rftThDnPercent, rftThUpPercent: $rftThUpPercent, rsvConnChkInt: $rsvConnChkInt, rsvHeight: $rsvHeight, rsvThDnPercent: $rsvThDnPercent)';
   }
 }
 
@@ -101,7 +106,8 @@ abstract mixin class $UserDataReceiveCopyWith<$Res> {
       _$UserDataReceiveCopyWithImpl;
   @useResult
   $Res call(
-      {@JsonKey(name: 'CALIB_DONE') String calibDone,
+      {@JsonKey(name: 'Auto_toggle_consent') String toggleConsent,
+      @JsonKey(name: 'CALIB_DONE') String calibDone,
       @JsonKey(name: 'Calibration_repeat') String calibrationRepeat,
       @JsonKey(name: "RFT_CALIB_CHK_INT") String rftCalibChkInt,
       @JsonKey(name: "RFT_CONN_CHK_INT") String rftConnChkInt,
@@ -126,6 +132,7 @@ class _$UserDataReceiveCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? toggleConsent = null,
     Object? calibDone = null,
     Object? calibrationRepeat = null,
     Object? rftCalibChkInt = null,
@@ -138,6 +145,10 @@ class _$UserDataReceiveCopyWithImpl<$Res>
     Object? rsvThDnPercent = null,
   }) {
     return _then(_self.copyWith(
+      toggleConsent: null == toggleConsent
+          ? _self.toggleConsent
+          : toggleConsent // ignore: cast_nullable_to_non_nullable
+              as String,
       calibDone: null == calibDone
           ? _self.calibDone
           : calibDone // ignore: cast_nullable_to_non_nullable
@@ -276,6 +287,7 @@ extension UserDataReceivePatterns on UserDataReceive {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
+            @JsonKey(name: 'Auto_toggle_consent') String toggleConsent,
             @JsonKey(name: 'CALIB_DONE') String calibDone,
             @JsonKey(name: 'Calibration_repeat') String calibrationRepeat,
             @JsonKey(name: "RFT_CALIB_CHK_INT") String rftCalibChkInt,
@@ -293,6 +305,7 @@ extension UserDataReceivePatterns on UserDataReceive {
     switch (_that) {
       case _UserDataReceive() when $default != null:
         return $default(
+            _that.toggleConsent,
             _that.calibDone,
             _that.calibrationRepeat,
             _that.rftCalibChkInt,
@@ -324,6 +337,7 @@ extension UserDataReceivePatterns on UserDataReceive {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(
+            @JsonKey(name: 'Auto_toggle_consent') String toggleConsent,
             @JsonKey(name: 'CALIB_DONE') String calibDone,
             @JsonKey(name: 'Calibration_repeat') String calibrationRepeat,
             @JsonKey(name: "RFT_CALIB_CHK_INT") String rftCalibChkInt,
@@ -340,6 +354,7 @@ extension UserDataReceivePatterns on UserDataReceive {
     switch (_that) {
       case _UserDataReceive():
         return $default(
+            _that.toggleConsent,
             _that.calibDone,
             _that.calibrationRepeat,
             _that.rftCalibChkInt,
@@ -370,6 +385,7 @@ extension UserDataReceivePatterns on UserDataReceive {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(
+            @JsonKey(name: 'Auto_toggle_consent') String toggleConsent,
             @JsonKey(name: 'CALIB_DONE') String calibDone,
             @JsonKey(name: 'Calibration_repeat') String calibrationRepeat,
             @JsonKey(name: "RFT_CALIB_CHK_INT") String rftCalibChkInt,
@@ -386,6 +402,7 @@ extension UserDataReceivePatterns on UserDataReceive {
     switch (_that) {
       case _UserDataReceive() when $default != null:
         return $default(
+            _that.toggleConsent,
             _that.calibDone,
             _that.calibrationRepeat,
             _that.rftCalibChkInt,
@@ -406,7 +423,8 @@ extension UserDataReceivePatterns on UserDataReceive {
 @JsonSerializable()
 class _UserDataReceive implements UserDataReceive {
   _UserDataReceive(
-      {@JsonKey(name: 'CALIB_DONE') required this.calibDone,
+      {@JsonKey(name: 'Auto_toggle_consent') required this.toggleConsent,
+      @JsonKey(name: 'CALIB_DONE') required this.calibDone,
       @JsonKey(name: 'Calibration_repeat') required this.calibrationRepeat,
       @JsonKey(name: "RFT_CALIB_CHK_INT") required this.rftCalibChkInt,
       @JsonKey(name: "RFT_CONN_CHK_INT") required this.rftConnChkInt,
@@ -419,6 +437,9 @@ class _UserDataReceive implements UserDataReceive {
   factory _UserDataReceive.fromJson(Map<String, dynamic> json) =>
       _$UserDataReceiveFromJson(json);
 
+  @override
+  @JsonKey(name: 'Auto_toggle_consent')
+  final String toggleConsent;
   @override
   @JsonKey(name: 'CALIB_DONE')
   final String calibDone;
@@ -470,6 +491,8 @@ class _UserDataReceive implements UserDataReceive {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _UserDataReceive &&
+            (identical(other.toggleConsent, toggleConsent) ||
+                other.toggleConsent == toggleConsent) &&
             (identical(other.calibDone, calibDone) ||
                 other.calibDone == calibDone) &&
             (identical(other.calibrationRepeat, calibrationRepeat) ||
@@ -496,6 +519,7 @@ class _UserDataReceive implements UserDataReceive {
   @override
   int get hashCode => Object.hash(
       runtimeType,
+      toggleConsent,
       calibDone,
       calibrationRepeat,
       rftCalibChkInt,
@@ -509,7 +533,7 @@ class _UserDataReceive implements UserDataReceive {
 
   @override
   String toString() {
-    return 'UserDataReceive(calibDone: $calibDone, calibrationRepeat: $calibrationRepeat, rftCalibChkInt: $rftCalibChkInt, rftConnChkInt: $rftConnChkInt, rftHeight: $rftHeight, rftThDnPercent: $rftThDnPercent, rftThUpPercent: $rftThUpPercent, rsvConnChkInt: $rsvConnChkInt, rsvHeight: $rsvHeight, rsvThDnPercent: $rsvThDnPercent)';
+    return 'UserDataReceive(toggleConsent: $toggleConsent, calibDone: $calibDone, calibrationRepeat: $calibrationRepeat, rftCalibChkInt: $rftCalibChkInt, rftConnChkInt: $rftConnChkInt, rftHeight: $rftHeight, rftThDnPercent: $rftThDnPercent, rftThUpPercent: $rftThUpPercent, rsvConnChkInt: $rsvConnChkInt, rsvHeight: $rsvHeight, rsvThDnPercent: $rsvThDnPercent)';
   }
 }
 
@@ -522,7 +546,8 @@ abstract mixin class _$UserDataReceiveCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'CALIB_DONE') String calibDone,
+      {@JsonKey(name: 'Auto_toggle_consent') String toggleConsent,
+      @JsonKey(name: 'CALIB_DONE') String calibDone,
       @JsonKey(name: 'Calibration_repeat') String calibrationRepeat,
       @JsonKey(name: "RFT_CALIB_CHK_INT") String rftCalibChkInt,
       @JsonKey(name: "RFT_CONN_CHK_INT") String rftConnChkInt,
@@ -547,6 +572,7 @@ class __$UserDataReceiveCopyWithImpl<$Res>
   @override
   @pragma('vm:prefer-inline')
   $Res call({
+    Object? toggleConsent = null,
     Object? calibDone = null,
     Object? calibrationRepeat = null,
     Object? rftCalibChkInt = null,
@@ -559,6 +585,10 @@ class __$UserDataReceiveCopyWithImpl<$Res>
     Object? rsvThDnPercent = null,
   }) {
     return _then(_UserDataReceive(
+      toggleConsent: null == toggleConsent
+          ? _self.toggleConsent
+          : toggleConsent // ignore: cast_nullable_to_non_nullable
+              as String,
       calibDone: null == calibDone
           ? _self.calibDone
           : calibDone // ignore: cast_nullable_to_non_nullable

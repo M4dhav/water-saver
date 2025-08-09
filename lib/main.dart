@@ -11,6 +11,7 @@ import 'package:water_saver/screens/settings.dart';
 import 'package:water_saver/screens/splash.dart';
 import 'package:water_saver/widgets/nav_bar.dart';
 import 'package:go_router/go_router.dart';
+import 'package:water_saver/screens/calibration.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -54,6 +55,10 @@ class MainApp extends StatelessWidget {
             GoRoute(
               path: '/settings',
               builder: (context, state) => const SettingsPage(),
+            ),
+            GoRoute(
+              path: '/calibration',
+              builder: (context, state) => const CalibrationScreen(),
             ),
           ],
         );

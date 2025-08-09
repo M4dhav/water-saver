@@ -8,6 +8,7 @@ part of '../user_data_receive.dart';
 
 _UserDataReceive _$UserDataReceiveFromJson(Map<String, dynamic> json) =>
     _UserDataReceive(
+      toggleConsent: json['Auto_toggle_consent'] as String,
       calibDone: json['CALIB_DONE'] as String,
       calibrationRepeat: json['Calibration_repeat'] as String,
       rftCalibChkInt: json['RFT_CALIB_CHK_INT'] as String,
@@ -22,6 +23,7 @@ _UserDataReceive _$UserDataReceiveFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$UserDataReceiveToJson(_UserDataReceive instance) =>
     <String, dynamic>{
+      'Auto_toggle_consent': instance.toggleConsent,
       'CALIB_DONE': instance.calibDone,
       'Calibration_repeat': instance.calibrationRepeat,
       'RFT_CALIB_CHK_INT': instance.rftCalibChkInt,

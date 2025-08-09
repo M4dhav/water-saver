@@ -29,11 +29,12 @@ abstract class UserDataUpload with _$UserDataUpload {
 
   const UserDataUpload._();
 
-  Map<String, dynamic> returnMotorState() {
+  Map<String, dynamic> returnMotorState({String source = 'auto'}) {
     return {
       'time': DateTime.now().millisecondsSinceEpoch,
       'motorOn': motorOn,
       'motorOff': motorOff,
+      'source': source,
     };
   }
 }

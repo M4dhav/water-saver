@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:water_saver/controllers/app_user_controller.dart';
+import 'package:water_saver/controllers/toggle_controller.dart';
 import 'package:water_saver/models/app_user.dart';
 import 'package:water_saver/providers/app_user_controller_provider.dart';
 import 'package:water_saver/widgets/home_page/tank_widget.dart';
@@ -19,8 +20,23 @@ class HomePage extends ConsumerStatefulWidget {
 
 class _HomePageState extends ConsumerState<HomePage> {
   Timer? _timer;
-
+  final _toggleController = ToggleController();
+  bool _isAutoMode = true;
   int _currentIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _initAutoMode();
+  }
+
+  Future<void> _initAutoMode() async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final controller = ref.read(appUserControllerProvider.notifier);
+      final v = await _toggleController.getAutoMode(controller);
+      if (mounted) setState(() => _isAutoMode = v);
+    });
+  }
 
   @override
   void dispose() {
@@ -113,18 +129,26 @@ class _HomePageState extends ConsumerState<HomePage> {
             ),
             MotorControlsWidget(
               isMotorOn: appUser.userDataUpload.motorOn == "yes",
-              isAutoMode: true,
-              onMotorToggle: () {
-                appUserController.updateMotorState(
-                    !(appUser.userDataUpload.motorOn == "yes"));
+              isAutoMode: _isAutoMode,
+              onMotorToggle: () async {
+                await _toggleController.handleMotorButtonPressed(
+                  context: context,
+                  isAutoMode: _isAutoMode,
+                  currentMotorOn: appUser.userDataUpload.motorOn == "yes",
+                  appUser: appUser,
+                  appUserController: appUserController,
+                );
               },
-              onAutoToggle: () {
-                // auto mode toggle
+              onAutoToggle: () async {
+                final next = await _toggleController.handleAutoToggle(
+                  context: context,
+                  currentAutoMode: _isAutoMode,
+                  appUser: appUser,
+                  appUserController: appUserController,
+                );
+                setState(() => _isAutoMode = next);
               },
-              onMotorButtonPressed: () {
-                appUserController.updateMotorState(
-                    !(appUser.userDataUpload.motorOn == "yes"));
-              },
+              onMotorButtonPressed: () async {},
             ),
             SizedBox(height: 2.h),
             Container(

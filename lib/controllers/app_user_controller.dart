@@ -82,19 +82,22 @@ class AppUserController extends AsyncNotifier<AppUser> {
     return doc.data() as Map<String, dynamic>;
   }
 
-  Future<void> updateMotorState(bool motorState) async {
+  Future<void> updateMotorState(bool motorState, {bool manual = false}) async {
     String deviceId = await prefs.read(key: 'deviceId') ?? '';
     AppUser appUser = state.requireValue.copyWith(
         userDataUpload: state.requireValue.userDataUpload.copyWith(
             motorOn: motorState ? "yes" : "no",
             motorOff: motorState ? "no" : "yes"));
-    await FBCollections.userDataUpload
-        .doc(deviceId)
-        .update(appUser.userDataUpload.toJson());
+    await FBCollections.userDataUpload.doc(deviceId).update(
+          appUser.userDataUpload.toJson(),
+        );
+
     await FBCollections.userDataUpload
         .doc(deviceId)
         .collection('motorData')
-        .add(appUser.userDataUpload.returnMotorState());
+        .add(appUser.userDataUpload.returnMotorState(
+          source: manual ? 'manual' : 'auto',
+        ));
 
     state = AsyncValue.data(appUser);
   }
@@ -133,5 +136,33 @@ class AppUserController extends AsyncNotifier<AppUser> {
     FBCollections.userDataReceive
         .doc(deviceId)
         .update(state.requireValue.userDataReceive.toJson());
+  }
+
+  Future<void> acceptAutoToggleConsent() async {
+    final deviceId = await prefs.read(key: 'deviceId') ?? '';
+    if (deviceId.isEmpty) return;
+
+    try {
+      await FBCollections.userDataReceive
+          .doc(deviceId)
+          .update({'Auto_toggle_consent': 'yes'});
+
+      final current = state.requireValue;
+      final updated = current.copyWith(
+        userDataReceive: current.userDataReceive.copyWith(toggleConsent: 'yes'),
+      );
+      state = AsyncValue.data(updated);
+    } catch (e) {
+      log('Error updating auto toggle consent: $e');
+    }
+  }
+
+  Future<bool> getAutoMode() async {
+    final v = await prefs.read(key: 'autoMode');
+    return v == null ? true : v.toLowerCase() == 'true';
+  }
+
+  Future<void> setAutoMode(bool value) async {
+    await prefs.write(key: 'autoMode', value: value.toString());
   }
 }
