@@ -54,6 +54,10 @@ dependencies:
   json_annotation: ^4.9.0
   get_it: ^8.0.3
   onboarding: ^4.0.2
+  esp_smartconfig: ^3.0.0
+  connectivity_plus: ^6.1.5
+  network_info_plus: ^6.1.4
+  permission_handler: ^12.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
