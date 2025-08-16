@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:water_saver/controllers/app_user_controller.dart';
-import 'package:water_saver/controllers/toggle_controller.dart';
 import 'package:water_saver/models/app_user.dart';
 import 'package:water_saver/providers/app_user_controller_provider.dart';
 import 'package:water_saver/models/user_data_upload.dart';
@@ -21,7 +20,6 @@ class HomePage extends ConsumerStatefulWidget {
 
 class _HomePageState extends ConsumerState<HomePage> {
   Timer? _timer;
-  final _toggleController = ToggleController();
   bool _isAutoMode = true;
   int _currentIndex = 0;
 
@@ -124,7 +122,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   Future<void> _initAutoMode() async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final controller = ref.read(appUserControllerProvider.notifier);
-      final v = await _toggleController.getAutoMode(controller);
+      final v = await controller.getAutoMode();
       if (mounted) setState(() => _isAutoMode = v);
     });
   }
@@ -250,7 +248,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 final motorLimit = appUser.userDataUpload.motorOn != 'yes';
                 if (motorLimit) {
                   final allowed =
-                      await _toggleController.canTurnMotorOn(appUser);
+                      await appUserController.canTurnMotorOn(appUser);
                   if (!allowed) {
                     if (!mounted) return;
                     messenger.showSnackBar(
@@ -271,7 +269,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               onAutoToggle: () async {
                 if (_isAutoMode) {
                   final consentGiven =
-                      _toggleController.isConsentGiven(appUser);
+                      appUser.userDataReceive.autoToggleConsent == true;
                   if (!consentGiven) {
                     final gotConsent = await _showConsentDialog(
                         context, appUser.userProfile.name);
