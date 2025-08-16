@@ -29,13 +29,7 @@ class SettingsPage extends ConsumerWidget {
                     _buildProfileOption(
                       icon: Icons.person_outline,
                       title: 'Personal Info',
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const PersonalInfoScreen(),
-                          ),
-                        );
-                      },
+                      onTap: () => context.push('/personalInfo'),
                     ),
                     _buildDivider(),
                     _buildProfileOption(
@@ -44,6 +38,11 @@ class SettingsPage extends ConsumerWidget {
                       onTap: () {},
                     ),
                     _buildDivider(),
+                    _buildProfileOption(
+                      icon: Icons.wifi,
+                      title: 'Set Wi-Fi Network',
+                      onTap: () => context.push('/wifiConfig'),
+                    ),
                   ],
                 ),
               ),
