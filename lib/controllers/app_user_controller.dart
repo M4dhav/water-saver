@@ -82,8 +82,9 @@ class AppUserController extends AsyncNotifier<AppUser> {
     return doc.data() as Map<String, dynamic>;
   }
 
-  Future<void> updateMotorState(bool motorState, {bool manual = false}) async {
-    String deviceId = await prefs.read(key: 'deviceId') ?? '';
+  Future<void> updateMotorState(bool motorState,
+      {MotorState source = MotorState.auto}) async {
+    final deviceId = state.requireValue.deviceId;
     AppUser appUser = state.requireValue.copyWith(
         userDataUpload: state.requireValue.userDataUpload.copyWith(
             motorOn: motorState ? "yes" : "no",
@@ -96,7 +97,7 @@ class AppUserController extends AsyncNotifier<AppUser> {
         .doc(deviceId)
         .collection('motorData')
         .add(appUser.userDataUpload.returnMotorState(
-          source: manual ? 'manual' : 'auto',
+          source: source,
         ));
 
     state = AsyncValue.data(appUser);
@@ -132,24 +133,25 @@ class AppUserController extends AsyncNotifier<AppUser> {
   }
 
   Future<void> saveAdjustments() async {
-    String deviceId = await prefs.read(key: 'deviceId') ?? '';
+    final deviceId = state.requireValue.deviceId;
     FBCollections.userDataReceive
         .doc(deviceId)
         .update(state.requireValue.userDataReceive.toJson());
   }
 
   Future<void> acceptAutoToggleConsent() async {
-    final deviceId = await prefs.read(key: 'deviceId') ?? '';
+    final deviceId = state.requireValue.deviceId;
     if (deviceId.isEmpty) return;
 
     try {
       await FBCollections.userDataReceive
           .doc(deviceId)
-          .update({'Auto_toggle_consent': 'yes'});
+          .update({'Auto_toggle_consent': true});
 
       final current = state.requireValue;
       final updated = current.copyWith(
-        userDataReceive: current.userDataReceive.copyWith(toggleConsent: 'yes'),
+        userDataReceive:
+            current.userDataReceive.copyWith(autoToggleConsent: true),
       );
       state = AsyncValue.data(updated);
     } catch (e) {

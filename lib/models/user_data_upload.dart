@@ -3,6 +3,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'generated/user_data_upload.freezed.dart';
 part 'generated/user_data_upload.g.dart';
 
+enum MotorState { manual, auto }
+
 @freezed
 abstract class UserDataUpload with _$UserDataUpload {
   const factory UserDataUpload(
@@ -29,12 +31,12 @@ abstract class UserDataUpload with _$UserDataUpload {
 
   const UserDataUpload._();
 
-  Map<String, dynamic> returnMotorState({String source = 'auto'}) {
+  Map<String, dynamic> returnMotorState({MotorState source = MotorState.auto}) {
     return {
       'time': DateTime.now().millisecondsSinceEpoch,
       'motorOn': motorOn,
       'motorOff': motorOff,
-      'source': source,
+      'source': source == MotorState.manual ? 'manual' : 'auto',
     };
   }
 }

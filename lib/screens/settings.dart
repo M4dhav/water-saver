@@ -100,17 +100,21 @@ class SettingsPage extends ConsumerWidget {
                 child: _buildProfileOption(
                   icon: Icons.logout,
                   title: 'Logout',
-                  onTap: () => AuthController().signOut().then((value) {
-                    if (value) {
-                      ref.invalidate(appUserControllerProvider);
-                      ref.invalidate(graphControllerProvider);
-                      context.go('/login');
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Logout failed')),
-                      );
-                    }
-                  }),
+                  onTap: () {
+                    final router = GoRouter.of(context);
+                    final messenger = ScaffoldMessenger.of(context);
+                    AuthController().signOut().then((value) {
+                      if (value) {
+                        ref.invalidate(appUserControllerProvider);
+                        ref.invalidate(graphControllerProvider);
+                        router.go('/login');
+                      } else {
+                        messenger.showSnackBar(
+                          const SnackBar(content: Text('Logout failed')),
+                        );
+                      }
+                    });
+                  },
                   isLogout: true,
                 ),
               ),

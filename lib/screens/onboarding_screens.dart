@@ -9,15 +9,15 @@ class OnboardingScreens extends StatelessWidget {
   const OnboardingScreens({super.key});
 
   void handlePostOnboarding(BuildContext context) async {
+    final router = GoRouter.of(context);
+    final messenger = ScaffoldMessenger.of(context);
     try {
       await GetIt.I<FlutterSecureStorage>()
           .write(key: "isOnboardingComplete", value: 'true');
     } catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Some error occurred $e')));
+      messenger.showSnackBar(SnackBar(content: Text('Some error occurred $e')));
     }
-
-    GoRouter.of(context).go('/login');
+    router.go('/login');
   }
 
   @override

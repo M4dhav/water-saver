@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:auth_buttons/auth_buttons.dart';
+import 'package:auth_button_kit/auth_button_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -47,33 +47,38 @@ class LoginScreen extends StatelessWidget {
               SizedBox(height: 2.h),
               Column(
                 children: [
-                  GoogleAuthButton(
-                    onPressed: () async {
-                      final user = await _authController.signInWithGoogle();
-                      if (user != null) {
-                        log(user.email ?? 'No email');
-                        _authController
-                            .checkIfUserExists(user.email ?? '')
-                            .then((exists) {
-                          if (!exists) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text('User does not exist')),
-                            );
-                          } else {
-                            GoRouter.of(context).go('/calibration');
-                          }
-                        });
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Login failed')),
-                        );
+                  AuthButton(
+                    onPressed: (Method method) async {
+                      if (method == Method.google) {
+                        final router = GoRouter.of(context);
+                        final messenger = ScaffoldMessenger.of(context);
+                        final user = await _authController.signInWithGoogle();
+                        if (user != null) {
+                          log(user.email ?? 'No email');
+                          _authController
+                              .checkIfUserExists(user.email ?? '')
+                              .then((exists) {
+                            if (!exists) {
+                              messenger.showSnackBar(
+                                const SnackBar(
+                                    content: Text('User does not exist')),
+                              );
+                            } else {
+                              router.go('/calibration');
+                            }
+                          });
+                        } else {
+                          messenger.showSnackBar(
+                            const SnackBar(content: Text('Login failed')),
+                          );
+                        }
                       }
                     },
-                    themeMode: ThemeMode.light,
+                    brand: Method.google,
                   ),
-                  AppleAuthButton(
-                    themeMode: ThemeMode.light,
+                  AuthButton(
+                    brand: Method.apple,
+                    onPressed: (Method method) async {},
                   ),
                 ],
               ),

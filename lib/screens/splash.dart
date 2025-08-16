@@ -21,12 +21,13 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _checkLoginStatus() async {
+    final router = GoRouter.of(context);
     await Future.delayed(const Duration(seconds: 1));
     if (FirebaseAuth.instance.currentUser != null) {
       final storage = GetIt.I<FlutterSecureStorage>();
       final deviceId = await storage.read(key: 'deviceId') ?? '';
       if (deviceId.isEmpty) {
-        context.go('/login');
+        router.go('/login');
         return;
       }
 
@@ -41,15 +42,15 @@ class _SplashScreenState extends State<SplashScreen> {
                       .read(key: "isOnboardingComplete") ??
                   'false');
           if (isOnboardingComplete) {
-            context.go('/home');
+            router.go('/home');
           } else {
-            context.go('/onboarding');
+            router.go('/onboarding');
           }
         } else {
-          context.go('/calibration');
+          router.go('/calibration');
         }
       } catch (e) {
-        context.go('/home');
+        router.go('/home');
       }
     } else {
       bool isOnboardingComplete = bool.parse(
@@ -58,9 +59,10 @@ class _SplashScreenState extends State<SplashScreen> {
               'false');
 
       if (isOnboardingComplete) {
-        context.go('/login');
+        
+        router.go('/login');
       } else {
-        context.go('/onboarding');
+        router.go('/onboarding');
       }
     }
   }
