@@ -5,7 +5,6 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:water_saver/controllers/auth_controller.dart';
 import 'package:water_saver/providers/app_user_controller_provider.dart';
 import 'package:water_saver/providers/graph_controller_provider.dart';
-import 'package:water_saver/screens/personal_info.dart';
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});

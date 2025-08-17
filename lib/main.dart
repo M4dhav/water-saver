@@ -7,7 +7,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:water_saver/firebase_options.dart';
 import 'package:water_saver/screens/login_screen.dart';
 import 'package:water_saver/screens/onboarding_screens.dart';
-import 'package:water_saver/screens/personal_info_screen.dart';
+import 'package:water_saver/screens/personal_info.dart';
 import 'package:water_saver/screens/settings.dart';
 import 'package:water_saver/screens/splash.dart';
 import 'package:water_saver/screens/wifi_config.dart';
@@ -62,6 +62,7 @@ class MainApp extends StatelessWidget {
               path: '/calibration',
               builder: (context, state) => const CalibrationScreen(),
             ),
+            GoRoute(
                 path: '/wifiConfig',
                 builder: (context, state) => const WifiConfigScreen()),
             GoRoute(
