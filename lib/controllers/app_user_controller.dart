@@ -167,6 +167,7 @@ class AppUserController extends AsyncNotifier<AppUser> {
   Future<void> setAutoMode(bool value) async {
     await prefs.write(key: 'autoMode', value: value.toString());
   }
+
   Future<bool> canTurnMotorOn(AppUser appUser) async {
     final deviceId = appUser.deviceId;
     if (deviceId.isEmpty) return false;
@@ -179,17 +180,12 @@ class AppUserController extends AsyncNotifier<AppUser> {
         .doc(deviceId)
         .collection('motorData')
         .where('time', isGreaterThan: threshold)
-        .orderBy('time')
+        .where('source', isEqualTo: "manual")
+        .where('motorOn', isEqualTo: "yes")
+        .orderBy('time', descending: true)
+        .limit(3) 
         .get();
-  
-    int onCount = 0;
-    for (final d in query.docs) {
-      final data = d.data();
-      final isManual = (data['source'] ?? 'auto').toString() == 'manual';
-      final motorOn =
-          (data['motorOn'] ?? 'no').toString().toLowerCase() == 'yes';
-      if (isManual && motorOn) onCount++;
-    }
-    return onCount < 3;
+
+    return query.docs.length < 3;
   }
 }
