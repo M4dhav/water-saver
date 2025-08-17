@@ -64,7 +64,7 @@ class LoginScreen extends StatelessWidget {
                                     content: Text('User does not exist')),
                               );
                             } else {
-                              router.go('/calibration');
+                              router.go('/wifiConfig');
                             }
                           });
                         } else {

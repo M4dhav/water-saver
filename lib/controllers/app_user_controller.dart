@@ -167,4 +167,25 @@ class AppUserController extends AsyncNotifier<AppUser> {
   Future<void> setAutoMode(bool value) async {
     await prefs.write(key: 'autoMode', value: value.toString());
   }
+
+  Future<bool> canTurnMotorOn(AppUser appUser) async {
+    final deviceId = appUser.deviceId;
+    if (deviceId.isEmpty) return false;
+
+    final now = DateTime.now();
+    final threshold =
+        now.subtract(const Duration(days: 1)).millisecondsSinceEpoch;
+
+    final query = await FBCollections.userDataUpload
+        .doc(deviceId)
+        .collection('motorData')
+        .where('time', isGreaterThan: threshold)
+        .where('source', isEqualTo: "manual")
+        .where('motorOn', isEqualTo: "yes")
+        .orderBy('time', descending: true)
+        .limit(3) 
+        .get();
+
+    return query.docs.length < 3;
+  }
 }
