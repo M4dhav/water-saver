@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:esp_smartconfig/esp_smartconfig.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -25,8 +28,8 @@ class WifiConfigScreen extends ConsumerWidget {
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           IconButton(
-              onPressed: () async => await smartConfigController
-                  .refreshConnectionDetails(set: true),
+              onPressed: () async =>
+                  await smartConfigController.refreshConnectionDetails(),
               icon: const Icon(Icons.refresh, color: Colors.white))
         ],
       ),
@@ -42,6 +45,7 @@ class WifiConfigScreen extends ConsumerWidget {
                     connectionModel, smartConfigController, context);
               },
               error: (error, stackTrace) {
+                log('Error recieved here');
                 if (error.toString() ==
                     'Exception: Location permission denied') {
                   return buildWifiErrorPage(context);
@@ -180,6 +184,16 @@ class WifiConfigScreen extends ConsumerWidget {
                     onPressed: () {
                       final password = passwordController.text;
                       if (password.isNotEmpty) {
+                        if (password.length < 8) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                  'Password must be at least 8 characters long'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                          return;
+                        }
                         controller.startProvisioning(password);
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
@@ -187,10 +201,10 @@ class WifiConfigScreen extends ConsumerWidget {
                             backgroundColor: Color(0xFF4ADE80),
                           ),
                         );
-                        Future.delayed(const Duration(seconds: 2), () {
-                          if (context.mounted) {
-                            router.go('/calibration');
-                          }
+                        controller.provisioner.listen((response) async {
+                          buildConnectedDevicePopup(
+                              response, context, controller);
+                          // Navigate to the next screen
                         });
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -211,6 +225,9 @@ class WifiConfigScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
+                ElevatedButton(
+                    onPressed: () => context.pushReplacement('/home'),
+                    child: const Text('Go to Home'))
               ],
             ),
           ],
@@ -345,6 +362,23 @@ class WifiConfigScreen extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget buildConnectedDevicePopup(ProvisioningResponse response,
+      BuildContext context, WifiSmartConfigController controller) {
+    return AlertDialog(
+      content: Text("Device ${response.bssidText} is connected to the Wi-Fi"),
+      actions: [
+        TextButton(
+          onPressed: () {
+            controller.provisioner.stop();
+
+            context.pushReplacement('/calibration');
+          },
+          child: const Text("OK"),
+        ),
+      ],
     );
   }
 }

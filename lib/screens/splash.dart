@@ -1,65 +1,101 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:water_saver/models/app_user.dart';
 import 'package:water_saver/models/firebase_model.dart';
+import 'package:water_saver/providers/app_user_controller_provider.dart';
 
-class SplashScreen extends StatefulWidget {
+class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  ConsumerState<SplashScreen> createState() => _SplashScreenRefactoredState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenRefactoredState extends ConsumerState<SplashScreen> {
+  bool _isInitializing = false;
+  bool _isUserLoggedIn = false;
+
   @override
   void initState() {
     super.initState();
-    _checkLoginStatus();
+    _initializeApp();
   }
 
-  void _checkLoginStatus() async {
-    final router = GoRouter.of(context);
+  Future<void> _initializeApp() async {
+    setState(() {
+      _isInitializing = true;
+    });
+
+    // Add minimum splash delay for better UX
     await Future.delayed(const Duration(seconds: 1));
-    if (FirebaseAuth.instance.currentUser != null) {
+
+    // Step 1: Check if user is logged in
+    final User? currentUser = FirebaseAuth.instance.currentUser;
+    _isUserLoggedIn = currentUser != null;
+
+    if (_isUserLoggedIn) {
+      // Step 2: If user is logged in, instantiate appUserControllerProvider
+      try {
+        log('User is logged in, initializing appUserControllerProvider...');
+        // This will trigger the build method of AppUserController
+        await ref.read(appUserControllerProvider.future);
+        log('appUserControllerProvider initialized successfully');
+      } catch (e) {
+        log('Error initializing appUserControllerProvider: $e');
+        // Continue with routing even if provider initialization fails
+      }
+    }
+
+    // Step 3: Use routing logic based on login status
+    if (mounted) {
+      await _performRouting(_isUserLoggedIn);
+    }
+
+    setState(() {
+      _isInitializing = false;
+    });
+  }
+
+  Future<void> _performRouting(bool isLoggedIn) async {
+    final router = GoRouter.of(context);
+
+    if (isLoggedIn) {
+      // User is logged in - check device and calibration status
       final storage = GetIt.I<FlutterSecureStorage>();
       final deviceId = await storage.read(key: 'deviceId') ?? '';
+
       if (deviceId.isEmpty) {
         router.go('/login');
         return;
       }
 
       try {
-        final snap = await FBCollections.userDataReceive.doc(deviceId).get();
-        final data = snap.data() as Map<String, dynamic>?;
-        final calibDone =
-            (data?['CALIB_DONE'] ?? 'no').toString().toLowerCase();
-        if (calibDone == 'yes') {
-          final isOnboardingComplete = bool.parse(
-              await GetIt.I<FlutterSecureStorage>()
-                      .read(key: "isOnboardingComplete") ??
-                  'false');
-          if (isOnboardingComplete) {
-            router.go('/home');
-          } else {
-            router.go('/onboarding');
-          }
+        final appUser = ref.read(appUserControllerProvider);
+
+        if (appUser.requireValue.userDataUpload.calibDone == 'yes') {
+          router.go('/home');
         } else {
-          router.go('/calibration');
+          router.go('/wifiConfig');
         }
       } catch (e) {
+        log('Error checking calibration status: $e');
         router.go('/home');
       }
     } else {
+      // User is not logged in - check onboarding status
       bool isOnboardingComplete = bool.parse(
           await GetIt.I<FlutterSecureStorage>()
                   .read(key: "isOnboardingComplete") ??
               'false');
 
       if (isOnboardingComplete) {
-        
         router.go('/login');
       } else {
         router.go('/onboarding');
@@ -83,6 +119,17 @@ class _SplashScreenState extends State<SplashScreen> {
                     image: const AssetImage("assets/images/logo_white.png"),
                     height: 40.h,
                   ),
+                  if (_isInitializing && _isUserLoggedIn) ...[
+                    SizedBox(height: 3.h),
+                    Text(
+                      'Initializing user data...',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),

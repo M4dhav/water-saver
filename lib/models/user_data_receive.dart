@@ -7,7 +7,7 @@ part 'generated/user_data_receive.g.dart';
 abstract class UserDataReceive with _$UserDataReceive {
   factory UserDataReceive({
     @JsonKey(name: 'Auto_toggle_consent') required bool autoToggleConsent,
-    @JsonKey(name: 'CALIB_DONE') required String calibDone,
+    @JsonKey(name: 'MOTOR_ON') required String motorOn,
     @JsonKey(name: 'Calibration_repeat') required String calibrationRepeat,
     @JsonKey(name: "RFT_CALIB_CHK_INT") required String rftCalibChkInt,
     @JsonKey(name: "RFT_CONN_CHK_INT") required String rftConnChkInt,

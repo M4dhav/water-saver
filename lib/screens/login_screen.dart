@@ -63,6 +63,7 @@ class LoginScreen extends StatelessWidget {
                                 const SnackBar(
                                     content: Text('User does not exist')),
                               );
+                              //TODO: Change routing logic to account for user login from new device
                             } else {
                               router.go('/wifiConfig');
                             }

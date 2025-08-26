@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:liquid_progress_indicator_v2/liquid_progress_indicator.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:water_saver/widgets/home_page/water_tank_shape.dart';
 
 class WaterTankWidget extends StatelessWidget {
   final double fillPercentage;
@@ -82,58 +84,13 @@ class WaterTankWidget extends StatelessWidget {
                   ],
                 ),
               ),
-              Container(
-                width: 45.w,
-                height: 28.h,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white, width: 2),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Stack(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.transparent,
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                        width: double.infinity,
-                        height: 35.h * (fillPercentage / 100),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF4FC3F7),
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(6),
-                            bottomRight: Radius.circular(6),
-                            topLeft: fillPercentage >= 98
-                                ? Radius.circular(6)
-                                : Radius.zero,
-                            topRight: fillPercentage >= 98
-                                ? Radius.circular(6)
-                                : Radius.zero,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      right: -1,
-                      top: 0,
-                      bottom: 0,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: List.generate(4, (index) {
-                          return Container(
-                            width: 10,
-                            height: 2,
-                            color: Colors.white,
-                          );
-                        }),
-                      ),
-                    ),
-                  ],
-                ),
+              LiquidCustomProgressIndicator(
+                direction: Axis.vertical,
+                value: fillPercentage / 100,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                    Color.fromARGB(255, 54, 159, 208)),
+                backgroundColor: Color.fromARGB(255, 152, 216, 246),
+                shapePath: buildWaterTankPath(size: Size(44.w, 27.h)),
               ),
             ],
           ),

@@ -11,6 +11,8 @@ abstract class UserDataUpload with _$UserDataUpload {
     @JsonKey(name: 'ACPowerFail') String acPowerFail,
     @JsonKey(name: 'ACPowerFailDuration') int acPowerFailDuration,
     @JsonKey(name: 'CalibDuration') int calibDuration,
+    @JsonKey(name: 'CALIB_DONE') String calibDone,
+    @JsonKey(name: 'isTimerMode') String isTimerMode,
     @JsonKey(name: 'MotorOff') String motorOff,
     @JsonKey(name: 'MotorOn') String motorOn,
     @JsonKey(name: 'MotorOnDuration') int motorOnDuration,

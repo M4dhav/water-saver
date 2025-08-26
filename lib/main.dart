@@ -10,6 +10,7 @@ import 'package:water_saver/screens/onboarding_screens.dart';
 import 'package:water_saver/screens/personal_info.dart';
 import 'package:water_saver/screens/settings.dart';
 import 'package:water_saver/screens/splash.dart';
+import 'package:water_saver/screens/splash.dart';
 import 'package:water_saver/screens/wifi_config.dart';
 import 'package:water_saver/widgets/nav_bar.dart';
 import 'package:go_router/go_router.dart';

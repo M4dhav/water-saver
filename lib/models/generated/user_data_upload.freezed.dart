@@ -20,6 +20,10 @@ mixin _$UserDataUpload {
   int get acPowerFailDuration;
   @JsonKey(name: 'CalibDuration')
   int get calibDuration;
+  @JsonKey(name: 'CALIB_DONE')
+  String get calibDone;
+  @JsonKey(name: 'isTimerMode')
+  String get isTimerMode;
   @JsonKey(name: 'MotorOff')
   String get motorOff;
   @JsonKey(name: 'MotorOn')
@@ -69,6 +73,10 @@ mixin _$UserDataUpload {
                 other.acPowerFailDuration == acPowerFailDuration) &&
             (identical(other.calibDuration, calibDuration) ||
                 other.calibDuration == calibDuration) &&
+            (identical(other.calibDone, calibDone) ||
+                other.calibDone == calibDone) &&
+            (identical(other.isTimerMode, isTimerMode) ||
+                other.isTimerMode == isTimerMode) &&
             (identical(other.motorOff, motorOff) ||
                 other.motorOff == motorOff) &&
             (identical(other.motorOn, motorOn) || other.motorOn == motorOn) &&
@@ -100,6 +108,8 @@ mixin _$UserDataUpload {
       acPowerFail,
       acPowerFailDuration,
       calibDuration,
+      calibDone,
+      isTimerMode,
       motorOff,
       motorOn,
       motorOnDuration,
@@ -116,7 +126,7 @@ mixin _$UserDataUpload {
 
   @override
   String toString() {
-    return 'UserDataUpload(acPowerFail: $acPowerFail, acPowerFailDuration: $acPowerFailDuration, calibDuration: $calibDuration, motorOff: $motorOff, motorOn: $motorOn, motorOnDuration: $motorOnDuration, rftSensConnect: $rftSensConnect, rsvSensConnect: $rsvSensConnect, rsvEmpty: $rsvEmpty, rsvLevelChangeAtCalib: $rsvLevelChangeAtCalib, rftLevelData: $rftLevelData, rsvLevelData: $rsvLevelData, avgCalib: $avgCalib, calibT0: $calibT0, calibT1: $calibT1, calibT2: $calibT2)';
+    return 'UserDataUpload(acPowerFail: $acPowerFail, acPowerFailDuration: $acPowerFailDuration, calibDuration: $calibDuration, calibDone: $calibDone, isTimerMode: $isTimerMode, motorOff: $motorOff, motorOn: $motorOn, motorOnDuration: $motorOnDuration, rftSensConnect: $rftSensConnect, rsvSensConnect: $rsvSensConnect, rsvEmpty: $rsvEmpty, rsvLevelChangeAtCalib: $rsvLevelChangeAtCalib, rftLevelData: $rftLevelData, rsvLevelData: $rsvLevelData, avgCalib: $avgCalib, calibT0: $calibT0, calibT1: $calibT1, calibT2: $calibT2)';
   }
 }
 
@@ -130,6 +140,8 @@ abstract mixin class $UserDataUploadCopyWith<$Res> {
       {@JsonKey(name: 'ACPowerFail') String acPowerFail,
       @JsonKey(name: 'ACPowerFailDuration') int acPowerFailDuration,
       @JsonKey(name: 'CalibDuration') int calibDuration,
+      @JsonKey(name: 'CALIB_DONE') String calibDone,
+      @JsonKey(name: 'isTimerMode') String isTimerMode,
       @JsonKey(name: 'MotorOff') String motorOff,
       @JsonKey(name: 'MotorOn') String motorOn,
       @JsonKey(name: 'MotorOnDuration') int motorOnDuration,
@@ -161,6 +173,8 @@ class _$UserDataUploadCopyWithImpl<$Res>
     Object? acPowerFail = null,
     Object? acPowerFailDuration = null,
     Object? calibDuration = null,
+    Object? calibDone = null,
+    Object? isTimerMode = null,
     Object? motorOff = null,
     Object? motorOn = null,
     Object? motorOnDuration = null,
@@ -188,6 +202,14 @@ class _$UserDataUploadCopyWithImpl<$Res>
           ? _self.calibDuration
           : calibDuration // ignore: cast_nullable_to_non_nullable
               as int,
+      calibDone: null == calibDone
+          ? _self.calibDone
+          : calibDone // ignore: cast_nullable_to_non_nullable
+              as String,
+      isTimerMode: null == isTimerMode
+          ? _self.isTimerMode
+          : isTimerMode // ignore: cast_nullable_to_non_nullable
+              as String,
       motorOff: null == motorOff
           ? _self.motorOff
           : motorOff // ignore: cast_nullable_to_non_nullable
@@ -341,6 +363,8 @@ extension UserDataUploadPatterns on UserDataUpload {
             @JsonKey(name: 'ACPowerFail') String acPowerFail,
             @JsonKey(name: 'ACPowerFailDuration') int acPowerFailDuration,
             @JsonKey(name: 'CalibDuration') int calibDuration,
+            @JsonKey(name: 'CALIB_DONE') String calibDone,
+            @JsonKey(name: 'isTimerMode') String isTimerMode,
             @JsonKey(name: 'MotorOff') String motorOff,
             @JsonKey(name: 'MotorOn') String motorOn,
             @JsonKey(name: 'MotorOnDuration') int motorOnDuration,
@@ -365,6 +389,8 @@ extension UserDataUploadPatterns on UserDataUpload {
             _that.acPowerFail,
             _that.acPowerFailDuration,
             _that.calibDuration,
+            _that.calibDone,
+            _that.isTimerMode,
             _that.motorOff,
             _that.motorOn,
             _that.motorOnDuration,
@@ -402,6 +428,8 @@ extension UserDataUploadPatterns on UserDataUpload {
             @JsonKey(name: 'ACPowerFail') String acPowerFail,
             @JsonKey(name: 'ACPowerFailDuration') int acPowerFailDuration,
             @JsonKey(name: 'CalibDuration') int calibDuration,
+            @JsonKey(name: 'CALIB_DONE') String calibDone,
+            @JsonKey(name: 'isTimerMode') String isTimerMode,
             @JsonKey(name: 'MotorOff') String motorOff,
             @JsonKey(name: 'MotorOn') String motorOn,
             @JsonKey(name: 'MotorOnDuration') int motorOnDuration,
@@ -425,6 +453,8 @@ extension UserDataUploadPatterns on UserDataUpload {
             _that.acPowerFail,
             _that.acPowerFailDuration,
             _that.calibDuration,
+            _that.calibDone,
+            _that.isTimerMode,
             _that.motorOff,
             _that.motorOn,
             _that.motorOnDuration,
@@ -461,6 +491,8 @@ extension UserDataUploadPatterns on UserDataUpload {
             @JsonKey(name: 'ACPowerFail') String acPowerFail,
             @JsonKey(name: 'ACPowerFailDuration') int acPowerFailDuration,
             @JsonKey(name: 'CalibDuration') int calibDuration,
+            @JsonKey(name: 'CALIB_DONE') String calibDone,
+            @JsonKey(name: 'isTimerMode') String isTimerMode,
             @JsonKey(name: 'MotorOff') String motorOff,
             @JsonKey(name: 'MotorOn') String motorOn,
             @JsonKey(name: 'MotorOnDuration') int motorOnDuration,
@@ -484,6 +516,8 @@ extension UserDataUploadPatterns on UserDataUpload {
             _that.acPowerFail,
             _that.acPowerFailDuration,
             _that.calibDuration,
+            _that.calibDone,
+            _that.isTimerMode,
             _that.motorOff,
             _that.motorOn,
             _that.motorOnDuration,
@@ -510,6 +544,8 @@ class _UserDataUpload extends UserDataUpload {
       @JsonKey(name: 'ACPowerFail') this.acPowerFail,
       @JsonKey(name: 'ACPowerFailDuration') this.acPowerFailDuration,
       @JsonKey(name: 'CalibDuration') this.calibDuration,
+      @JsonKey(name: 'CALIB_DONE') this.calibDone,
+      @JsonKey(name: 'isTimerMode') this.isTimerMode,
       @JsonKey(name: 'MotorOff') this.motorOff,
       @JsonKey(name: 'MotorOn') this.motorOn,
       @JsonKey(name: 'MotorOnDuration') this.motorOnDuration,
@@ -538,6 +574,12 @@ class _UserDataUpload extends UserDataUpload {
   @override
   @JsonKey(name: 'CalibDuration')
   final int calibDuration;
+  @override
+  @JsonKey(name: 'CALIB_DONE')
+  final String calibDone;
+  @override
+  @JsonKey(name: 'isTimerMode')
+  final String isTimerMode;
   @override
   @JsonKey(name: 'MotorOff')
   final String motorOff;
@@ -616,6 +658,10 @@ class _UserDataUpload extends UserDataUpload {
                 other.acPowerFailDuration == acPowerFailDuration) &&
             (identical(other.calibDuration, calibDuration) ||
                 other.calibDuration == calibDuration) &&
+            (identical(other.calibDone, calibDone) ||
+                other.calibDone == calibDone) &&
+            (identical(other.isTimerMode, isTimerMode) ||
+                other.isTimerMode == isTimerMode) &&
             (identical(other.motorOff, motorOff) ||
                 other.motorOff == motorOff) &&
             (identical(other.motorOn, motorOn) || other.motorOn == motorOn) &&
@@ -647,6 +693,8 @@ class _UserDataUpload extends UserDataUpload {
       acPowerFail,
       acPowerFailDuration,
       calibDuration,
+      calibDone,
+      isTimerMode,
       motorOff,
       motorOn,
       motorOnDuration,
@@ -663,7 +711,7 @@ class _UserDataUpload extends UserDataUpload {
 
   @override
   String toString() {
-    return 'UserDataUpload(acPowerFail: $acPowerFail, acPowerFailDuration: $acPowerFailDuration, calibDuration: $calibDuration, motorOff: $motorOff, motorOn: $motorOn, motorOnDuration: $motorOnDuration, rftSensConnect: $rftSensConnect, rsvSensConnect: $rsvSensConnect, rsvEmpty: $rsvEmpty, rsvLevelChangeAtCalib: $rsvLevelChangeAtCalib, rftLevelData: $rftLevelData, rsvLevelData: $rsvLevelData, avgCalib: $avgCalib, calibT0: $calibT0, calibT1: $calibT1, calibT2: $calibT2)';
+    return 'UserDataUpload(acPowerFail: $acPowerFail, acPowerFailDuration: $acPowerFailDuration, calibDuration: $calibDuration, calibDone: $calibDone, isTimerMode: $isTimerMode, motorOff: $motorOff, motorOn: $motorOn, motorOnDuration: $motorOnDuration, rftSensConnect: $rftSensConnect, rsvSensConnect: $rsvSensConnect, rsvEmpty: $rsvEmpty, rsvLevelChangeAtCalib: $rsvLevelChangeAtCalib, rftLevelData: $rftLevelData, rsvLevelData: $rsvLevelData, avgCalib: $avgCalib, calibT0: $calibT0, calibT1: $calibT1, calibT2: $calibT2)';
   }
 }
 
@@ -679,6 +727,8 @@ abstract mixin class _$UserDataUploadCopyWith<$Res>
       {@JsonKey(name: 'ACPowerFail') String acPowerFail,
       @JsonKey(name: 'ACPowerFailDuration') int acPowerFailDuration,
       @JsonKey(name: 'CalibDuration') int calibDuration,
+      @JsonKey(name: 'CALIB_DONE') String calibDone,
+      @JsonKey(name: 'isTimerMode') String isTimerMode,
       @JsonKey(name: 'MotorOff') String motorOff,
       @JsonKey(name: 'MotorOn') String motorOn,
       @JsonKey(name: 'MotorOnDuration') int motorOnDuration,
@@ -710,6 +760,8 @@ class __$UserDataUploadCopyWithImpl<$Res>
     Object? acPowerFail = null,
     Object? acPowerFailDuration = null,
     Object? calibDuration = null,
+    Object? calibDone = null,
+    Object? isTimerMode = null,
     Object? motorOff = null,
     Object? motorOn = null,
     Object? motorOnDuration = null,
@@ -737,6 +789,14 @@ class __$UserDataUploadCopyWithImpl<$Res>
           ? _self.calibDuration
           : calibDuration // ignore: cast_nullable_to_non_nullable
               as int,
+      null == calibDone
+          ? _self.calibDone
+          : calibDone // ignore: cast_nullable_to_non_nullable
+              as String,
+      null == isTimerMode
+          ? _self.isTimerMode
+          : isTimerMode // ignore: cast_nullable_to_non_nullable
+              as String,
       null == motorOff
           ? _self.motorOff
           : motorOff // ignore: cast_nullable_to_non_nullable

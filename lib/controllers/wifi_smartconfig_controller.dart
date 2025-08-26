@@ -14,19 +14,9 @@ class WifiSmartConfigController extends AsyncNotifier<ConnectionModel> {
   FutureOr<ConnectionModel> build() async {
     await requestLocationPermission();
     await checkConnectivity();
-    await refreshConnectionDetails();
+    final connectionModel = await refreshConnectionDetails();
 
-    return ConnectionModel(
-      bssid: '',
-      name: '',
-    );
-  }
-
-  void stopProvisionerAfterConnection() {
-    provisioner.listen((response) {
-      log('device ${response.bssidText} connected to WiFi');
-      provisioner.stop();
-    });
+    return connectionModel;
   }
 
   Future<void> requestLocationPermission() async {
@@ -50,22 +40,29 @@ class WifiSmartConfigController extends AsyncNotifier<ConnectionModel> {
     throw Exception('No WiFi connection');
   }
 
-  Future<void> refreshConnectionDetails({bool set = false}) async {
+  Future<ConnectionModel> refreshConnectionDetails() async {
     state = AsyncValue.loading();
     try {
       await checkConnectivity();
       final info = NetworkInfo();
+
       final wifiName = await info.getWifiName();
       final wifiBSSID = await info.getWifiBSSID();
 
-      if (set) {
-        state = AsyncValue.data(ConnectionModel(
-          bssid: wifiBSSID,
-          name: wifiName,
-        ));
-      }
+      log('Wi-Fi Name: $wifiName');
+      log('Wi-Fi BSSID: $wifiBSSID');
+
+      state = AsyncValue.data(ConnectionModel(
+        bssid: wifiBSSID,
+        name: wifiName,
+      ));
+      return state.requireValue;
     } catch (e) {
       state = AsyncValue.error(e, StackTrace.current);
+      return ConnectionModel(
+        bssid: '',
+        name: '',
+      );
     }
   }
 

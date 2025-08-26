@@ -218,7 +218,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               ),
             ),
             MotorControlsWidget(
-              isMotorOn: appUser.userDataUpload.motorOn == "yes",
+              isMotorOn: appUser.userDataUpload.motorOn == "true",
               isAutoMode: _isAutoMode,
               onMotorToggle: () async {
                 if (_isAutoMode) {

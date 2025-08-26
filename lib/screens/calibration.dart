@@ -38,7 +38,7 @@ class _CalibrationScreenState extends State<CalibrationScreen>
 
     if (deviceId.isEmpty) return;
 
-    _sub = FBCollections.userDataReceive
+    _sub = FBCollections.userDataUpload
         .doc(deviceId)
         .snapshots()
         .listen((snapshot) async {
