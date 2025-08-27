@@ -20,8 +20,8 @@ class UsageStatsWidget extends StatelessWidget {
           padding: EdgeInsets.all(4.w),
           margin: EdgeInsets.only(bottom: 2.h),
           decoration: BoxDecoration(
-            color: const Color(0xFF1E3A8A),
-            borderRadius: BorderRadius.circular(12),
+            color: const Color.fromARGB(255, 2, 37, 133),
+            borderRadius: BorderRadius.circular(20),
           ),
           child: Row(
             children: [
@@ -65,8 +65,8 @@ class UsageStatsWidget extends StatelessWidget {
           width: 85.w,
           padding: EdgeInsets.all(4.w),
           decoration: BoxDecoration(
-            color: const Color(0xFF1E3A8A),
-            borderRadius: BorderRadius.circular(12),
+            color: const Color.fromARGB(255, 2, 37, 133),
+            borderRadius: BorderRadius.circular(20),
           ),
           child: Row(
             children: [

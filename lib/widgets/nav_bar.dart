@@ -4,6 +4,7 @@ import 'package:water_saver/screens/adjustment.dart';
 import 'package:water_saver/screens/home.dart';
 import 'package:water_saver/screens/settings.dart';
 import 'package:water_saver/screens/report.dart';
+import 'package:water_saver/theme/gradient.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({super.key});
@@ -37,37 +38,45 @@ class _BottomNavBarState extends State<BottomNavBar> {
       3 => 'Settings',
       _ => 'Profile', // Default case
     };
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xFF071526),
-        scrolledUnderElevation: 0,
-        title: Text(
-          title,
-          style: TextStyle(
-            fontSize: 20.sp,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-        centerTitle: true,
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: AppColors.primaryGradient,
       ),
-      body: _pages[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Color(0xFF071526),
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.bar_chart), label: 'Analytics'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.handyman), label: 'Adjustments'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.settings), label: 'Settings'),
-        ],
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          title: Text(
+            title,
+            style: TextStyle(
+              fontSize: 20.sp,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          centerTitle: true,
+        ),
+        body: _pages[_selectedIndex],
+        bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: const Color.fromARGB(0, 111, 111, 111),
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
+          type: BottomNavigationBarType.fixed,
+          selectedItemColor: const Color.fromARGB(255, 255, 255, 255),
+          unselectedItemColor: const Color(0xFFA0AEC0),
+          elevation: 0,
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.bar_chart), label: 'Analytics'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.handyman), label: 'Adjustments'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.settings), label: 'Settings'),
+          ],
+        ),
       ),
     );
   }

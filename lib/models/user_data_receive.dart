@@ -9,6 +9,7 @@ abstract class UserDataReceive with _$UserDataReceive {
     @JsonKey(name: 'Auto_toggle_consent') required bool autoToggleConsent,
     @JsonKey(name: 'MOTOR_ON') required String motorOn,
     @JsonKey(name: 'Calibration_repeat') required String calibrationRepeat,
+    @JsonKey(name: 'Wifi_Config') required bool wifiConfig,
     @JsonKey(name: "RFT_CALIB_CHK_INT") required String rftCalibChkInt,
     @JsonKey(name: "RFT_CONN_CHK_INT") required String rftConnChkInt,
     @JsonKey(name: "RFT_height") required String rftHeight,

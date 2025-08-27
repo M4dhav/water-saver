@@ -7,8 +7,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:water_saver/models/app_user.dart';
-import 'package:water_saver/models/firebase_model.dart';
 import 'package:water_saver/providers/app_user_controller_provider.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {

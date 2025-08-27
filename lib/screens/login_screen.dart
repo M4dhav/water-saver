@@ -2,17 +2,19 @@ import 'dart:developer';
 
 import 'package:auth_button_kit/auth_button_kit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:water_saver/controllers/auth_controller.dart';
+import 'package:water_saver/providers/app_user_controller_provider.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends ConsumerWidget {
   LoginScreen({super.key});
 
   final AuthController _authController = AuthController();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: const Color(0xFF071526),
       body: Padding(
@@ -57,15 +59,35 @@ class LoginScreen extends StatelessWidget {
                           log(user.email ?? 'No email');
                           _authController
                               .checkIfUserExists(user.email ?? '')
-                              .then((exists) {
+                              .then((exists) async {
                             if (!exists) {
                               messenger.showSnackBar(
                                 const SnackBar(
                                     content: Text('User does not exist')),
                               );
-                              //TODO: Change routing logic to account for user login from new device
                             } else {
-                              router.go('/wifiConfig');
+                              try {
+                                final appUser = await ref
+                                    .read(appUserControllerProvider.future);
+                                final userDataUpload = appUser.userDataUpload;
+                                final userDataReceive = appUser.userDataReceive;
+                                if (userDataUpload.calibDone == 'yes') {
+                                  if (userDataReceive.wifiConfig == 'true') {
+                                    router.go('/home');
+                                  } else {
+                                    router.go('/wifiConfig');
+                                  }
+                                } else {
+                                  if (userDataReceive.wifiConfig == 'true') {
+                                    router.go('/calibration');
+                                  } else {
+                                    router.go('/wifiConfig');
+                                  }
+                                }
+                              } catch (e) {
+                                log('Error checking user data for navigation: $e');
+                                router.go('/wifiConfig');
+                              }
                             }
                           });
                         } else {

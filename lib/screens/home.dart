@@ -159,7 +159,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     return appUser.when(
         data: (appUser) => buildHomeBody(appUser, appUserController),
         error: (error, stackTrace) => Scaffold(
-              backgroundColor: const Color(0xFF071526),
+              backgroundColor: Colors.transparent,
               body: Center(
                 child: Text(
                   'Error: $error',
@@ -168,7 +168,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               ),
             ),
         loading: () => Scaffold(
-              backgroundColor: const Color(0xFF071526),
+              backgroundColor: Colors.transparent,
               body: const Center(
                 child: CircularProgressIndicator(
                   color: Colors.white,
@@ -199,17 +199,13 @@ class _HomePageState extends ConsumerState<HomePage> {
     int washingMachines = (volume / 20).floor();
 
     return Scaffold(
-      backgroundColor: const Color(0xFF071526),
+      backgroundColor: Colors.transparent,
       body: SingleChildScrollView(
         child: Column(
           children: [
             Container(
               width: double.infinity,
               padding: EdgeInsets.all(6.w),
-              decoration: BoxDecoration(
-                color: const Color(0xFF071526),
-                borderRadius: BorderRadius.circular(20),
-              ),
               child: WaterTankWidget(
                 fillPercentage: fillPercentage,
                 waterLevel: waterLevel,
@@ -218,7 +214,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               ),
             ),
             MotorControlsWidget(
-              isMotorOn: appUser.userDataUpload.motorOn == "true",
+              isMotorOn: appUser.userDataUpload.motorOn == "yes",
               isAutoMode: _isAutoMode,
               onMotorToggle: () async {
                 if (_isAutoMode) {
@@ -230,7 +226,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                           style: TextStyle(color: Colors.white)),
                       content: const Text(
                           'This action cannot be performed in Mannual mode.',
-                          style: TextStyle(color: Colors.white70)),
+                          style: TextStyle(color: Color(0xFFE2E8F0))),
                       actions: [
                         TextButton(
                           style: TextButton.styleFrom(
@@ -304,8 +300,8 @@ class _HomePageState extends ConsumerState<HomePage> {
             Container(
               width: double.infinity,
               padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
-              decoration: const BoxDecoration(
-                color: Color(0xFF1E3A8A),
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 2, 37, 133),
               ),
               child: Text(
                 'Insights',
@@ -321,6 +317,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               buckets: buckets,
               washingMachines: washingMachines,
             ),
+            SizedBox(height: 2.h),
           ],
         ),
       ),

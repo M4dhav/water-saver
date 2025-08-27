@@ -37,7 +37,7 @@ class WaterTankWidget extends StatelessWidget {
                 'volume',
                 style: TextStyle(
                   fontSize: 16.sp,
-                  color: Colors.white70,
+                  color: const Color(0xFFE2E8F0),
                 ),
               ),
             ],
@@ -62,7 +62,7 @@ class WaterTankWidget extends StatelessWidget {
                       'from the bottom',
                       style: TextStyle(
                         fontSize: 14.sp,
-                        color: Colors.white70,
+                        color: const Color(0xFFE2E8F0),
                       ),
                     ),
                     SizedBox(height: 3.h),
@@ -78,7 +78,7 @@ class WaterTankWidget extends StatelessWidget {
                       'filled',
                       style: TextStyle(
                         fontSize: 14.sp,
-                        color: Colors.white70,
+                        color: const Color(0xFFE2E8F0),
                       ),
                     ),
                   ],
@@ -87,9 +87,9 @@ class WaterTankWidget extends StatelessWidget {
               LiquidCustomProgressIndicator(
                 direction: Axis.vertical,
                 value: fillPercentage / 100,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                    Color.fromARGB(255, 54, 159, 208)),
-                backgroundColor: Color.fromARGB(255, 152, 216, 246),
+                valueColor: const AlwaysStoppedAnimation<Color>(
+                    Color.fromARGB(255, 4, 167, 242)),
+                backgroundColor: const Color(0xFF98D8F6),
                 shapePath: buildWaterTankPath(size: Size(44.w, 27.h)),
               ),
             ],

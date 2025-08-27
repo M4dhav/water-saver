@@ -20,6 +20,8 @@ mixin _$UserDataReceive {
   String get motorOn;
   @JsonKey(name: 'Calibration_repeat')
   String get calibrationRepeat;
+  @JsonKey(name: 'Wifi_Config')
+  bool get wifiConfig;
   @JsonKey(name: "RFT_CALIB_CHK_INT")
   String get rftCalibChkInt;
   @JsonKey(name: "RFT_CONN_CHK_INT")
@@ -58,6 +60,8 @@ mixin _$UserDataReceive {
             (identical(other.motorOn, motorOn) || other.motorOn == motorOn) &&
             (identical(other.calibrationRepeat, calibrationRepeat) ||
                 other.calibrationRepeat == calibrationRepeat) &&
+            (identical(other.wifiConfig, wifiConfig) ||
+                other.wifiConfig == wifiConfig) &&
             (identical(other.rftCalibChkInt, rftCalibChkInt) ||
                 other.rftCalibChkInt == rftCalibChkInt) &&
             (identical(other.rftConnChkInt, rftConnChkInt) ||
@@ -83,6 +87,7 @@ mixin _$UserDataReceive {
       autoToggleConsent,
       motorOn,
       calibrationRepeat,
+      wifiConfig,
       rftCalibChkInt,
       rftConnChkInt,
       rftHeight,
@@ -94,7 +99,7 @@ mixin _$UserDataReceive {
 
   @override
   String toString() {
-    return 'UserDataReceive(autoToggleConsent: $autoToggleConsent, motorOn: $motorOn, calibrationRepeat: $calibrationRepeat, rftCalibChkInt: $rftCalibChkInt, rftConnChkInt: $rftConnChkInt, rftHeight: $rftHeight, rftThDnPercent: $rftThDnPercent, rftThUpPercent: $rftThUpPercent, rsvConnChkInt: $rsvConnChkInt, rsvHeight: $rsvHeight, rsvThDnPercent: $rsvThDnPercent)';
+    return 'UserDataReceive(autoToggleConsent: $autoToggleConsent, motorOn: $motorOn, calibrationRepeat: $calibrationRepeat, wifiConfig: $wifiConfig, rftCalibChkInt: $rftCalibChkInt, rftConnChkInt: $rftConnChkInt, rftHeight: $rftHeight, rftThDnPercent: $rftThDnPercent, rftThUpPercent: $rftThUpPercent, rsvConnChkInt: $rsvConnChkInt, rsvHeight: $rsvHeight, rsvThDnPercent: $rsvThDnPercent)';
   }
 }
 
@@ -108,6 +113,7 @@ abstract mixin class $UserDataReceiveCopyWith<$Res> {
       {@JsonKey(name: 'Auto_toggle_consent') bool autoToggleConsent,
       @JsonKey(name: 'MOTOR_ON') String motorOn,
       @JsonKey(name: 'Calibration_repeat') String calibrationRepeat,
+      @JsonKey(name: 'Wifi_Config') bool wifiConfig,
       @JsonKey(name: "RFT_CALIB_CHK_INT") String rftCalibChkInt,
       @JsonKey(name: "RFT_CONN_CHK_INT") String rftConnChkInt,
       @JsonKey(name: "RFT_height") String rftHeight,
@@ -134,6 +140,7 @@ class _$UserDataReceiveCopyWithImpl<$Res>
     Object? autoToggleConsent = null,
     Object? motorOn = null,
     Object? calibrationRepeat = null,
+    Object? wifiConfig = null,
     Object? rftCalibChkInt = null,
     Object? rftConnChkInt = null,
     Object? rftHeight = null,
@@ -156,6 +163,10 @@ class _$UserDataReceiveCopyWithImpl<$Res>
           ? _self.calibrationRepeat
           : calibrationRepeat // ignore: cast_nullable_to_non_nullable
               as String,
+      wifiConfig: null == wifiConfig
+          ? _self.wifiConfig
+          : wifiConfig // ignore: cast_nullable_to_non_nullable
+              as bool,
       rftCalibChkInt: null == rftCalibChkInt
           ? _self.rftCalibChkInt
           : rftCalibChkInt // ignore: cast_nullable_to_non_nullable
@@ -289,6 +300,7 @@ extension UserDataReceivePatterns on UserDataReceive {
             @JsonKey(name: 'Auto_toggle_consent') bool autoToggleConsent,
             @JsonKey(name: 'MOTOR_ON') String motorOn,
             @JsonKey(name: 'Calibration_repeat') String calibrationRepeat,
+            @JsonKey(name: 'Wifi_Config') bool wifiConfig,
             @JsonKey(name: "RFT_CALIB_CHK_INT") String rftCalibChkInt,
             @JsonKey(name: "RFT_CONN_CHK_INT") String rftConnChkInt,
             @JsonKey(name: "RFT_height") String rftHeight,
@@ -307,6 +319,7 @@ extension UserDataReceivePatterns on UserDataReceive {
             _that.autoToggleConsent,
             _that.motorOn,
             _that.calibrationRepeat,
+            _that.wifiConfig,
             _that.rftCalibChkInt,
             _that.rftConnChkInt,
             _that.rftHeight,
@@ -339,6 +352,7 @@ extension UserDataReceivePatterns on UserDataReceive {
             @JsonKey(name: 'Auto_toggle_consent') bool autoToggleConsent,
             @JsonKey(name: 'MOTOR_ON') String motorOn,
             @JsonKey(name: 'Calibration_repeat') String calibrationRepeat,
+            @JsonKey(name: 'Wifi_Config') bool wifiConfig,
             @JsonKey(name: "RFT_CALIB_CHK_INT") String rftCalibChkInt,
             @JsonKey(name: "RFT_CONN_CHK_INT") String rftConnChkInt,
             @JsonKey(name: "RFT_height") String rftHeight,
@@ -356,6 +370,7 @@ extension UserDataReceivePatterns on UserDataReceive {
             _that.autoToggleConsent,
             _that.motorOn,
             _that.calibrationRepeat,
+            _that.wifiConfig,
             _that.rftCalibChkInt,
             _that.rftConnChkInt,
             _that.rftHeight,
@@ -387,6 +402,7 @@ extension UserDataReceivePatterns on UserDataReceive {
             @JsonKey(name: 'Auto_toggle_consent') bool autoToggleConsent,
             @JsonKey(name: 'MOTOR_ON') String motorOn,
             @JsonKey(name: 'Calibration_repeat') String calibrationRepeat,
+            @JsonKey(name: 'Wifi_Config') bool wifiConfig,
             @JsonKey(name: "RFT_CALIB_CHK_INT") String rftCalibChkInt,
             @JsonKey(name: "RFT_CONN_CHK_INT") String rftConnChkInt,
             @JsonKey(name: "RFT_height") String rftHeight,
@@ -404,6 +420,7 @@ extension UserDataReceivePatterns on UserDataReceive {
             _that.autoToggleConsent,
             _that.motorOn,
             _that.calibrationRepeat,
+            _that.wifiConfig,
             _that.rftCalibChkInt,
             _that.rftConnChkInt,
             _that.rftHeight,
@@ -425,6 +442,7 @@ class _UserDataReceive implements UserDataReceive {
       {@JsonKey(name: 'Auto_toggle_consent') required this.autoToggleConsent,
       @JsonKey(name: 'MOTOR_ON') required this.motorOn,
       @JsonKey(name: 'Calibration_repeat') required this.calibrationRepeat,
+      @JsonKey(name: 'Wifi_Config') required this.wifiConfig,
       @JsonKey(name: "RFT_CALIB_CHK_INT") required this.rftCalibChkInt,
       @JsonKey(name: "RFT_CONN_CHK_INT") required this.rftConnChkInt,
       @JsonKey(name: "RFT_height") required this.rftHeight,
@@ -445,6 +463,9 @@ class _UserDataReceive implements UserDataReceive {
   @override
   @JsonKey(name: 'Calibration_repeat')
   final String calibrationRepeat;
+  @override
+  @JsonKey(name: 'Wifi_Config')
+  final bool wifiConfig;
   @override
   @JsonKey(name: "RFT_CALIB_CHK_INT")
   final String rftCalibChkInt;
@@ -495,6 +516,8 @@ class _UserDataReceive implements UserDataReceive {
             (identical(other.motorOn, motorOn) || other.motorOn == motorOn) &&
             (identical(other.calibrationRepeat, calibrationRepeat) ||
                 other.calibrationRepeat == calibrationRepeat) &&
+            (identical(other.wifiConfig, wifiConfig) ||
+                other.wifiConfig == wifiConfig) &&
             (identical(other.rftCalibChkInt, rftCalibChkInt) ||
                 other.rftCalibChkInt == rftCalibChkInt) &&
             (identical(other.rftConnChkInt, rftConnChkInt) ||
@@ -520,6 +543,7 @@ class _UserDataReceive implements UserDataReceive {
       autoToggleConsent,
       motorOn,
       calibrationRepeat,
+      wifiConfig,
       rftCalibChkInt,
       rftConnChkInt,
       rftHeight,
@@ -531,7 +555,7 @@ class _UserDataReceive implements UserDataReceive {
 
   @override
   String toString() {
-    return 'UserDataReceive(autoToggleConsent: $autoToggleConsent, motorOn: $motorOn, calibrationRepeat: $calibrationRepeat, rftCalibChkInt: $rftCalibChkInt, rftConnChkInt: $rftConnChkInt, rftHeight: $rftHeight, rftThDnPercent: $rftThDnPercent, rftThUpPercent: $rftThUpPercent, rsvConnChkInt: $rsvConnChkInt, rsvHeight: $rsvHeight, rsvThDnPercent: $rsvThDnPercent)';
+    return 'UserDataReceive(autoToggleConsent: $autoToggleConsent, motorOn: $motorOn, calibrationRepeat: $calibrationRepeat, wifiConfig: $wifiConfig, rftCalibChkInt: $rftCalibChkInt, rftConnChkInt: $rftConnChkInt, rftHeight: $rftHeight, rftThDnPercent: $rftThDnPercent, rftThUpPercent: $rftThUpPercent, rsvConnChkInt: $rsvConnChkInt, rsvHeight: $rsvHeight, rsvThDnPercent: $rsvThDnPercent)';
   }
 }
 
@@ -547,6 +571,7 @@ abstract mixin class _$UserDataReceiveCopyWith<$Res>
       {@JsonKey(name: 'Auto_toggle_consent') bool autoToggleConsent,
       @JsonKey(name: 'MOTOR_ON') String motorOn,
       @JsonKey(name: 'Calibration_repeat') String calibrationRepeat,
+      @JsonKey(name: 'Wifi_Config') bool wifiConfig,
       @JsonKey(name: "RFT_CALIB_CHK_INT") String rftCalibChkInt,
       @JsonKey(name: "RFT_CONN_CHK_INT") String rftConnChkInt,
       @JsonKey(name: "RFT_height") String rftHeight,
@@ -573,6 +598,7 @@ class __$UserDataReceiveCopyWithImpl<$Res>
     Object? autoToggleConsent = null,
     Object? motorOn = null,
     Object? calibrationRepeat = null,
+    Object? wifiConfig = null,
     Object? rftCalibChkInt = null,
     Object? rftConnChkInt = null,
     Object? rftHeight = null,
@@ -595,6 +621,10 @@ class __$UserDataReceiveCopyWithImpl<$Res>
           ? _self.calibrationRepeat
           : calibrationRepeat // ignore: cast_nullable_to_non_nullable
               as String,
+      wifiConfig: null == wifiConfig
+          ? _self.wifiConfig
+          : wifiConfig // ignore: cast_nullable_to_non_nullable
+              as bool,
       rftCalibChkInt: null == rftCalibChkInt
           ? _self.rftCalibChkInt
           : rftCalibChkInt // ignore: cast_nullable_to_non_nullable

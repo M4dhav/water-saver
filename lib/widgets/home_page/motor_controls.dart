@@ -20,11 +20,6 @@ class MotorControlsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // padding: EdgeInsets.all(4.w),
-      decoration: BoxDecoration(
-        color: const Color(0xFF071526),
-        borderRadius: BorderRadius.circular(12),
-      ),
       child: Column(
         children: [
           Row(
@@ -32,69 +27,77 @@ class MotorControlsWidget extends StatelessWidget {
             children: [
               Container(
                 decoration: BoxDecoration(
-                    color: const Color(0xFF1E3A8A),
-                    borderRadius: BorderRadius.circular(12)),
-                width: 40.w,
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Icon(
-                        Icons.gas_meter,
-                        color: Colors.white,
-                      ),
-                      Text(
-                        'Motor',
-                        style: TextStyle(
-                          fontSize: 18.sp,
+                  color: const Color.fromARGB(255, 2, 37, 133),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                width: 41.w,
+                child: Padding(
+                  padding: EdgeInsets.all(1.w),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Icon(
+                          Icons.gas_meter,
                           color: Colors.white,
-                          fontWeight: FontWeight.w500,
                         ),
-                      ),
-                      Tooltip(
-                        message: isAutoMode ? 'Disabled in Auto mode' : '',
-                        triggerMode: TooltipTriggerMode.tap,
-                        child: Switch(
-                          value: isMotorOn,
-                          onChanged: (_) => onMotorToggle(),
-                          activeColor: Color.fromARGB(255, 152, 216, 246),
-                          activeTrackColor: Color.fromARGB(255, 54, 159, 208),
-                          inactiveThumbColor:
-                              Color.fromARGB(255, 152, 216, 246),
-                          inactiveTrackColor: Colors.grey[700],
+                        Text(
+                          'Motor',
+                          style: TextStyle(
+                            fontSize: 18.sp,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                      ),
-                    ]),
+                        Tooltip(
+                          message: isAutoMode ? 'Disabled in Auto mode' : '',
+                          triggerMode: TooltipTriggerMode.tap,
+                          child: Switch(
+                            value: isMotorOn,
+                            onChanged: (_) => onMotorToggle(),
+                            activeColor: const Color(0xFF98D8F6),
+                            activeTrackColor:
+                                const Color.fromARGB(255, 74, 165, 207),
+                            inactiveThumbColor: const Color(0xFF98D8F6),
+                            inactiveTrackColor: Colors.grey[700],
+                          ),
+                        ),
+                      ]),
+                ),
               ),
               Container(
                 decoration: BoxDecoration(
-                    color: const Color(0xFF1E3A8A),
-                    borderRadius: BorderRadius.circular(12)),
+                  color: const Color.fromARGB(255, 2, 37, 133),
+                  borderRadius: BorderRadius.circular(20),
+                ),
                 width: 40.w,
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Icon(
-                        Icons.auto_mode,
-                        color: Colors.white,
-                      ),
-                      Text(
-                        isAutoMode ? 'Auto' : 'Manual',
-                        style: TextStyle(
-                          fontSize: 18.sp,
+                child: Padding(
+                  padding: EdgeInsets.all(1.w),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Icon(
+                          Icons.auto_mode,
                           color: Colors.white,
-                          fontWeight: FontWeight.w500,
                         ),
-                      ),
-                      Switch(
-                        value: isAutoMode,
-                        onChanged: (_) => onAutoToggle(),
-                        activeColor: Color.fromARGB(255, 152, 216, 246),
-                        activeTrackColor: Color.fromARGB(255, 54, 159, 208),
-                        inactiveThumbColor: Color.fromARGB(255, 152, 216, 246),
-                        inactiveTrackColor: Colors.grey[700],
-                        padding: EdgeInsets.zero,
-                      ),
-                    ]),
+                        Text(
+                          isAutoMode ? 'Auto' : 'Manual',
+                          style: TextStyle(
+                            fontSize: 18.sp,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Switch(
+                          value: isAutoMode,
+                          onChanged: (_) => onAutoToggle(),
+                          activeColor: const Color(0xFF98D8F6),
+                          activeTrackColor: Color.fromARGB(255, 74, 165, 207),
+                          inactiveThumbColor: const Color(0xFF98D8F6),
+                          inactiveTrackColor: Colors.grey[700],
+                          padding: EdgeInsets.zero,
+                        ),
+                      ]),
+                ),
               ),
             ],
           ),
