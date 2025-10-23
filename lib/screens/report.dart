@@ -4,7 +4,8 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:water_saver/controllers/graph_controller.dart';
 import 'package:water_saver/models/graph_page_model.dart';
 import 'package:water_saver/providers/graph_controller_provider.dart';
-import 'package:water_saver/widgets/report/graph.dart';
+import 'package:water_saver/widgets/report/motor_graph.dart';
+import 'package:water_saver/widgets/report/water_consumption_graph.dart';
 
 class ReportPage extends ConsumerWidget {
   const ReportPage({super.key});
@@ -30,6 +31,10 @@ class ReportPage extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           MotorStateGraph(
+            controller: controller,
+            pageData: pageData,
+          ),
+          WaterConsumptionGraph(
             controller: controller,
             pageData: pageData,
           ),

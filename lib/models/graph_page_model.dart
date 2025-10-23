@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:water_saver/models/level_data_history.dart';
 import 'package:water_saver/models/motor_state_data.dart';
 
 part 'generated/graph_page_model.freezed.dart';
@@ -18,6 +19,8 @@ abstract class GraphPageModel with _$GraphPageModel {
     required List<MotorStateData> motorStateData,
     required List<MotorStateData> motorStateDataOn,
     required List<MotorStateData> motorStateDataOff,
+    required List<LevelDataHistory> rftLevelData,
+    required List<LevelDataHistory> rsvLevelData,
     @Default(SelectedPeriod.week) SelectedPeriod selectedPeriod,
   }) = _GraphPageModel;
 }

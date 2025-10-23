@@ -21,6 +21,8 @@ mixin _$MotorStateData {
   String get motorOn;
   @JsonKey(name: "motorOff")
   String get motorOff;
+  @JsonKey(name: "source")
+  String get source;
 
   /// Create a copy of MotorStateData
   /// with the given fields replaced by the non-null parameter values.
@@ -41,16 +43,17 @@ mixin _$MotorStateData {
             (identical(other.time, time) || other.time == time) &&
             (identical(other.motorOn, motorOn) || other.motorOn == motorOn) &&
             (identical(other.motorOff, motorOff) ||
-                other.motorOff == motorOff));
+                other.motorOff == motorOff) &&
+            (identical(other.source, source) || other.source == source));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, time, motorOn, motorOff);
+  int get hashCode => Object.hash(runtimeType, time, motorOn, motorOff, source);
 
   @override
   String toString() {
-    return 'MotorStateData(time: $time, motorOn: $motorOn, motorOff: $motorOff)';
+    return 'MotorStateData(time: $time, motorOn: $motorOn, motorOff: $motorOff, source: $source)';
   }
 }
 
@@ -67,7 +70,8 @@ abstract mixin class $MotorStateDataCopyWith<$Res> {
           toJson: dateTimeToEpochMs)
       DateTime time,
       @JsonKey(name: "motorOn") String motorOn,
-      @JsonKey(name: "motorOff") String motorOff});
+      @JsonKey(name: "motorOff") String motorOff,
+      @JsonKey(name: "source") String source});
 }
 
 /// @nodoc
@@ -86,6 +90,7 @@ class _$MotorStateDataCopyWithImpl<$Res>
     Object? time = null,
     Object? motorOn = null,
     Object? motorOff = null,
+    Object? source = null,
   }) {
     return _then(_self.copyWith(
       time: null == time
@@ -99,6 +104,10 @@ class _$MotorStateDataCopyWithImpl<$Res>
       motorOff: null == motorOff
           ? _self.motorOff
           : motorOff // ignore: cast_nullable_to_non_nullable
+              as String,
+      source: null == source
+          ? _self.source
+          : source // ignore: cast_nullable_to_non_nullable
               as String,
     ));
   }
@@ -204,14 +213,16 @@ extension MotorStateDataPatterns on MotorStateData {
                 toJson: dateTimeToEpochMs)
             DateTime time,
             @JsonKey(name: "motorOn") String motorOn,
-            @JsonKey(name: "motorOff") String motorOff)?
+            @JsonKey(name: "motorOff") String motorOff,
+            @JsonKey(name: "source") String source)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _MotorStateData() when $default != null:
-        return $default(_that.time, _that.motorOn, _that.motorOff);
+        return $default(
+            _that.time, _that.motorOn, _that.motorOff, _that.source);
       case _:
         return orElse();
     }
@@ -239,13 +250,15 @@ extension MotorStateDataPatterns on MotorStateData {
                 toJson: dateTimeToEpochMs)
             DateTime time,
             @JsonKey(name: "motorOn") String motorOn,
-            @JsonKey(name: "motorOff") String motorOff)
+            @JsonKey(name: "motorOff") String motorOff,
+            @JsonKey(name: "source") String source)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _MotorStateData():
-        return $default(_that.time, _that.motorOn, _that.motorOff);
+        return $default(
+            _that.time, _that.motorOn, _that.motorOff, _that.source);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -272,13 +285,15 @@ extension MotorStateDataPatterns on MotorStateData {
                 toJson: dateTimeToEpochMs)
             DateTime time,
             @JsonKey(name: "motorOn") String motorOn,
-            @JsonKey(name: "motorOff") String motorOff)?
+            @JsonKey(name: "motorOff") String motorOff,
+            @JsonKey(name: "source") String source)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _MotorStateData() when $default != null:
-        return $default(_that.time, _that.motorOn, _that.motorOff);
+        return $default(
+            _that.time, _that.motorOn, _that.motorOff, _that.source);
       case _:
         return null;
     }
@@ -295,7 +310,8 @@ class _MotorStateData implements MotorStateData {
           toJson: dateTimeToEpochMs)
       required this.time,
       @JsonKey(name: "motorOn") required this.motorOn,
-      @JsonKey(name: "motorOff") required this.motorOff});
+      @JsonKey(name: "motorOff") required this.motorOff,
+      @JsonKey(name: "source") required this.source});
   factory _MotorStateData.fromJson(Map<String, dynamic> json) =>
       _$MotorStateDataFromJson(json);
 
@@ -309,6 +325,9 @@ class _MotorStateData implements MotorStateData {
   @override
   @JsonKey(name: "motorOff")
   final String motorOff;
+  @override
+  @JsonKey(name: "source")
+  final String source;
 
   /// Create a copy of MotorStateData
   /// with the given fields replaced by the non-null parameter values.
@@ -333,16 +352,17 @@ class _MotorStateData implements MotorStateData {
             (identical(other.time, time) || other.time == time) &&
             (identical(other.motorOn, motorOn) || other.motorOn == motorOn) &&
             (identical(other.motorOff, motorOff) ||
-                other.motorOff == motorOff));
+                other.motorOff == motorOff) &&
+            (identical(other.source, source) || other.source == source));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, time, motorOn, motorOff);
+  int get hashCode => Object.hash(runtimeType, time, motorOn, motorOff, source);
 
   @override
   String toString() {
-    return 'MotorStateData(time: $time, motorOn: $motorOn, motorOff: $motorOff)';
+    return 'MotorStateData(time: $time, motorOn: $motorOn, motorOff: $motorOff, source: $source)';
   }
 }
 
@@ -361,7 +381,8 @@ abstract mixin class _$MotorStateDataCopyWith<$Res>
           toJson: dateTimeToEpochMs)
       DateTime time,
       @JsonKey(name: "motorOn") String motorOn,
-      @JsonKey(name: "motorOff") String motorOff});
+      @JsonKey(name: "motorOff") String motorOff,
+      @JsonKey(name: "source") String source});
 }
 
 /// @nodoc
@@ -380,6 +401,7 @@ class __$MotorStateDataCopyWithImpl<$Res>
     Object? time = null,
     Object? motorOn = null,
     Object? motorOff = null,
+    Object? source = null,
   }) {
     return _then(_MotorStateData(
       time: null == time
@@ -393,6 +415,10 @@ class __$MotorStateDataCopyWithImpl<$Res>
       motorOff: null == motorOff
           ? _self.motorOff
           : motorOff // ignore: cast_nullable_to_non_nullable
+              as String,
+      source: null == source
+          ? _self.source
+          : source // ignore: cast_nullable_to_non_nullable
               as String,
     ));
   }

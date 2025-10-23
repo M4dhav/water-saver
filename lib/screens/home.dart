@@ -29,96 +29,6 @@ class _HomePageState extends ConsumerState<HomePage> {
     _initAutoMode();
   }
 
-  Future<bool?> _showConsentDialog(
-      BuildContext context, String userName) async {
-    bool checked = false;
-    return showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (ctx) {
-        return StatefulBuilder(builder: (ctx, setState) {
-          return AlertDialog(
-            backgroundColor: const Color(0xFF0F1C2E),
-            title: const Text('Warning', style: TextStyle(color: Colors.white)),
-            content: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "You're trying to disable Auto mode which may degrade performance and can damage components.\nWe suggest adjusting thresholds in the Adjustments page.",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Checkbox(
-                        value: checked,
-                        onChanged: (v) => setState(() => checked = v ?? false),
-                        activeColor: const Color(0xFF4ADE80),
-                        side: const BorderSide(color: Colors.white),
-                      ),
-                      Expanded(
-                        child: Text(
-                          'I ($userName) will take responsibility for any damages from turning Auto mode off.',
-                          style: const TextStyle(color: Color(0xFFEF4444)),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                style: TextButton.styleFrom(
-                  foregroundColor: const Color(0xFF4ADE80),
-                ),
-                onPressed: () => Navigator.of(ctx).pop(false),
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                style: TextButton.styleFrom(
-                  foregroundColor: const Color(0xFFEF4444),
-                ),
-                onPressed: checked ? () => Navigator.of(ctx).pop(true) : null,
-                child: const Text('Save'),
-              ),
-            ],
-          );
-        });
-      },
-    );
-  }
-
-  Future<bool?> _confirmAutoOff(BuildContext context) {
-    return showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF0F1C2E),
-        title: const Text('Confirm', style: TextStyle(color: Colors.white)),
-        content: const Text('Do you really want to turn Auto Mode off?',
-            style: TextStyle(color: Colors.white)),
-        actions: [
-          TextButton(
-            style: TextButton.styleFrom(
-              foregroundColor: const Color(0xFF4ADE80),
-            ),
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('No'),
-          ),
-          TextButton(
-            style: TextButton.styleFrom(
-              foregroundColor: const Color(0xFFEF4444),
-            ),
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Yes'),
-          ),
-        ],
-      ),
-    );
-  }
-
   Future<void> _initAutoMode() async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final controller = ref.read(appUserControllerProvider.notifier);
@@ -137,12 +47,11 @@ class _HomePageState extends ConsumerState<HomePage> {
     _timer?.cancel();
     _currentIndex = 0;
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_currentIndex >= rftData.length - 1) {
-// Reset to start or stop
-        _currentIndex = 0; // Loop back to start
-        timer.cancel(); // Uncomment to stop after one cycle
-      } else {
-        _currentIndex++;
+      _currentIndex++;
+      if (_currentIndex >= rftData.length) {
+        // Stop after one complete cycle
+        timer.cancel();
+        _currentIndex = rftData.length - 1; // Keep at last valid index
       }
       if (mounted) {
         setState(() {}); // Trigger rebuild with new index
@@ -200,6 +109,17 @@ class _HomePageState extends ConsumerState<HomePage> {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        title: Text(
+          'Your Tank Details',
+          style: TextStyle(
+              // fontSize: 14.sp,
+              color: const Color(0xFFE2E8F0),
+              fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.transparent,
+        centerTitle: true,
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -297,29 +217,103 @@ class _HomePageState extends ConsumerState<HomePage> {
               onMotorButtonPressed: () async {},
             ),
             SizedBox(height: 2.h),
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 2, 37, 133),
-              ),
-              child: Text(
-                'Insights',
-                style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            SizedBox(height: 2.h),
-            UsageStatsWidget(
+            InsightsWidget(
               buckets: buckets,
               washingMachines: washingMachines,
             ),
             SizedBox(height: 2.h),
           ],
         ),
+      ),
+    );
+  }
+
+  Future<bool?> _showConsentDialog(
+      BuildContext context, String userName) async {
+    bool checked = false;
+    return showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) {
+        return StatefulBuilder(builder: (ctx, setState) {
+          return AlertDialog(
+            backgroundColor: const Color(0xFF0F1C2E),
+            title: const Text('Warning', style: TextStyle(color: Colors.white)),
+            content: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "You're trying to disable Auto mode which may degrade performance and can damage components.\nWe suggest adjusting thresholds in the Adjustments page.",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Checkbox(
+                        value: checked,
+                        onChanged: (v) => setState(() => checked = v ?? false),
+                        activeColor: const Color(0xFF4ADE80),
+                        side: const BorderSide(color: Colors.white),
+                      ),
+                      Expanded(
+                        child: Text(
+                          'I ($userName) will take responsibility for any damages from turning Auto mode off.',
+                          style: const TextStyle(color: Color(0xFFEF4444)),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                style: TextButton.styleFrom(
+                  foregroundColor: const Color(0xFF4ADE80),
+                ),
+                onPressed: () => Navigator.of(ctx).pop(false),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                style: TextButton.styleFrom(
+                  foregroundColor: const Color(0xFFEF4444),
+                ),
+                onPressed: checked ? () => Navigator.of(ctx).pop(true) : null,
+                child: const Text('Save'),
+              ),
+            ],
+          );
+        });
+      },
+    );
+  }
+
+  Future<bool?> _confirmAutoOff(BuildContext context) {
+    return showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: const Color(0xFF0F1C2E),
+        title: const Text('Confirm', style: TextStyle(color: Colors.white)),
+        content: const Text('Do you really want to turn Auto Mode off?',
+            style: TextStyle(color: Colors.white)),
+        actions: [
+          TextButton(
+            style: TextButton.styleFrom(
+              foregroundColor: const Color(0xFF4ADE80),
+            ),
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('No'),
+          ),
+          TextButton(
+            style: TextButton.styleFrom(
+              foregroundColor: const Color(0xFFEF4444),
+            ),
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text('Yes'),
+          ),
+        ],
       ),
     );
   }

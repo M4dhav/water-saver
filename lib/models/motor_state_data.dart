@@ -17,6 +17,7 @@ abstract class MotorStateData with _$MotorStateData {
     required DateTime time,
     @JsonKey(name: "motorOn") required String motorOn,
     @JsonKey(name: "motorOff") required String motorOff,
+    @JsonKey(name: "source") required String source,
   }) = _MotorStateData;
 
   factory MotorStateData.fromJson(Map<String, dynamic> json) =>

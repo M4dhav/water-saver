@@ -11,6 +11,7 @@ _MotorStateData _$MotorStateDataFromJson(Map<String, dynamic> json) =>
       time: dateTimeFromEpochMs(json['time']),
       motorOn: json['motorOn'] as String,
       motorOff: json['motorOff'] as String,
+      source: json['source'] as String,
     );
 
 Map<String, dynamic> _$MotorStateDataToJson(_MotorStateData instance) =>
@@ -18,4 +19,5 @@ Map<String, dynamic> _$MotorStateDataToJson(_MotorStateData instance) =>
       'time': dateTimeToEpochMs(instance.time),
       'motorOn': instance.motorOn,
       'motorOff': instance.motorOff,
+      'source': instance.source,
     };

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:liquid_progress_indicator_v2/liquid_progress_indicator.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:water_saver/widgets/home_page/water_tank_new.dart';
+import 'package:water_saver/widgets/home_page/water_tank_new_2.dart';
 import 'package:water_saver/widgets/home_page/water_tank_shape.dart';
 
 class WaterTankWidget extends StatelessWidget {
@@ -23,26 +25,6 @@ class WaterTankWidget extends StatelessWidget {
       padding: EdgeInsets.only(right: 4.w, left: 4.w),
       child: Column(
         children: [
-          Column(
-            children: [
-              Text(
-                '$volume L',
-                style: TextStyle(
-                  fontSize: 28.sp,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              Text(
-                'volume',
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  color: const Color(0xFFE2E8F0),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 3.h),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -67,7 +49,7 @@ class WaterTankWidget extends StatelessWidget {
                     ),
                     SizedBox(height: 3.h),
                     Text(
-                      '${fillPercentage.toInt()} %',
+                      '$volume L',
                       style: TextStyle(
                         fontSize: 24.sp,
                         fontWeight: FontWeight.bold,
@@ -75,7 +57,7 @@ class WaterTankWidget extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'filled',
+                      'volume',
                       style: TextStyle(
                         fontSize: 14.sp,
                         color: const Color(0xFFE2E8F0),
@@ -87,10 +69,34 @@ class WaterTankWidget extends StatelessWidget {
               LiquidCustomProgressIndicator(
                 direction: Axis.vertical,
                 value: fillPercentage / 100,
+                // value: 0,
                 valueColor: const AlwaysStoppedAnimation<Color>(
-                    Color.fromARGB(255, 4, 167, 242)),
+                    const Color(0xff00CEC8)),
                 backgroundColor: const Color(0xFF98D8F6),
-                shapePath: buildWaterTankPath(size: Size(44.w, 27.h)),
+                // shapePath: buildOtherWaterTankPath(),
+
+                shapePath: buildThirdWaterTankPath(size: Size(44.w, 27.h)),
+                // center: Column(
+                //   mainAxisAlignment: MainAxisAlignment.center,
+                //   children: [
+                //     Text(
+                //       '${fillPercentage.toInt()}%',
+                //       textAlign: TextAlign.center,
+                //       style: TextStyle(
+                //           fontSize: 24.sp,
+                //           color: const Color(0xFFE2E8F0),
+                //           fontWeight: FontWeight.bold),
+                //     ),
+                //     Text(
+                //       'filled',
+                //       style: TextStyle(
+                //         fontSize: 14.sp,
+                //         color: const Color(0xFFE2E8F0),
+                //       ),
+                //       textAlign: TextAlign.center,
+                //     ),
+                //   ],
+                // ),
               ),
             ],
           ),
