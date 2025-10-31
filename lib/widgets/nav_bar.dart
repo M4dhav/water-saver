@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:water_saver/models/app_themes.dart';
 import 'package:water_saver/screens/adjustment.dart';
 import 'package:water_saver/screens/home.dart';
 import 'package:water_saver/screens/settings.dart';
 import 'package:water_saver/screens/report.dart';
-import 'package:water_saver/theme/gradient.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({super.key});
@@ -37,6 +37,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
           height: 100.h,
           decoration: const BoxDecoration(
             gradient: AppColors.primaryGradient,
+            // image: DecorationImage(
+            //     image: AssetImage('assets/images/onboarding_screen1.png'),
+            //     fit: BoxFit.cover),
           ),
         ),
         SafeArea(

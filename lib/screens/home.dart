@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -22,11 +23,13 @@ class _HomePageState extends ConsumerState<HomePage> {
   Timer? _timer;
   bool _isAutoMode = true;
   int _currentIndex = 0;
+  final AnimatedTextController controller = AnimatedTextController();
 
   @override
   void initState() {
     super.initState();
     _initAutoMode();
+    controller.play();
   }
 
   Future<void> _initAutoMode() async {
@@ -120,20 +123,23 @@ class _HomePageState extends ConsumerState<HomePage> {
         backgroundColor: Colors.transparent,
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.all(6.w),
-              child: WaterTankWidget(
-                fillPercentage: fillPercentage,
-                waterLevel: waterLevel,
-                tankHeight: tank / 100.0,
-                volume: volume,
-              ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          SizedBox(
+            height: 24.h,
+            width: double.infinity,
+            child: WaterTankWidget(
+              fillPercentage: fillPercentage,
+              waterLevel: waterLevel,
+              tankHeight: tank / 100.0,
+              volume: volume,
+              controller: controller,
             ),
-            MotorControlsWidget(
+          ),
+          SizedBox(
+            height: 24.h,
+            child: MotorControlsWidget(
               isMotorOn: appUser.userDataUpload.motorOn == "yes",
               isAutoMode: _isAutoMode,
               onMotorToggle: () async {
@@ -215,15 +221,19 @@ class _HomePageState extends ConsumerState<HomePage> {
                 }
               },
               onMotorButtonPressed: () async {},
+              controller: controller,
             ),
-            SizedBox(height: 2.h),
-            InsightsWidget(
+          ),
+          SizedBox(
+            height: 24.h,
+            child: InsightsWidget(
               buckets: buckets,
               washingMachines: washingMachines,
+              controller: controller,
             ),
-            SizedBox(height: 2.h),
-          ],
-        ),
+          ),
+          SizedBox(height: 2.h),
+        ],
       ),
     );
   }
