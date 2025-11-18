@@ -13,6 +13,7 @@ import 'package:water_saver/models/user_profile.dart';
 class AppUserController extends AsyncNotifier<AppUser> {
   StreamSubscription<DocumentSnapshot>? _userDataUploadSubscription;
   final prefs = GetIt.I<FlutterSecureStorage>();
+  bool isThresholdChanged = false;
 
   @override
   Future<AppUser> build() async {
@@ -106,18 +107,21 @@ class AppUserController extends AsyncNotifier<AppUser> {
   void updateMotorOffThresholdTank(
     double value,
   ) {
+    isThresholdChanged = true;
     state = AsyncValue.data(state.requireValue.copyWith(
         userDataReceive: state.requireValue.userDataReceive
             .copyWith(rftThUpPercent: value.toString())));
   }
 
   void updateMotorOnThresholdTank(double value) {
+    isThresholdChanged = true;
     state = AsyncValue.data(state.requireValue.copyWith(
         userDataReceive: state.requireValue.userDataReceive
             .copyWith(rftThDnPercent: value.toString())));
   }
 
   void updateMotorOnThresholdReservoir(double value) {
+    isThresholdChanged = true;
     state = AsyncValue.data(state.requireValue.copyWith(
         userDataReceive: state.requireValue.userDataReceive
             .copyWith(rsvThDnPercent: value.toString())));
@@ -134,9 +138,16 @@ class AppUserController extends AsyncNotifier<AppUser> {
 
   Future<void> saveAdjustments() async {
     final deviceId = state.requireValue.deviceId;
-    FBCollections.userDataReceive
+
+    await FBCollections.userDataReceive
         .doc(deviceId)
         .update(state.requireValue.userDataReceive.toJson());
+    if (isThresholdChanged) {
+      await FBCollections.userDataReceive
+          .doc(deviceId)
+          .collection("thresholdHistoryData")
+          .add(state.requireValue.userDataReceive.toThresholdJson());
+    }
   }
 
   Future<void> acceptAutoToggleConsent() async {
@@ -183,7 +194,7 @@ class AppUserController extends AsyncNotifier<AppUser> {
         .where('source', isEqualTo: "manual")
         .where('motorOn', isEqualTo: "yes")
         .orderBy('time', descending: true)
-        .limit(3) 
+        .limit(3)
         .get();
 
     return query.docs.length < 3;

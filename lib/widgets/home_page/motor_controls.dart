@@ -9,6 +9,7 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 import 'package:water_saver/models/app_themes.dart';
+import 'package:water_saver/widgets/home_page/control_switch.dart';
 
 class MotorControlsWidget extends StatelessWidget {
   final bool isMotorOn;
@@ -111,46 +112,14 @@ class MotorControlsWidget extends StatelessWidget {
                           isRepeatingAnimation: true,
                         ),
                         Spacer(),
-                        Container(
+                        ControlSwitch(
+                          switchValue: isMotorOn,
+                          onTap: onMotorToggle,
                           width: constraints.maxWidth * 0.2,
                           height: constraints.maxHeight * 0.2,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.rectangle,
-                              borderRadius: BorderRadius.circular(40),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey,
-                                  spreadRadius: 0,
-                                  blurRadius: 10,
-                                  offset: Offset(1, 5),
-                                )
-                              ]),
-                          child: InnerShadowContainer(
-                            isShadowTopLeft: true,
-                            isShadowTopRight: true,
-                            backgroundColor: isMotorOn
-                                ? Color.fromARGB(255, 145, 232, 244)
-                                : Colors.white,
-                            borderRadius: 40,
-                            offset: Offset(4, -2),
-                            child: Transform.scale(
-                              scale: 1.2,
-                              child: Switch(
-                                value: isMotorOn,
-                                onChanged: (_) => onMotorToggle(),
-                                activeTrackColor: Colors.transparent,
-                                inactiveThumbColor:
-                                    const Color.fromARGB(255, 169, 169, 169),
-                                activeThumbColor:
-                                    AppColors.primaryGradient.colors.first,
-                                inactiveTrackColor: Colors.transparent,
-                                trackOutlineColor:
-                                    WidgetStateProperty.all<Color>(
-                                        Colors.transparent),
-                              ),
-                            ),
-                          ),
-                        ),
+                          circularBorderRadius: 20,
+                          activeThumbColor: Theme.of(context).iconTheme.color!,
+                        )
                       ],
                     ),
                   ),
@@ -194,47 +163,14 @@ class MotorControlsWidget extends StatelessWidget {
                           isRepeatingAnimation: true,
                         ),
                         Spacer(),
-                        Container(
+                        ControlSwitch(
+                          switchValue: isAutoMode,
+                          onTap: onAutoToggle,
                           width: constraints.maxWidth * 0.2,
                           height: constraints.maxHeight * 0.2,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.rectangle,
-                              borderRadius: BorderRadius.circular(40),
-                              //TODO
-                              color: Color.fromARGB(255, 145, 232, 244),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey,
-                                  spreadRadius: 0,
-                                  blurRadius: 10,
-                                  offset: Offset(1, 5),
-                                )
-                              ]),
-                          child: InnerShadowContainer(
-                            isShadowTopLeft: true,
-                            isShadowTopRight: true,
-                            backgroundColor: isAutoMode
-                                ? Color.fromARGB(255, 145, 232, 244)
-                                : Colors.white,
-                            borderRadius: 40,
-                            offset: Offset(4, -2),
-                            child: Transform.scale(
-                              scale: 1.2,
-                              child: Switch(
-                                value: isAutoMode,
-                                onChanged: (_) => onAutoToggle(),
-                                activeTrackColor: Colors.transparent,
-                                inactiveThumbColor: Colors.black,
-                                inactiveTrackColor: Colors.transparent,
-                                activeThumbColor:
-                                    AppColors.primaryGradient.colors.first,
-                                trackOutlineColor:
-                                    WidgetStateProperty.all<Color>(
-                                        Colors.transparent),
-                              ),
-                            ),
-                          ),
-                        ),
+                          circularBorderRadius: 20,
+                          activeThumbColor: Theme.of(context).iconTheme.color!,
+                        )
                       ],
                     ),
                   ),

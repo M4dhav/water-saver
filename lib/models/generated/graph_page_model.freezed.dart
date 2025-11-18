@@ -19,6 +19,7 @@ mixin _$GraphPageModel {
   List<MotorStateData> get motorStateDataOff;
   List<LevelDataHistory> get rftLevelData;
   List<LevelDataHistory> get rsvLevelData;
+  List<ThresholdDataHistory> get thresholdDataHistory;
   SelectedPeriod get selectedPeriod;
 
   /// Create a copy of GraphPageModel
@@ -44,6 +45,8 @@ mixin _$GraphPageModel {
                 .equals(other.rftLevelData, rftLevelData) &&
             const DeepCollectionEquality()
                 .equals(other.rsvLevelData, rsvLevelData) &&
+            const DeepCollectionEquality()
+                .equals(other.thresholdDataHistory, thresholdDataHistory) &&
             (identical(other.selectedPeriod, selectedPeriod) ||
                 other.selectedPeriod == selectedPeriod));
   }
@@ -56,11 +59,12 @@ mixin _$GraphPageModel {
       const DeepCollectionEquality().hash(motorStateDataOff),
       const DeepCollectionEquality().hash(rftLevelData),
       const DeepCollectionEquality().hash(rsvLevelData),
+      const DeepCollectionEquality().hash(thresholdDataHistory),
       selectedPeriod);
 
   @override
   String toString() {
-    return 'GraphPageModel(motorStateData: $motorStateData, motorStateDataOn: $motorStateDataOn, motorStateDataOff: $motorStateDataOff, rftLevelData: $rftLevelData, rsvLevelData: $rsvLevelData, selectedPeriod: $selectedPeriod)';
+    return 'GraphPageModel(motorStateData: $motorStateData, motorStateDataOn: $motorStateDataOn, motorStateDataOff: $motorStateDataOff, rftLevelData: $rftLevelData, rsvLevelData: $rsvLevelData, thresholdDataHistory: $thresholdDataHistory, selectedPeriod: $selectedPeriod)';
   }
 }
 
@@ -76,6 +80,7 @@ abstract mixin class $GraphPageModelCopyWith<$Res> {
       List<MotorStateData> motorStateDataOff,
       List<LevelDataHistory> rftLevelData,
       List<LevelDataHistory> rsvLevelData,
+      List<ThresholdDataHistory> thresholdDataHistory,
       SelectedPeriod selectedPeriod});
 }
 
@@ -97,6 +102,7 @@ class _$GraphPageModelCopyWithImpl<$Res>
     Object? motorStateDataOff = null,
     Object? rftLevelData = null,
     Object? rsvLevelData = null,
+    Object? thresholdDataHistory = null,
     Object? selectedPeriod = null,
   }) {
     return _then(_self.copyWith(
@@ -120,6 +126,10 @@ class _$GraphPageModelCopyWithImpl<$Res>
           ? _self.rsvLevelData
           : rsvLevelData // ignore: cast_nullable_to_non_nullable
               as List<LevelDataHistory>,
+      thresholdDataHistory: null == thresholdDataHistory
+          ? _self.thresholdDataHistory
+          : thresholdDataHistory // ignore: cast_nullable_to_non_nullable
+              as List<ThresholdDataHistory>,
       selectedPeriod: null == selectedPeriod
           ? _self.selectedPeriod
           : selectedPeriod // ignore: cast_nullable_to_non_nullable
@@ -227,6 +237,7 @@ extension GraphPageModelPatterns on GraphPageModel {
             List<MotorStateData> motorStateDataOff,
             List<LevelDataHistory> rftLevelData,
             List<LevelDataHistory> rsvLevelData,
+            List<ThresholdDataHistory> thresholdDataHistory,
             SelectedPeriod selectedPeriod)?
         $default, {
     required TResult orElse(),
@@ -240,6 +251,7 @@ extension GraphPageModelPatterns on GraphPageModel {
             _that.motorStateDataOff,
             _that.rftLevelData,
             _that.rsvLevelData,
+            _that.thresholdDataHistory,
             _that.selectedPeriod);
       case _:
         return orElse();
@@ -267,6 +279,7 @@ extension GraphPageModelPatterns on GraphPageModel {
             List<MotorStateData> motorStateDataOff,
             List<LevelDataHistory> rftLevelData,
             List<LevelDataHistory> rsvLevelData,
+            List<ThresholdDataHistory> thresholdDataHistory,
             SelectedPeriod selectedPeriod)
         $default,
   ) {
@@ -279,6 +292,7 @@ extension GraphPageModelPatterns on GraphPageModel {
             _that.motorStateDataOff,
             _that.rftLevelData,
             _that.rsvLevelData,
+            _that.thresholdDataHistory,
             _that.selectedPeriod);
       case _:
         throw StateError('Unexpected subclass');
@@ -305,6 +319,7 @@ extension GraphPageModelPatterns on GraphPageModel {
             List<MotorStateData> motorStateDataOff,
             List<LevelDataHistory> rftLevelData,
             List<LevelDataHistory> rsvLevelData,
+            List<ThresholdDataHistory> thresholdDataHistory,
             SelectedPeriod selectedPeriod)?
         $default,
   ) {
@@ -317,6 +332,7 @@ extension GraphPageModelPatterns on GraphPageModel {
             _that.motorStateDataOff,
             _that.rftLevelData,
             _that.rsvLevelData,
+            _that.thresholdDataHistory,
             _that.selectedPeriod);
       case _:
         return null;
@@ -333,12 +349,14 @@ class _GraphPageModel implements GraphPageModel {
       required final List<MotorStateData> motorStateDataOff,
       required final List<LevelDataHistory> rftLevelData,
       required final List<LevelDataHistory> rsvLevelData,
+      required final List<ThresholdDataHistory> thresholdDataHistory,
       this.selectedPeriod = SelectedPeriod.week})
       : _motorStateData = motorStateData,
         _motorStateDataOn = motorStateDataOn,
         _motorStateDataOff = motorStateDataOff,
         _rftLevelData = rftLevelData,
-        _rsvLevelData = rsvLevelData;
+        _rsvLevelData = rsvLevelData,
+        _thresholdDataHistory = thresholdDataHistory;
 
   final List<MotorStateData> _motorStateData;
   @override
@@ -382,6 +400,15 @@ class _GraphPageModel implements GraphPageModel {
     return EqualUnmodifiableListView(_rsvLevelData);
   }
 
+  final List<ThresholdDataHistory> _thresholdDataHistory;
+  @override
+  List<ThresholdDataHistory> get thresholdDataHistory {
+    if (_thresholdDataHistory is EqualUnmodifiableListView)
+      return _thresholdDataHistory;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_thresholdDataHistory);
+  }
+
   @override
   @JsonKey()
   final SelectedPeriod selectedPeriod;
@@ -409,6 +436,8 @@ class _GraphPageModel implements GraphPageModel {
                 .equals(other._rftLevelData, _rftLevelData) &&
             const DeepCollectionEquality()
                 .equals(other._rsvLevelData, _rsvLevelData) &&
+            const DeepCollectionEquality()
+                .equals(other._thresholdDataHistory, _thresholdDataHistory) &&
             (identical(other.selectedPeriod, selectedPeriod) ||
                 other.selectedPeriod == selectedPeriod));
   }
@@ -421,11 +450,12 @@ class _GraphPageModel implements GraphPageModel {
       const DeepCollectionEquality().hash(_motorStateDataOff),
       const DeepCollectionEquality().hash(_rftLevelData),
       const DeepCollectionEquality().hash(_rsvLevelData),
+      const DeepCollectionEquality().hash(_thresholdDataHistory),
       selectedPeriod);
 
   @override
   String toString() {
-    return 'GraphPageModel(motorStateData: $motorStateData, motorStateDataOn: $motorStateDataOn, motorStateDataOff: $motorStateDataOff, rftLevelData: $rftLevelData, rsvLevelData: $rsvLevelData, selectedPeriod: $selectedPeriod)';
+    return 'GraphPageModel(motorStateData: $motorStateData, motorStateDataOn: $motorStateDataOn, motorStateDataOff: $motorStateDataOff, rftLevelData: $rftLevelData, rsvLevelData: $rsvLevelData, thresholdDataHistory: $thresholdDataHistory, selectedPeriod: $selectedPeriod)';
   }
 }
 
@@ -443,6 +473,7 @@ abstract mixin class _$GraphPageModelCopyWith<$Res>
       List<MotorStateData> motorStateDataOff,
       List<LevelDataHistory> rftLevelData,
       List<LevelDataHistory> rsvLevelData,
+      List<ThresholdDataHistory> thresholdDataHistory,
       SelectedPeriod selectedPeriod});
 }
 
@@ -464,6 +495,7 @@ class __$GraphPageModelCopyWithImpl<$Res>
     Object? motorStateDataOff = null,
     Object? rftLevelData = null,
     Object? rsvLevelData = null,
+    Object? thresholdDataHistory = null,
     Object? selectedPeriod = null,
   }) {
     return _then(_GraphPageModel(
@@ -487,6 +519,10 @@ class __$GraphPageModelCopyWithImpl<$Res>
           ? _self._rsvLevelData
           : rsvLevelData // ignore: cast_nullable_to_non_nullable
               as List<LevelDataHistory>,
+      thresholdDataHistory: null == thresholdDataHistory
+          ? _self._thresholdDataHistory
+          : thresholdDataHistory // ignore: cast_nullable_to_non_nullable
+              as List<ThresholdDataHistory>,
       selectedPeriod: null == selectedPeriod
           ? _self.selectedPeriod
           : selectedPeriod // ignore: cast_nullable_to_non_nullable

@@ -11,6 +11,11 @@ class AppColors {
       iconTheme: IconThemeData(
         color: Color.fromARGB(255, 15, 186, 205),
       ),
+      switchTheme: SwitchThemeData(
+        trackColor: WidgetStateProperty.all(
+          Color.fromARGB(255, 0, 140, 255).withAlpha(150),
+        ),
+      ),
       textTheme: GoogleFonts.interTextTheme().copyWith(
           bodyMedium: GoogleFonts.interTextTheme()
               .bodyMedium
@@ -29,4 +34,6 @@ class AppColors {
     ],
     stops: [0, 0.4, 0.58, 0.84, 1],
   );
+  static const Color activeToggleButtonColor =
+      Color.fromARGB(255, 176, 228, 234);
 }

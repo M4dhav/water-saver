@@ -20,6 +20,16 @@ abstract class UserDataReceive with _$UserDataReceive {
     @JsonKey(name: "RSV_th_dn_percent") required String rsvThDnPercent,
   }) = _UserDataReceive;
 
+  Map<String, dynamic> toThresholdJson() {
+    return {
+      'RFT_th_dn_percent': rftThDnPercent,
+      'RFT_th_up_percent': rftThUpPercent,
+      'RSV_th_dn_percent': rsvThDnPercent,
+      'timestamp': DateTime.now().millisecondsSinceEpoch
+    };
+  }
+
+  const UserDataReceive._();
   factory UserDataReceive.fromJson(Map<String, dynamic> json) =>
       _$UserDataReceiveFromJson(json);
 }

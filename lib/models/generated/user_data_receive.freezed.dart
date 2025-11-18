@@ -437,7 +437,7 @@ extension UserDataReceivePatterns on UserDataReceive {
 
 /// @nodoc
 @JsonSerializable()
-class _UserDataReceive implements UserDataReceive {
+class _UserDataReceive extends UserDataReceive {
   _UserDataReceive(
       {@JsonKey(name: 'Auto_toggle_consent') required this.autoToggleConsent,
       @JsonKey(name: 'MOTOR_ON') required this.motorOn,
@@ -450,7 +450,8 @@ class _UserDataReceive implements UserDataReceive {
       @JsonKey(name: "RFT_th_up_percent") required this.rftThUpPercent,
       @JsonKey(name: "RSV_CONN_CHK_INT") required this.rsvConnChkInt,
       @JsonKey(name: "RSV_height") required this.rsvHeight,
-      @JsonKey(name: "RSV_th_dn_percent") required this.rsvThDnPercent});
+      @JsonKey(name: "RSV_th_dn_percent") required this.rsvThDnPercent})
+      : super._();
   factory _UserDataReceive.fromJson(Map<String, dynamic> json) =>
       _$UserDataReceiveFromJson(json);
 

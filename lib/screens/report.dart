@@ -5,6 +5,7 @@ import 'package:water_saver/controllers/graph_controller.dart';
 import 'package:water_saver/models/graph_page_model.dart';
 import 'package:water_saver/providers/graph_controller_provider.dart';
 import 'package:water_saver/widgets/report/motor_graph.dart';
+import 'package:water_saver/widgets/report/threshold_history_graph.dart';
 import 'package:water_saver/widgets/report/water_consumption_graph.dart';
 
 class ReportPage extends ConsumerWidget {
@@ -38,6 +39,7 @@ class ReportPage extends ConsumerWidget {
             controller: controller,
             pageData: pageData,
           ),
+          ThresholdHistoryGraph(controller: controller, pageData: pageData),
           SizedBox(height: 3.h),
           _buildRecentActivitySection(),
         ],

@@ -11,6 +11,7 @@ import 'package:water_saver/models/firebase_model.dart';
 import 'package:water_saver/models/graph_page_model.dart';
 import 'package:water_saver/models/level_data_history.dart';
 import 'package:water_saver/models/motor_state_data.dart';
+import 'package:water_saver/models/threshold_data_history.dart';
 
 class GraphController extends AsyncNotifier<GraphPageModel> {
   @override
@@ -18,11 +19,14 @@ class GraphController extends AsyncNotifier<GraphPageModel> {
     List<MotorStateData> motorStateData = await getMotorStateData();
     List<LevelDataHistory> rftLevelData = await getRftLevelData();
     List<LevelDataHistory> rsvLevelData = await getRsvLevelData();
+    List<ThresholdDataHistory> thresholdHistoryData =
+        await getThresholdHistoryData();
 
     return GraphPageModel(
         motorStateData: motorStateData,
         motorStateDataOff: filterMotorStateDataOff(motorStateData),
         motorStateDataOn: filterMotorStateDataOn(motorStateData),
+        thresholdDataHistory: thresholdHistoryData,
         rftLevelData: rftLevelData,
         rsvLevelData: rsvLevelData);
   }
@@ -99,7 +103,7 @@ class GraphController extends AsyncNotifier<GraphPageModel> {
     return rsvLevelData;
   }
 
-  Future<List<LevelDataHistory>> getThresholdHistoryData() async {
+  Future<List<ThresholdDataHistory>> getThresholdHistoryData() async {
     String deviceId =
         await GetIt.I<FlutterSecureStorage>().read(key: 'deviceId') ?? "";
 
@@ -110,13 +114,14 @@ class GraphController extends AsyncNotifier<GraphPageModel> {
 
     QuerySnapshot snapshot = await thresholdHistoryDataCollection.get();
 
-    List<LevelDataHistory> thresholdHistoryData = [];
+    List<ThresholdDataHistory> thresholdHistoryData = [];
 
     for (var doc in snapshot.docs) {
       Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
-      thresholdHistoryData.add(LevelDataHistory.fromJson(data));
+      thresholdHistoryData.add(ThresholdDataHistory.fromJson(data));
     }
+    log(thresholdHistoryData.toString());
 
     return thresholdHistoryData;
   }
@@ -164,6 +169,102 @@ class GraphController extends AsyncNotifier<GraphPageModel> {
           // Calculate Y: hour + fraction of hour
           final y = data.time.hour + (data.time.minute / 60);
           return FlSpot(x.toDouble(), y);
+        })
+        .where((spot) => spot.x >= 0 && spot.x < range)
+        .toList();
+  }
+
+  List<FlSpot> returnFlSpotFromRFTUpperThreshold() {
+    List<ThresholdDataHistory> rftUpperThreshold =
+        state.requireValue.thresholdDataHistory;
+    switch (state.requireValue.selectedPeriod) {
+      case (SelectedPeriod.week):
+        rftUpperThreshold = rftUpperThreshold
+            .where((data) => data.timestamp
+                .isAfter(DateTime.now().subtract(Duration(days: 7))))
+            .toList();
+      case (SelectedPeriod.fifteenDays):
+        rftUpperThreshold = rftUpperThreshold
+            .where((data) => data.timestamp
+                .isAfter(DateTime.now().subtract(Duration(days: 15))))
+            .toList();
+      case (SelectedPeriod.month):
+        rftUpperThreshold = rftUpperThreshold
+            .where((data) => data.timestamp
+                .isAfter(DateTime.now().subtract(Duration(days: 30))))
+            .toList();
+    }
+    final now = DateTime.now();
+    int range;
+    switch (state.requireValue.selectedPeriod) {
+      case SelectedPeriod.week:
+        range = 7;
+        break;
+      case SelectedPeriod.fifteenDays:
+        range = 15;
+        break;
+      case SelectedPeriod.month:
+        range = 30;
+        break;
+    }
+    return rftUpperThreshold
+        .map((data) {
+          // Calculate X: days ago (0 = N days ago, N-1 = today)
+          final daysAgo = now
+              .difference(DateTime(data.timestamp.year, data.timestamp.month,
+                  data.timestamp.day))
+              .inDays;
+          final x = (range - 1) - daysAgo; // (range-1) = today, 0 = N days ago
+
+          return FlSpot(x.toDouble(), double.parse(data.rftThUpPercent));
+        })
+        .where((spot) => spot.x >= 0 && spot.x < range)
+        .toList();
+  }
+
+  List<FlSpot> returnFlSpotFromRFTLowerThreshold() {
+    List<ThresholdDataHistory> rftLowerThreshold =
+        state.requireValue.thresholdDataHistory;
+    switch (state.requireValue.selectedPeriod) {
+      case (SelectedPeriod.week):
+        rftLowerThreshold = rftLowerThreshold
+            .where((data) => data.timestamp
+                .isAfter(DateTime.now().subtract(Duration(days: 7))))
+            .toList();
+      case (SelectedPeriod.fifteenDays):
+        rftLowerThreshold = rftLowerThreshold
+            .where((data) => data.timestamp
+                .isAfter(DateTime.now().subtract(Duration(days: 15))))
+            .toList();
+      case (SelectedPeriod.month):
+        rftLowerThreshold = rftLowerThreshold
+            .where((data) => data.timestamp
+                .isAfter(DateTime.now().subtract(Duration(days: 30))))
+            .toList();
+    }
+    final now = DateTime.now();
+    int range;
+    switch (state.requireValue.selectedPeriod) {
+      case SelectedPeriod.week:
+        range = 7;
+        break;
+      case SelectedPeriod.fifteenDays:
+        range = 15;
+        break;
+      case SelectedPeriod.month:
+        range = 30;
+        break;
+    }
+    return rftLowerThreshold
+        .map((data) {
+          // Calculate X: days ago (0 = N days ago, N-1 = today)
+          final daysAgo = now
+              .difference(DateTime(data.timestamp.year, data.timestamp.month,
+                  data.timestamp.day))
+              .inDays;
+          final x = (range - 1) - daysAgo; // (range-1) = today, 0 = N days ago
+
+          return FlSpot(x.toDouble(), double.parse(data.rftThDnPercent));
         })
         .where((spot) => spot.x >= 0 && spot.x < range)
         .toList();
@@ -251,7 +352,6 @@ class GraphController extends AsyncNotifier<GraphPageModel> {
     rsvLevelData = rsvLevelData
         .where((data) => data.timestamp.isAfter(startDate))
         .toList();
-    log(rftLevelData.toString());
 
     // Sort data chronologically
     rftLevelData.sort((a, b) => a.timestamp.compareTo(b.timestamp));

@@ -11,6 +11,7 @@ class AdjustmentsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.watch(appUserControllerProvider.notifier);
     final appUserData = ref.watch(appUserControllerProvider);
+
     return Scaffold(
       backgroundColor: Color(0xFF071526),
       body: Padding(
@@ -45,7 +46,7 @@ class AdjustmentsPage extends ConsumerWidget {
               ),
               SizedBox(height: 3.h),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (!controller.validateThresholds()) {
                     showModalBottomSheet(
                       context: context,
@@ -112,7 +113,7 @@ class AdjustmentsPage extends ConsumerWidget {
                     );
                     return;
                   }
-                  controller.saveAdjustments();
+                  await controller.saveAdjustments();
                   showModalBottomSheet(
                     context: context,
                     backgroundColor: Colors.transparent,
