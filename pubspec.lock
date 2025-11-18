@@ -36,9 +36,11 @@ packages:
   animated_text_kit:
     dependency: "direct main"
     description:
-      path: "D:/development/GitHub/Animated-Text-Kit/"
-      relative: false
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: "790250e7c6a14a1feadfc30dcca2247b3addeec5"
+      url: "https://github.com/M4dhav/Animated-Text-Kit.git"
+    source: git
     version: "4.3.0"
   args:
     dependency: transitive
@@ -727,6 +729,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.2"
+  inner_shadow_container:
+    dependency: "direct main"
+    description:
+      name: inner_shadow_container
+      sha256: "3f381395dbcfba84303d9d008fcea9112210291d4a1d632bc44b6f2b155caf41"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.4"
   interactive_slider:
     dependency: "direct main"
     description:

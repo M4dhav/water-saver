@@ -25,13 +25,12 @@ class InsightsWidget extends StatelessWidget {
       return Padding(
         padding: EdgeInsets.symmetric(horizontal: constraints.maxWidth * 0.02),
         child: FakeGlass(
-          settings: LiquidGlassSettings(refractiveIndex: 1.2, lightIntensity: 1
-              // lightness: 1.2,
-              ),
           shape: LiquidRoundedSuperellipse(
             borderRadius: 20,
           ),
-          child: Card(
+          settings: LiquidGlassSettings(),
+          child: Container(
+            color: Theme.of(context).cardColor,
             child: Padding(
               padding:
                   EdgeInsets.symmetric(vertical: constraints.maxHeight * 0.05),
@@ -45,6 +44,7 @@ class InsightsWidget extends StatelessWidget {
                       controller: controller,
                       animatedTexts: [
                         ColorizeAnimatedText(
+                          fadeInOnStart: false,
                           'Insights',
                           textStyle: TextStyle(
                               fontFamily: GoogleFonts.inter().fontFamily,
@@ -61,9 +61,9 @@ class InsightsWidget extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    width: constraints.maxWidth * 0.85,
+                    width: constraints.maxWidth * 0.92,
                     padding: EdgeInsets.symmetric(
-                        horizontal: constraints.maxWidth * 0.04,
+                        horizontal: constraints.maxWidth * 0.02,
                         vertical: constraints.maxHeight * 0.05),
                     margin: EdgeInsets.symmetric(
                         vertical: constraints.maxHeight * 0.02),
@@ -96,17 +96,19 @@ class InsightsWidget extends StatelessWidget {
                             ),
                             AnimatedTextKit(
                               animatedTexts: [
-                                ColorizeAnimatedText('$buckets 2L-buckets',
-                                    textStyle: TextStyle(
-                                        fontFamily:
-                                            GoogleFonts.inter().fontFamily,
-                                        fontSize: 18.sp,
-                                        fontWeight: FontWeight.bold),
-                                    colors: [
-                                      Color.fromARGB(255, 0, 140, 255),
-                                      Color.fromARGB(255, 15, 62, 123),
-                                    ],
-                                    fadeInOnStart: false),
+                                ColorizeAnimatedText(
+                                  fadeInOnStart: false,
+                                  '$buckets 2L-buckets',
+                                  textStyle: TextStyle(
+                                      fontFamily:
+                                          GoogleFonts.inter().fontFamily,
+                                      fontSize: 18.sp,
+                                      fontWeight: FontWeight.bold),
+                                  colors: [
+                                    Color.fromARGB(255, 0, 140, 255),
+                                    Color.fromARGB(255, 15, 62, 123),
+                                  ],
+                                ),
                               ],
                               repeatForever: true,
                               isRepeatingAnimation: true,
@@ -117,9 +119,9 @@ class InsightsWidget extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    width: constraints.maxWidth * 0.85,
+                    width: constraints.maxWidth * 0.92,
                     padding: EdgeInsets.symmetric(
-                        horizontal: constraints.maxWidth * 0.04,
+                        horizontal: constraints.maxWidth * 0.02,
                         vertical: constraints.maxHeight * 0.05),
                     decoration: BoxDecoration(
                       color: Theme.of(context).primaryColor,
@@ -152,6 +154,7 @@ class InsightsWidget extends StatelessWidget {
                               controller: controller,
                               animatedTexts: [
                                 ColorizeAnimatedText(
+                                  fadeInOnStart: false,
                                   '$washingMachines washing machines',
                                   textStyle: TextStyle(
                                       fontFamily:
@@ -162,8 +165,6 @@ class InsightsWidget extends StatelessWidget {
                                     Color.fromARGB(255, 0, 140, 255),
                                     Color.fromARGB(255, 15, 62, 123),
                                   ],
-                                  // fadeInOnStart: false,
-                                  // fadeOutOnEnd: false,
                                 ),
                               ],
                               repeatForever: true,

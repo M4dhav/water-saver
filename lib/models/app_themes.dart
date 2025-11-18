@@ -9,7 +9,7 @@ class AppColors {
       cardTheme: CardThemeData(color: Colors.white.withAlpha(100)),
       primaryColor: Colors.white.withAlpha(100),
       iconTheme: IconThemeData(
-        color: Color.fromARGB(255, 15, 62, 123),
+        color: Color.fromARGB(255, 15, 186, 205),
       ),
       textTheme: GoogleFonts.interTextTheme().copyWith(
           bodyMedium: GoogleFonts.interTextTheme()

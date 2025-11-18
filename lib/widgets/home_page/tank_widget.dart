@@ -42,6 +42,7 @@ class WaterTankWidget extends StatelessWidget {
                         controller: controller,
                         animatedTexts: [
                           ColorizeAnimatedText(
+                            fadeInOnStart: false,
                             '$volume L',
                             textStyle: TextStyle(
                                 fontFamily: GoogleFonts.inter().fontFamily,
@@ -66,6 +67,7 @@ class WaterTankWidget extends StatelessWidget {
                         controller: controller,
                         animatedTexts: [
                           ColorizeAnimatedText(
+                            fadeInOnStart: false,
                             '${waterLevel.toStringAsFixed(1)} m',
                             textStyle: TextStyle(
                                 fontFamily: GoogleFonts.inter().fontFamily,
@@ -90,6 +92,7 @@ class WaterTankWidget extends StatelessWidget {
                         controller: controller,
                         animatedTexts: [
                           ColorizeAnimatedText(
+                            fadeInOnStart: false,
                             '${fillPercentage.toStringAsFixed(0)}%',
                             textStyle: TextStyle(
                                 fontFamily: GoogleFonts.inter().fontFamily,
@@ -121,8 +124,8 @@ class WaterTankWidget extends StatelessWidget {
                       direction: Axis.vertical,
                       value: fillPercentage / 100,
                       // value: 0,
-                      valueColor: const AlwaysStoppedAnimation<Color>(
-                          const Color(0xff00CEC8)),
+                      valueColor:
+                          const AlwaysStoppedAnimation<Color>(Colors.blue),
                       backgroundColor: const Color(0xFF98D8F6),
                       // shapePath: buildOtherWaterTankPath(),
 

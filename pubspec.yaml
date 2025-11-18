@@ -62,8 +62,10 @@ dependencies:
   flutter_svg: ^2.2.1
   google_fonts: ^6.3.2
   animated_text_kit: 
-    path: D:/development/GitHub/Animated-Text-Kit/
-
+    git:
+      url: https://github.com/M4dhav/Animated-Text-Kit.git
+    # path: D:/development/GitHub/Animated-Text-Kit/  
+  inner_shadow_container: ^1.0.4
 dev_dependencies:
   flutter_test:
     sdk: flutter
