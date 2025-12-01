@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -36,140 +35,135 @@ class MotorControlsWidget extends StatelessWidget {
           shape: LiquidRoundedSuperellipse(
             borderRadius: 20,
           ),
-          settings: LiquidGlassSettings(
-            refractiveIndex: 1.2,
-            // lightness: 1.2,
-          ),
-          child: Container(
-            color: Theme.of(context).cardColor,
-            child: Padding(
-              padding:
-                  EdgeInsets.symmetric(vertical: constraints.maxHeight * 0.05),
-              child: Column(
-                children: [
-                  Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(
-                        horizontal: constraints.maxWidth * 0.05),
-                    child: AnimatedTextKit(
-                      animatedTexts: [
-                        ColorizeAnimatedText(
+          settings:
+              LiquidGlassSettings(glassColor: Theme.of(context).cardColor),
+          child: Padding(
+            padding:
+                EdgeInsets.symmetric(vertical: constraints.maxHeight * 0.05),
+            child: Column(
+              children: [
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(
+                      horizontal: constraints.maxWidth * 0.05),
+                  child: AnimatedTextKit(
+                    animatedTexts: [
+                      ColorizeAnimatedText(
+                          fadeInOnStart: false,
+                          'Water Controls',
+                          textStyle: TextStyle(
+                              fontFamily: GoogleFonts.inter().fontFamily,
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.bold),
+                          colors: AppColors.textGradientColors),
+                    ],
+                    repeatForever: true,
+                    isRepeatingAnimation: true,
+                  ),
+                ),
+                Container(
+                  width: constraints.maxWidth * 0.85,
+                  padding: EdgeInsets.symmetric(
+                      vertical: constraints.maxHeight * 0.05),
+                  margin: EdgeInsets.symmetric(
+                      vertical: constraints.maxHeight * 0.02),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(constraints.maxWidth * 0.03),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
+                        ),
+                        child: Icon(
+                          Icons.water_drop,
+                          size: constraints.maxWidth * 0.06,
+                        ),
+                      ),
+                      SizedBox(width: constraints.maxWidth * 0.04),
+                      AnimatedTextKit(
+                        controller: controller,
+                        animatedTexts: [
+                          ColorizeAnimatedText(
                             fadeInOnStart: false,
-                            'Water Controls',
+                            'Motor',
                             textStyle: TextStyle(
                                 fontFamily: GoogleFonts.inter().fontFamily,
                                 fontSize: 18.sp,
                                 fontWeight: FontWeight.bold),
-                            colors: AppColors.textGradientColors),
-                      ],
-                      repeatForever: true,
-                      isRepeatingAnimation: true,
-                    ),
+                            colors: [
+                              Color.fromARGB(255, 0, 140, 255),
+                              Color.fromARGB(255, 15, 62, 123),
+                            ],
+                          ),
+                        ],
+                        repeatForever: true,
+                        isRepeatingAnimation: true,
+                      ),
+                      Spacer(),
+                      ControlSwitch(
+                        switchValue: isMotorOn,
+                        onTap: onMotorToggle,
+                        width: constraints.maxWidth * 0.2,
+                        height: constraints.maxHeight * 0.2,
+                        circularBorderRadius: 20,
+                        activeThumbColor: Theme.of(context).iconTheme.color!,
+                      )
+                    ],
                   ),
-                  Container(
-                    width: constraints.maxWidth * 0.85,
-                    padding: EdgeInsets.symmetric(
-                        vertical: constraints.maxHeight * 0.05),
-                    margin: EdgeInsets.symmetric(
-                        vertical: constraints.maxHeight * 0.02),
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(constraints.maxWidth * 0.03),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
-                          child: Icon(
-                            Icons.water_drop,
-                            size: constraints.maxWidth * 0.06,
-                          ),
+                ),
+                Container(
+                  width: constraints.maxWidth * 0.85,
+                  padding: EdgeInsets.symmetric(
+                      vertical: constraints.maxHeight * 0.05),
+                  margin: EdgeInsets.symmetric(
+                      vertical: constraints.maxHeight * 0.02),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(constraints.maxWidth * 0.03),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
                         ),
-                        SizedBox(width: constraints.maxWidth * 0.04),
-                        AnimatedTextKit(
-                          controller: controller,
-                          animatedTexts: [
-                            ColorizeAnimatedText(
-                              fadeInOnStart: false,
-                              'Motor',
-                              textStyle: TextStyle(
-                                  fontFamily: GoogleFonts.inter().fontFamily,
-                                  fontSize: 18.sp,
-                                  fontWeight: FontWeight.bold),
-                              colors: [
-                                Color.fromARGB(255, 0, 140, 255),
-                                Color.fromARGB(255, 15, 62, 123),
-                              ],
-                            ),
-                          ],
-                          repeatForever: true,
-                          isRepeatingAnimation: true,
+                        child: Icon(
+                          Icons.auto_mode,
+                          size: constraints.maxWidth * 0.06,
                         ),
-                        Spacer(),
-                        ControlSwitch(
-                          switchValue: isMotorOn,
-                          onTap: onMotorToggle,
-                          width: constraints.maxWidth * 0.2,
-                          height: constraints.maxHeight * 0.2,
-                          circularBorderRadius: 20,
-                          activeThumbColor: Theme.of(context).iconTheme.color!,
-                        )
-                      ],
-                    ),
+                      ),
+                      SizedBox(width: constraints.maxWidth * 0.04),
+                      AnimatedTextKit(
+                        controller: controller,
+                        animatedTexts: [
+                          ColorizeAnimatedText(
+                            fadeInOnStart: false,
+                            'Auto Mode',
+                            textStyle: TextStyle(
+                                fontFamily: GoogleFonts.inter().fontFamily,
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.bold),
+                            colors: [
+                              Color.fromARGB(255, 0, 140, 255),
+                              Color.fromARGB(255, 15, 62, 123),
+                            ],
+                          ),
+                        ],
+                        repeatForever: true,
+                        isRepeatingAnimation: true,
+                      ),
+                      Spacer(),
+                      ControlSwitch(
+                        switchValue: isAutoMode,
+                        onTap: onAutoToggle,
+                        width: constraints.maxWidth * 0.2,
+                        height: constraints.maxHeight * 0.2,
+                        circularBorderRadius: 20,
+                        activeThumbColor: Theme.of(context).iconTheme.color!,
+                      )
+                    ],
                   ),
-                  Container(
-                    width: constraints.maxWidth * 0.85,
-                    padding: EdgeInsets.symmetric(
-                        vertical: constraints.maxHeight * 0.05),
-                    margin: EdgeInsets.symmetric(
-                        vertical: constraints.maxHeight * 0.02),
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(constraints.maxWidth * 0.03),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
-                          child: Icon(
-                            Icons.auto_mode,
-                            size: constraints.maxWidth * 0.06,
-                          ),
-                        ),
-                        SizedBox(width: constraints.maxWidth * 0.04),
-                        AnimatedTextKit(
-                          controller: controller,
-                          animatedTexts: [
-                            ColorizeAnimatedText(
-                              fadeInOnStart: false,
-                              'Auto Mode',
-                              textStyle: TextStyle(
-                                  fontFamily: GoogleFonts.inter().fontFamily,
-                                  fontSize: 18.sp,
-                                  fontWeight: FontWeight.bold),
-                              colors: [
-                                Color.fromARGB(255, 0, 140, 255),
-                                Color.fromARGB(255, 15, 62, 123),
-                              ],
-                            ),
-                          ],
-                          repeatForever: true,
-                          isRepeatingAnimation: true,
-                        ),
-                        Spacer(),
-                        ControlSwitch(
-                          switchValue: isAutoMode,
-                          onTap: onAutoToggle,
-                          width: constraints.maxWidth * 0.2,
-                          height: constraints.maxHeight * 0.2,
-                          circularBorderRadius: 20,
-                          activeThumbColor: Theme.of(context).iconTheme.color!,
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

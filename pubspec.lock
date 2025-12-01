@@ -821,10 +821,10 @@ packages:
     dependency: "direct main"
     description:
       name: liquid_glass_renderer
-      sha256: "8e359651edbe3d75302889eee15757910fa2fe4cd8f54b52a959597649262bdb"
+      sha256: "789be157494b38cdef7607bb9b63e7fe3fab76fae16149e52fa313c2d858cb3f"
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.0-dev.2"
+    version: "0.2.0-dev.4"
   liquid_progress_indicator_v2:
     dependency: "direct main"
     description:
@@ -1238,6 +1238,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.1"
+  tab_indicator_styler:
+    dependency: "direct dev"
+    description:
+      name: tab_indicator_styler
+      sha256: "9e7e90367e20f71f3882fc6578fdcced35ab1c66ab20fcb623cdcc20d2796c76"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
   term_glyph:
     dependency: transitive
     description:

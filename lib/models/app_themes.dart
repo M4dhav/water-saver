@@ -5,7 +5,7 @@ class AppColors {
   static ThemeData lightTheme = ThemeData.light(
     useMaterial3: true,
   ).copyWith(
-      cardColor: Colors.white.withAlpha(100),
+      cardColor: Colors.white.withAlpha(150),
       cardTheme: CardThemeData(color: Colors.white.withAlpha(100)),
       primaryColor: Colors.white.withAlpha(100),
       iconTheme: IconThemeData(

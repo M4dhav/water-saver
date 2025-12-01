@@ -6,9 +6,9 @@ import 'package:water_saver/models/threshold_data_history.dart';
 part 'generated/graph_page_model.freezed.dart';
 
 enum SelectedPeriod {
-  week('Past Week'),
-  fifteenDays('Past 15 Days'),
-  month('Past Month');
+  week('Week'),
+  fifteenDays('15 Days'),
+  month('Month');
 
   final String label;
   const SelectedPeriod(this.label);

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:water_saver/controllers/graph_controller.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:water_saver/models/app_themes.dart';
 import 'package:water_saver/models/graph_page_model.dart';
 
 class ThresholdHistoryGraph extends StatelessWidget {
@@ -16,41 +17,37 @@ class ThresholdHistoryGraph extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(4.w),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.1),
-            spreadRadius: 1,
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Threshold History',
-                style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
+    return Padding(
+      padding: EdgeInsets.only(top: 2.h),
+      child: Container(
+        padding: EdgeInsets.all(4.w),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: Theme.of(context).cardColor,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withValues(alpha: 0.1),
+              spreadRadius: 1,
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Upper and Lower Threshold',
+              style: TextStyle(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textGradientColors.last,
               ),
-            ],
-          ),
-          SizedBox(height: 2.h),
-          _buildFlLineChart(),
-          SizedBox(height: 2.h),
-          _buildLegend(),
-        ],
+            ),
+            SizedBox(height: 2.h),
+            _buildFlLineChart(),
+          ],
+        ),
       ),
     );
   }
@@ -71,10 +68,10 @@ class ThresholdHistoryGraph extends StatelessWidget {
         titlesData: motorTitlesData,
         borderData: motorBorderData,
         lineBarsData: motorLineBarsData,
-        backgroundColor: Colors.grey.shade50,
+        backgroundColor: Colors.transparent,
         minX: 0,
         maxX: _getMaxX(),
-        maxY: 100,
+        maxY: 101,
         minY: 0,
       );
 
@@ -107,7 +104,7 @@ class ThresholdHistoryGraph extends StatelessWidget {
       // DateTime.weekday: 1=Mon, ..., 7=Sun
       return weekdayLabels[date.weekday - 1];
     });
-    int dayIndex = (x.toInt() - 1).clamp(0, 6);
+    int dayIndex = (x.toInt()).clamp(0, 6);
     return days[dayIndex];
   }
 
@@ -128,21 +125,18 @@ class ThresholdHistoryGraph extends StatelessWidget {
 
   SideTitles get thresholdLeftTitles => SideTitles(
         getTitlesWidget: (double value, TitleMeta meta) {
-          const style = TextStyle(
+          TextStyle style = TextStyle(
             fontWeight: FontWeight.bold,
-            color: Colors.black87,
+            color: AppColors.textGradientColors.last,
             fontSize: 12,
           );
-          String text;
-          if (value % 2 == 0) {
-            text = '${value.toInt()}';
-          } else {
-            return Container();
-          }
-          return Text(text, style: style, textAlign: TextAlign.center);
+          String text = '${value.toInt()}';
+
+          return Text(text == '101' ? '' : text,
+              style: style, textAlign: TextAlign.center);
         },
         showTitles: true,
-        interval: 10,
+        interval: 25,
         reservedSize: 45,
       );
 
@@ -151,9 +145,9 @@ class ThresholdHistoryGraph extends StatelessWidget {
         reservedSize: 32,
         interval: _getBottomTitleInterval(),
         getTitlesWidget: (double value, TitleMeta meta) {
-          const style = TextStyle(
+          TextStyle style = TextStyle(
             fontWeight: FontWeight.bold,
-            color: Colors.black87,
+            color: AppColors.textGradientColors.last,
             fontSize: 12,
           );
 
@@ -167,29 +161,20 @@ class ThresholdHistoryGraph extends StatelessWidget {
 
   FlGridData get motorGridData => FlGridData(
         show: true,
-        verticalInterval: 1,
-        horizontalInterval: 2,
+        horizontalInterval: 25,
         drawHorizontalLine: true,
-        drawVerticalLine: true,
+        drawVerticalLine: false,
         getDrawingHorizontalLine: (value) {
           return FlLine(
             dashArray: [3, 3],
-            color: Colors.grey.withValues(alpha: .4),
-            strokeWidth: 1,
-          );
-        },
-        getDrawingVerticalLine: (value) {
-          return FlLine(
-            dashArray: [3, 3],
-            color: Colors.grey.withValues(alpha: .4),
-            strokeWidth: 1,
+            color: AppColors.textGradientColors.last,
+            strokeWidth: 2,
           );
         },
       );
 
   FlBorderData get motorBorderData => FlBorderData(
-        show: true,
-        border: Border.all(color: Colors.grey.shade400, width: 2),
+        show: false,
       );
   List<LineChartBarData> get motorLineBarsData => [
         LineChartBarData(
@@ -234,11 +219,11 @@ class ThresholdHistoryGraph extends StatelessWidget {
   double _getMaxX() {
     switch (pageData.selectedPeriod) {
       case SelectedPeriod.week:
-        return 7;
+        return 6;
       case SelectedPeriod.fifteenDays:
-        return 15;
+        return 14;
       case SelectedPeriod.month:
-        return 30;
+        return 29;
     }
   }
 
@@ -262,41 +247,5 @@ class ThresholdHistoryGraph extends StatelessWidget {
       case SelectedPeriod.month:
         return '${value.toInt()}';
     }
-  }
-
-  Widget _buildLegend() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _buildLegendItem('Lower Threshold', Colors.green),
-        SizedBox(width: 6.w),
-        _buildLegendItem('Upper Threshold', Colors.red),
-      ],
-    );
-  }
-
-  Widget _buildLegendItem(String label, Color color) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 4.w,
-          height: 0.5.h,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(2),
-          ),
-        ),
-        SizedBox(width: 2.w),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 13.sp,
-            color: Colors.grey[700],
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ],
-    );
   }
 }

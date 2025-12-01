@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:water_saver/controllers/graph_controller.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:water_saver/models/app_themes.dart';
 import 'package:water_saver/models/graph_page_model.dart';
 
 class MotorStateGraph extends StatelessWidget {
@@ -16,72 +17,28 @@ class MotorStateGraph extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(4.w),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.1),
-            spreadRadius: 1,
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Motor Activity',
-                style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
+    return Padding(
+      padding: EdgeInsets.only(top: 2.h),
+      child: Container(
+        padding: EdgeInsets.all(4.w),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: Theme.of(context).cardColor,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Pump Activity',
+              style: TextStyle(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textGradientColors.last,
               ),
-              _buildPeriodDropdown(),
-            ],
-          ),
-          SizedBox(height: 2.h),
-          _buildFlLineChart(),
-          SizedBox(height: 2.h),
-          _buildLegend(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPeriodDropdown() {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 0.5.h),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(8),
-        color: Colors.white,
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<SelectedPeriod>(
-          value: pageData.selectedPeriod,
-          dropdownColor: Colors.white,
-          items: SelectedPeriod.values.map((SelectedPeriod period) {
-            return DropdownMenuItem<SelectedPeriod>(
-              value: period,
-              child: Text(
-                period.label,
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  color: Colors.black87,
-                ),
-              ),
-            );
-          }).toList(),
-          onChanged: (value) => controller.changeSelectedPeriod(value!),
-          icon: Icon(Icons.keyboard_arrow_down, size: 5.w),
+            ),
+            SizedBox(height: 2.h),
+            _buildFlLineChart(),
+          ],
         ),
       ),
     );
@@ -103,7 +60,7 @@ class MotorStateGraph extends StatelessWidget {
         titlesData: motorTitlesData,
         borderData: motorBorderData,
         lineBarsData: motorLineBarsData,
-        backgroundColor: Colors.grey.shade50,
+        backgroundColor: Colors.transparent,
         minX: 0,
         maxX: _getMaxX(),
         maxY: 24,
@@ -139,7 +96,7 @@ class MotorStateGraph extends StatelessWidget {
       // DateTime.weekday: 1=Mon, ..., 7=Sun
       return weekdayLabels[date.weekday - 1];
     });
-    int dayIndex = (x.toInt() - 1).clamp(0, 6);
+    int dayIndex = (x.toInt()).clamp(0, 6);
     return days[dayIndex];
   }
 
@@ -160,21 +117,20 @@ class MotorStateGraph extends StatelessWidget {
 
   SideTitles get motorLeftTitles => SideTitles(
         getTitlesWidget: (double value, TitleMeta meta) {
-          const style = TextStyle(
+          TextStyle style = TextStyle(
             fontWeight: FontWeight.bold,
-            color: Colors.black87,
+            color: AppColors.textGradientColors.last,
             fontSize: 12,
           );
-          String text;
-          if (value % 2 == 0) {
-            text = '${value.toInt().toString().padLeft(2, '0')}:00';
-          } else {
-            return Container();
-          }
-          return Text(text, style: style, textAlign: TextAlign.center);
+          String text = '${value.toInt().toString().padLeft(2, '0')}:00';
+          return Text(
+            text,
+            style: style,
+            textAlign: TextAlign.center,
+          );
         },
         showTitles: true,
-        interval: 2,
+        interval: 6,
         reservedSize: 45,
       );
 
@@ -183,9 +139,9 @@ class MotorStateGraph extends StatelessWidget {
         reservedSize: 32,
         interval: _getBottomTitleInterval(),
         getTitlesWidget: (double value, TitleMeta meta) {
-          const style = TextStyle(
+          TextStyle style = TextStyle(
             fontWeight: FontWeight.bold,
-            color: Colors.black87,
+            color: AppColors.textGradientColors.last,
             fontSize: 12,
           );
 
@@ -198,36 +154,15 @@ class MotorStateGraph extends StatelessWidget {
       );
 
   FlGridData get motorGridData => FlGridData(
-        show: true,
-        verticalInterval: 1,
-        horizontalInterval: 2,
-        drawHorizontalLine: true,
-        drawVerticalLine: true,
-        getDrawingHorizontalLine: (value) {
-          return FlLine(
-            dashArray: [3, 3],
-            color: Colors.grey.withValues(alpha: .4),
-            strokeWidth: 1,
-          );
-        },
-        getDrawingVerticalLine: (value) {
-          return FlLine(
-            dashArray: [3, 3],
-            color: Colors.grey.withValues(alpha: .4),
-            strokeWidth: 1,
-          );
-        },
+        show: false,
       );
 
   FlBorderData get motorBorderData => FlBorderData(
-        show: true,
-        border: Border.all(color: Colors.grey.shade400, width: 2),
+        show: false,
       );
   List<LineChartBarData> get motorLineBarsData => [
         LineChartBarData(
-          isCurved: false,
-          color: Colors.green,
-          barWidth: 4,
+          barWidth: 0,
           isStrokeCapRound: true,
           dotData: FlDotData(
             show: true,
@@ -244,9 +179,7 @@ class MotorStateGraph extends StatelessWidget {
           spots: controller.returnFlSpotFromMotorStateDataOn(),
         ),
         LineChartBarData(
-          isCurved: false,
-          color: Colors.red,
-          barWidth: 4,
+          barWidth: 0,
           isStrokeCapRound: true,
           dotData: FlDotData(
             show: true,
@@ -266,11 +199,11 @@ class MotorStateGraph extends StatelessWidget {
   double _getMaxX() {
     switch (pageData.selectedPeriod) {
       case SelectedPeriod.week:
-        return 7;
+        return 6;
       case SelectedPeriod.fifteenDays:
-        return 15;
+        return 14;
       case SelectedPeriod.month:
-        return 30;
+        return 29;
     }
   }
 
@@ -294,41 +227,5 @@ class MotorStateGraph extends StatelessWidget {
       case SelectedPeriod.month:
         return '${value.toInt()}';
     }
-  }
-
-  Widget _buildLegend() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _buildLegendItem('Motor ON', Colors.green),
-        SizedBox(width: 6.w),
-        _buildLegendItem('Motor OFF', Colors.red),
-      ],
-    );
-  }
-
-  Widget _buildLegendItem(String label, Color color) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 4.w,
-          height: 0.5.h,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(2),
-          ),
-        ),
-        SizedBox(width: 2.w),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 13.sp,
-            color: Colors.grey[700],
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ],
-    );
   }
 }

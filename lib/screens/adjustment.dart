@@ -13,7 +13,7 @@ class AdjustmentsPage extends ConsumerWidget {
     final appUserData = ref.watch(appUserControllerProvider);
 
     return Scaffold(
-      backgroundColor: Color(0xFF071526),
+      backgroundColor: Colors.transparent,
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 3.h),
         child: SingleChildScrollView(

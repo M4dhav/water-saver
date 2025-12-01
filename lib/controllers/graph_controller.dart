@@ -127,25 +127,25 @@ class GraphController extends AsyncNotifier<GraphPageModel> {
   }
 
   List<FlSpot> returnFlSpotFromMotorStateDataOn() {
+    final DateTime now = DateTime.now();
     List<MotorStateData> motorStateDataOn = state.requireValue.motorStateDataOn;
     switch (state.requireValue.selectedPeriod) {
       case (SelectedPeriod.week):
         motorStateDataOn = motorStateDataOn
-            .where((data) =>
-                data.time.isAfter(DateTime.now().subtract(Duration(days: 7))))
+            .where((data) => data.time.isAfter(now.subtract(Duration(days: 7))))
             .toList();
       case (SelectedPeriod.fifteenDays):
         motorStateDataOn = motorStateDataOn
-            .where((data) =>
-                data.time.isAfter(DateTime.now().subtract(Duration(days: 15))))
+            .where(
+                (data) => data.time.isAfter(now.subtract(Duration(days: 15))))
             .toList();
       case (SelectedPeriod.month):
         motorStateDataOn = motorStateDataOn
-            .where((data) =>
-                data.time.isAfter(DateTime.now().subtract(Duration(days: 30))))
+            .where(
+                (data) => data.time.isAfter(now.subtract(Duration(days: 30))))
             .toList();
     }
-    final now = DateTime.now();
+
     int range;
     switch (state.requireValue.selectedPeriod) {
       case SelectedPeriod.week:

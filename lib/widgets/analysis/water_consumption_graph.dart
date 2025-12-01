@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:water_saver/controllers/graph_controller.dart';
+import 'package:water_saver/models/app_themes.dart';
 import 'package:water_saver/models/graph_page_model.dart';
 
 class WaterConsumptionGraph extends StatelessWidget {
@@ -12,28 +13,39 @@ class WaterConsumptionGraph extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(4.w),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.1),
-            spreadRadius: 1,
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(height: 2.h),
-          _buildFlLineChart(),
-          // SizedBox(height: 2.h),
-          // _buildLegend(),
-        ],
+    return Padding(
+      padding: EdgeInsets.only(top: 2.h),
+      child: Container(
+        padding: EdgeInsets.all(
+          4.w,
+        ),
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withValues(alpha: 0.1),
+              spreadRadius: 1,
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Water Consumption',
+              style: TextStyle(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textGradientColors.last,
+              ),
+            ),
+            SizedBox(height: 2.h),
+            _buildFlLineChart(),
+          ],
+        ),
       ),
     );
   }
@@ -131,7 +143,7 @@ class WaterConsumptionGraph extends StatelessWidget {
       // DateTime.weekday: 1=Mon, ..., 7=Sun
       return weekdayLabels[date.weekday - 1];
     });
-    int dayIndex = (x.toInt() - 1).clamp(0, 6);
+    int dayIndex = (x.toInt()).clamp(0, 6);
     return days[dayIndex];
   }
 }
