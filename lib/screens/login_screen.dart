@@ -72,13 +72,13 @@ class LoginScreen extends ConsumerWidget {
                                 final userDataUpload = appUser.userDataUpload;
                                 final userDataReceive = appUser.userDataReceive;
                                 if (userDataUpload.calibDone == 'yes') {
-                                  if (userDataReceive.wifiConfig == 'true') {
+                                  if (userDataReceive.wifiConfig == true) {
                                     router.go('/home');
                                   } else {
                                     router.go('/wifiConfig');
                                   }
                                 } else {
-                                  if (userDataReceive.wifiConfig == 'true') {
+                                  if (userDataReceive.wifiConfig == true) {
                                     router.go('/calibration');
                                   } else {
                                     router.go('/wifiConfig');

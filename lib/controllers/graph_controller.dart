@@ -1,5 +1,5 @@
 import 'dart:developer';
-import 'dart:ui';
+import 'dart:math' hide log;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -358,18 +358,19 @@ class GraphController extends AsyncNotifier<GraphPageModel> {
     rsvLevelData.sort((a, b) => a.timestamp.compareTo(b.timestamp));
 
     // Calculate daily consumption
-    Map<int, double> dailyConsumption = {};
+    Map<int, double> rftDailyConsumption = {};
+    Map<int, double> rsvDailyConsumption = {};
 
     // Initialize all days with 0 consumption
     for (int i = 0; i < range; i++) {
-      dailyConsumption[i] = 0.0;
+      rftDailyConsumption[i] = 0.0;
+      rsvDailyConsumption[i] = 0.0;
     }
 
     // Calculate consumption for RFT (Roof Tank)
-    _calculateConsumption(rftLevelData, dailyConsumption, range, now);
-
+    _calculateConsumption(rftLevelData, rftDailyConsumption, range, now);
     // Calculate consumption for RSV (Reservoir)
-    _calculateConsumption(rsvLevelData, dailyConsumption, range, now);
+    _calculateConsumption(rsvLevelData, rsvDailyConsumption, range, now);
 
     // Generate bar chart groups
     List<BarChartGroupData> barGroups = [];
@@ -379,8 +380,17 @@ class GraphController extends AsyncNotifier<GraphPageModel> {
           x: i,
           barRods: [
             BarChartRodData(
-              toY: dailyConsumption[i] ?? 0.0,
+              toY: rftDailyConsumption[i] ?? 0.0,
               color: const Color(0xFF4ADE80),
+              width: 16,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(6),
+                topRight: Radius.circular(6),
+              ),
+            ),
+            BarChartRodData(
+              toY: rsvDailyConsumption[i] ?? 0.0,
+              color: Colors.red,
               width: 16,
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(6),
@@ -403,6 +413,12 @@ class GraphController extends AsyncNotifier<GraphPageModel> {
   ) {
     // Group data by day
     Map<int, List<LevelDataHistory>> dataByDay = {};
+// pi*((1.2^2)/4)*(H-L)*1000
+    const double tankDiameterMeters = 1.2;
+    const double tankRadiusMeters = tankDiameterMeters / 2.0;
+    final double crossSectionAreaM2 = pi * tankRadiusMeters * tankRadiusMeters;
+    // 1 meter increase in empty height = 1 meter * area m² * 1000 L/m³
+    final double litresPerMeterHeight = crossSectionAreaM2 * 1000.0;
 
     for (var data in levelData) {
       final daysAgo = now
@@ -430,17 +446,17 @@ class GraphController extends AsyncNotifier<GraphPageModel> {
 
         // Calculate the difference (consumption)
         // C_total = Σ max(0, v_{i-1} - v_i)
-        final consumption = (previousLevel - currentLevel).toDouble();
+        final consumption = (currentLevel - previousLevel).toDouble();
 
         // Only add positive values (actual consumption, not refills)
         if (consumption > 0) {
           dayConsumption += consumption;
         }
       }
-
+      final dayConsumptionLitres = dayConsumption * litresPerMeterHeight;
       // Add to the existing consumption for this day
       dailyConsumption[dayIndex] =
-          (dailyConsumption[dayIndex] ?? 0.0) + dayConsumption;
+          (dailyConsumption[dayIndex] ?? 0.0) + dayConsumptionLitres;
     });
   }
 

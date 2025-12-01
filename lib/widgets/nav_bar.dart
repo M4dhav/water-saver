@@ -4,7 +4,7 @@ import 'package:water_saver/models/app_themes.dart';
 import 'package:water_saver/screens/adjustment.dart';
 import 'package:water_saver/screens/home.dart';
 import 'package:water_saver/screens/settings.dart';
-import 'package:water_saver/screens/report.dart';
+import 'package:water_saver/screens/analysis.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({super.key});
@@ -18,7 +18,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
   final List<Widget> _pages = [
     const HomePage(),
-    const ReportPage(),
+    const AnalysisPage(),
     const AdjustmentsPage(),
     const SettingsPage(),
   ];
@@ -57,7 +57,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
               items: const [
                 BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
                 BottomNavigationBarItem(
-                    icon: Icon(Icons.bar_chart), label: 'Analytics'),
+                    icon: Icon(Icons.bar_chart), label: 'Analysis'),
                 BottomNavigationBarItem(
                     icon: Icon(Icons.handyman), label: 'Adjustments'),
                 BottomNavigationBarItem(

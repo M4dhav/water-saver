@@ -1,7 +1,5 @@
-import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:inner_shadow_container/inner_shadow_container.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -56,17 +54,13 @@ class MotorControlsWidget extends StatelessWidget {
                     child: AnimatedTextKit(
                       animatedTexts: [
                         ColorizeAnimatedText(
-                          fadeInOnStart: false,
-                          'Water Controls',
-                          textStyle: TextStyle(
-                              fontFamily: GoogleFonts.inter().fontFamily,
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.bold),
-                          colors: [
-                            Color.fromARGB(255, 0, 140, 255),
-                            Color.fromARGB(255, 15, 62, 123),
-                          ],
-                        ),
+                            fadeInOnStart: false,
+                            'Water Controls',
+                            textStyle: TextStyle(
+                                fontFamily: GoogleFonts.inter().fontFamily,
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.bold),
+                            colors: AppColors.textGradientColors),
                       ],
                       repeatForever: true,
                       isRepeatingAnimation: true,

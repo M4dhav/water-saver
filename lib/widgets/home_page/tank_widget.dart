@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:liquid_progress_indicator_v2/liquid_progress_indicator.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:water_saver/widgets/home_page/water_tank_new.dart';
+import 'package:water_saver/models/app_themes.dart';
 import 'package:water_saver/widgets/home_page/water_tank_new_2.dart';
-import 'package:water_saver/widgets/home_page/water_tank_shape.dart';
 
 class WaterTankWidget extends StatelessWidget {
   final double fillPercentage;
@@ -42,17 +41,13 @@ class WaterTankWidget extends StatelessWidget {
                         controller: controller,
                         animatedTexts: [
                           ColorizeAnimatedText(
-                            fadeInOnStart: false,
-                            '$volume L',
-                            textStyle: TextStyle(
-                                fontFamily: GoogleFonts.inter().fontFamily,
-                                fontSize: 24.sp,
-                                fontWeight: FontWeight.w900),
-                            colors: [
-                              Color.fromARGB(255, 0, 140, 255),
-                              Color.fromARGB(255, 15, 62, 123),
-                            ],
-                          ),
+                              fadeInOnStart: false,
+                              '$volume L',
+                              textStyle: TextStyle(
+                                  fontFamily: GoogleFonts.inter().fontFamily,
+                                  fontSize: 24.sp,
+                                  fontWeight: FontWeight.w900),
+                              colors: AppColors.textGradientColors),
                         ],
                         repeatForever: true,
                         isRepeatingAnimation: true,
@@ -67,17 +62,13 @@ class WaterTankWidget extends StatelessWidget {
                         controller: controller,
                         animatedTexts: [
                           ColorizeAnimatedText(
-                            fadeInOnStart: false,
-                            '${waterLevel.toStringAsFixed(1)} m',
-                            textStyle: TextStyle(
-                                fontFamily: GoogleFonts.inter().fontFamily,
-                                fontSize: 22.sp,
-                                fontWeight: FontWeight.w900),
-                            colors: [
-                              Color.fromARGB(255, 0, 140, 255),
-                              Color.fromARGB(255, 15, 62, 123),
-                            ],
-                          ),
+                              fadeInOnStart: false,
+                              '${waterLevel.toStringAsFixed(1)} m',
+                              textStyle: TextStyle(
+                                  fontFamily: GoogleFonts.inter().fontFamily,
+                                  fontSize: 22.sp,
+                                  fontWeight: FontWeight.w900),
+                              colors: AppColors.textGradientColors),
                         ],
                         repeatForever: true,
                         isRepeatingAnimation: true,
@@ -92,17 +83,13 @@ class WaterTankWidget extends StatelessWidget {
                         controller: controller,
                         animatedTexts: [
                           ColorizeAnimatedText(
-                            fadeInOnStart: false,
-                            '${fillPercentage.toStringAsFixed(0)}%',
-                            textStyle: TextStyle(
-                                fontFamily: GoogleFonts.inter().fontFamily,
-                                fontSize: 22.sp,
-                                fontWeight: FontWeight.w900),
-                            colors: [
-                              Color.fromARGB(255, 0, 140, 255),
-                              Color.fromARGB(255, 15, 62, 123),
-                            ],
-                          ),
+                              fadeInOnStart: false,
+                              '${fillPercentage.toStringAsFixed(0)}%',
+                              textStyle: TextStyle(
+                                  fontFamily: GoogleFonts.inter().fontFamily,
+                                  fontSize: 22.sp,
+                                  fontWeight: FontWeight.w900),
+                              colors: AppColors.textGradientColors),
                         ],
                         repeatForever: true,
                         isRepeatingAnimation: true,

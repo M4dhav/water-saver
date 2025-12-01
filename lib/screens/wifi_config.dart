@@ -75,7 +75,6 @@ class WifiConfigScreen extends ConsumerWidget {
   Widget buildPageBody(ConnectionModel model,
       WifiSmartConfigController controller, BuildContext context) {
     final passwordController = TextEditingController();
-    final router = GoRouter.of(context);
     return Container(
       height: 100.h,
       width: double.infinity,

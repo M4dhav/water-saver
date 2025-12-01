@@ -36,4 +36,8 @@ class AppColors {
   );
   static const Color activeToggleButtonColor =
       Color.fromARGB(255, 176, 228, 234);
+  static const List<Color> textGradientColors = [
+    Color.fromARGB(255, 0, 140, 255),
+    Color.fromARGB(255, 15, 62, 123),
+  ];
 }

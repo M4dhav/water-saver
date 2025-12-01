@@ -1,11 +1,10 @@
-import 'dart:math';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:water_saver/models/app_themes.dart';
 
 class InsightsWidget extends StatelessWidget {
   final int buckets;
@@ -44,17 +43,13 @@ class InsightsWidget extends StatelessWidget {
                       controller: controller,
                       animatedTexts: [
                         ColorizeAnimatedText(
-                          fadeInOnStart: false,
-                          'Insights',
-                          textStyle: TextStyle(
-                              fontFamily: GoogleFonts.inter().fontFamily,
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.bold),
-                          colors: [
-                            Color.fromARGB(255, 0, 140, 255),
-                            Color.fromARGB(255, 15, 62, 123),
-                          ],
-                        ),
+                            fadeInOnStart: false,
+                            'Insights',
+                            textStyle: TextStyle(
+                                fontFamily: GoogleFonts.inter().fontFamily,
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.bold),
+                            colors: AppColors.textGradientColors),
                       ],
                       repeatForever: true,
                       isRepeatingAnimation: true,
