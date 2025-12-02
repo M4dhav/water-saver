@@ -174,7 +174,7 @@ class SettingsPage extends ConsumerWidget {
       child: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: constraints.maxWidth * 0.04,
-          vertical: constraints.maxHeight * 0.1,
+          vertical: constraints.maxHeight * 0.03,
         ),
         child: Row(
           children: [
