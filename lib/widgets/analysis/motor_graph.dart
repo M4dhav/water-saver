@@ -33,7 +33,7 @@ class MotorStateGraph extends StatelessWidget {
               style: TextStyle(
                 fontSize: 18.sp,
                 fontWeight: FontWeight.bold,
-                color: AppColors.textGradientColors.last,
+                color: AppColors.textGradientColors,
               ),
             ),
             SizedBox(height: 2.h),
@@ -119,7 +119,7 @@ class MotorStateGraph extends StatelessWidget {
         getTitlesWidget: (double value, TitleMeta meta) {
           TextStyle style = TextStyle(
             fontWeight: FontWeight.bold,
-            color: AppColors.textGradientColors.last,
+            color: AppColors.textGradientColors,
             fontSize: 12,
           );
           String text = '${value.toInt().toString().padLeft(2, '0')}:00';
@@ -141,7 +141,7 @@ class MotorStateGraph extends StatelessWidget {
         getTitlesWidget: (double value, TitleMeta meta) {
           TextStyle style = TextStyle(
             fontWeight: FontWeight.bold,
-            color: AppColors.textGradientColors.last,
+            color: AppColors.textGradientColors,
             fontSize: 12,
           );
 

@@ -1,4 +1,3 @@
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -23,19 +22,14 @@ class AnalysisPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: AnimatedTextKit(
-          animatedTexts: [
-            ColorizeAnimatedText(
-                fadeInOnStart: false,
-                'Analysis',
-                textStyle: TextStyle(
-                    fontFamily: GoogleFonts.inter().fontFamily,
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.bold),
-                colors: AppColors.textGradientColors),
-          ],
-          repeatForever: true,
-          isRepeatingAnimation: true,
+        title: Text(
+          'Analysis',
+          style: TextStyle(
+            fontFamily: GoogleFonts.inter().fontFamily,
+            fontSize: 18.sp,
+            fontWeight: FontWeight.bold,
+            color: AppColors.textGradientColors,
+          ),
         ),
         centerTitle: true,
       ),

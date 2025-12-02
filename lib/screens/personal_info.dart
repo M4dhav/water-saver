@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:water_saver/providers/app_user_controller_provider.dart';
+import 'package:water_saver/theme/app_themes.dart';
 
 class PersonalInfoScreen extends ConsumerWidget {
   const PersonalInfoScreen({super.key});
@@ -9,189 +13,274 @@ class PersonalInfoScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final appUserAsync = ref.watch(appUserControllerProvider);
 
-    return Scaffold(
-      backgroundColor: const Color(0xFF071526),
-      appBar: AppBar(
-        title: const Text('Profile'),
-        backgroundColor: const Color(0xFF071526),
-        foregroundColor: Colors.white,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        centerTitle: true,
-      ),
-      body: appUserAsync.when(
-        data: (appUser) {
-          final profile = appUser.userProfile;
-          return ListView(
-            children: [
-              // Profile Avatar Section
-              Container(
-                color: const Color(0xFF0F1C2E),
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  children: [
-                    CircleAvatar(
-                      radius: 50,
-                      backgroundColor: Colors.blue[800],
-                      child: Text(
-                        _getInitials(profile.name, profile.surname),
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      '${profile.name} ${profile.surname}'.trim(),
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      profile.email.isEmpty
-                          ? 'No email provided'
-                          : profile.email,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.white70,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 8),
-              // Personal Information Section
-              Container(
-                color: const Color(0xFF0F1C2E),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
-                      child: Text(
-                        'Personal Information',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                    _buildInfoTile('Name', profile.name),
-                    _buildInfoTile('Surname', profile.surname),
-                    _buildInfoTile('Email', profile.email),
-                    _buildInfoTile('Phone', profile.contact),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 8),
-              // Address Section
-              Container(
-                color: const Color(0xFF0F1C2E),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
-                      child: Text(
-                        'Address',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                    _buildInfoTile('Address', profile.address),
-                    _buildInfoTile('State', profile.state),
-                    _buildInfoTile('Country', profile.country),
-                    _buildInfoTile('Pin Code', profile.pin),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 8),
-              // Device Information Section
-              Container(
-                color: const Color(0xFF0F1C2E),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
-                      child: Text(
-                        'Device Information',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                    _buildInfoTile('Date of Purchase', profile.dateOfPurchase),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 24),
-            ],
-          );
-        },
-        loading: () => const Center(
-          child: CircularProgressIndicator(),
-        ),
-        error: (error, stack) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.error, size: 64, color: Colors.red),
-              const SizedBox(height: 16),
-              Text('Error: $error'),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () => ref.invalidate(appUserControllerProvider),
-                child: const Text('Retry'),
-              ),
-            ],
+    return Stack(
+      children: [
+        Container(
+          height: 100.h,
+          decoration: const BoxDecoration(
+            gradient: AppColors.primaryGradient,
           ),
         ),
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            title: Text(
+              'Profile',
+              style: TextStyle(
+                fontFamily: GoogleFonts.inter().fontFamily,
+                fontSize: 18.sp,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textGradientColors,
+              ),
+            ),
+            backgroundColor: Colors.transparent,
+            foregroundColor: AppColors.textGradientColors,
+            elevation: 0,
+            scrolledUnderElevation: 0,
+            centerTitle: true,
+          ),
+          body: appUserAsync.when(
+            data: (appUser) => _buildContent(context, appUser.userProfile),
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (error, stack) => Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error, size: 64, color: Colors.red),
+                  const SizedBox(height: 16),
+                  Text('Error: $error'),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () => ref.invalidate(appUserControllerProvider),
+                    child: const Text('Retry'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildContent(BuildContext context, dynamic profile) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final padding = constraints.maxWidth * 0.04;
+
+        return Padding(
+          padding: EdgeInsets.symmetric(horizontal: padding),
+          child: Column(
+            children: [
+              SizedBox(height: 1.h),
+              // Profile Header with FakeGlass
+              _glassCard(
+                context,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: padding, vertical: 1.5.h),
+                  child: Row(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: AppColors.textGradientColors.withAlpha(30),
+                            width: 3,
+                          ),
+                        ),
+                        child: CircleAvatar(
+                          radius: constraints.maxWidth * 0.08,
+                          backgroundColor: AppColors.textGradientColors,
+                          child: Text(
+                            _getInitials(profile.name, profile.surname),
+                            style: TextStyle(
+                              fontFamily: GoogleFonts.inter().fontFamily,
+                              fontSize: 17.sp,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 4.w),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              '${profile.name} ${profile.surname}'.trim(),
+                              style: TextStyle(
+                                fontFamily: GoogleFonts.inter().fontFamily,
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.textGradientColors,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            SizedBox(height: 0.3.h),
+                            Text(
+                              profile.email.isEmpty
+                                  ? 'No email provided'
+                                  : profile.email,
+                              style: TextStyle(
+                                fontFamily: GoogleFonts.inter().fontFamily,
+                                fontSize: 13.sp,
+                                color: AppColors.inactivePageColor,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 1.5.h),
+              // Personal Information
+              Expanded(
+                flex: 3,
+                child: _glassCard(
+                  context,
+                  child: _buildInfoSection(
+                    title: 'Personal Information',
+                    items: [
+                      ('Name', profile.name),
+                      ('Surname', profile.surname),
+                      ('Phone', profile.contact),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 1.5.h),
+              // Address
+              Expanded(
+                flex: 4,
+                child: _glassCard(
+                  context,
+                  child: _buildInfoSection(
+                    title: 'Address',
+                    items: [
+                      ('Address', profile.address),
+                      ('State', profile.state),
+                      ('Country', profile.country),
+                      ('Pin Code', profile.pin),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 1.5.h),
+              // Device Information
+              _glassCard(
+                context,
+                child: _buildInfoSection(
+                  title: 'Device Information',
+                  items: [
+                    ('Date of Purchase', profile.dateOfPurchase),
+                  ],
+                ),
+              ),
+              SizedBox(height: 2.h),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _glassCard(BuildContext context, {required Widget child}) {
+    return IntrinsicHeight(
+      child: FakeGlass(
+        shape: LiquidRoundedSuperellipse(borderRadius: 20),
+        settings: LiquidGlassSettings(glassColor: Theme.of(context).cardColor),
+        child: child,
       ),
     );
   }
 
-  Widget _buildInfoTile(String label, String value) {
-    return ListTile(
-      title: Text(
-        label,
-        style: const TextStyle(
-          fontSize: 14,
-          color: Colors.white70,
-          fontWeight: FontWeight.w500,
-        ),
+  Widget _buildInfoSection({
+    required String title,
+    required List<(String, String)> items,
+  }) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontFamily: GoogleFonts.inter().fontFamily,
+              fontSize: 15.sp,
+              fontWeight: FontWeight.bold,
+              color: AppColors.textGradientColors,
+            ),
+          ),
+          SizedBox(height: 0.8.h),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: items
+                  .expand((item) => [
+                        _infoRow(item.$1, item.$2),
+                        if (item != items.last) _divider(),
+                      ])
+                  .toList(),
+            ),
+          ),
+        ],
       ),
-      subtitle: Text(
-        value.isEmpty ? 'Not provided' : value,
-        style: const TextStyle(
-          fontSize: 16,
-          color: Colors.white,
-          fontWeight: FontWeight.w400,
+    );
+  }
+
+  Widget _infoRow(String label, String value) {
+    return Row(
+      children: [
+        Expanded(
+          flex: 2,
+          child: Text(
+            label,
+            style: TextStyle(
+              fontFamily: GoogleFonts.inter().fontFamily,
+              fontSize: 15.sp,
+              color: AppColors.inactivePageColor,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
         ),
-      ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        Expanded(
+          flex: 3,
+          child: Text(
+            value.isEmpty ? 'Not provided' : value,
+            style: TextStyle(
+              fontFamily: GoogleFonts.inter().fontFamily,
+              fontSize: 15.sp,
+              color: AppColors.textGradientColors,
+              fontWeight: FontWeight.w900,
+            ),
+            textAlign: TextAlign.right,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _divider() {
+    return Divider(
+      height: 1,
+      thickness: 1,
+      color: const Color.fromARGB(60, 129, 128, 128),
     );
   }
 
   String _getInitials(String firstName, String lastName) {
     String initials = '';
-    if (firstName.isNotEmpty) {
-      initials += firstName[0].toUpperCase();
-    }
-    if (lastName.isNotEmpty) {
-      initials += lastName[0].toUpperCase();
-    }
+    if (firstName.isNotEmpty) initials += firstName[0].toUpperCase();
+    if (lastName.isNotEmpty) initials += lastName[0].toUpperCase();
     return initials.isEmpty ? 'U' : initials;
   }
 }

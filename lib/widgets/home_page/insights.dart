@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:water_saver/theme/app_themes.dart';
 
 class InsightsWidget extends StatelessWidget {
   final int buckets;
   final int washingMachines;
-  final AnimatedTextController controller;
 
   const InsightsWidget({
     super.key,
     required this.buckets,
     required this.washingMachines,
-    required this.controller,
   });
 
   @override
@@ -37,20 +34,14 @@ class InsightsWidget extends StatelessWidget {
                   width: double.infinity,
                   padding: EdgeInsets.symmetric(
                       horizontal: constraints.maxWidth * 0.05),
-                  child: AnimatedTextKit(
-                    controller: controller,
-                    animatedTexts: [
-                      ColorizeAnimatedText(
-                          fadeInOnStart: false,
-                          'Insights',
-                          textStyle: TextStyle(
-                              fontFamily: GoogleFonts.inter().fontFamily,
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.bold),
-                          colors: AppColors.textGradientColors),
-                    ],
-                    repeatForever: true,
-                    isRepeatingAnimation: true,
+                  child: Text(
+                    'Insights',
+                    style: TextStyle(
+                      fontFamily: GoogleFonts.inter().fontFamily,
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textGradientColors,
+                    ),
                   ),
                 ),
                 Padding(
@@ -90,21 +81,14 @@ class InsightsWidget extends StatelessWidget {
                                 fontSize: 14.sp,
                               ),
                             ),
-                            AnimatedTextKit(
-                              animatedTexts: [
-                                ColorizeAnimatedText(
-                                  fadeInOnStart: false,
-                                  '$buckets 2L-buckets',
-                                  textStyle: TextStyle(
-                                      fontFamily:
-                                          GoogleFonts.inter().fontFamily,
-                                      fontSize: 18.sp,
-                                      fontWeight: FontWeight.bold),
-                                  colors: AppColors.textGradientColors
-                                ),
-                              ],
-                              repeatForever: true,
-                              isRepeatingAnimation: true,
+                            Text(
+                              '$buckets 2L-buckets',
+                              style: TextStyle(
+                                fontFamily: GoogleFonts.inter().fontFamily,
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.textGradientColors,
+                              ),
                             ),
                           ],
                         ),
@@ -147,22 +131,14 @@ class InsightsWidget extends StatelessWidget {
                                 fontSize: 14.sp,
                               ),
                             ),
-                            AnimatedTextKit(
-                              controller: controller,
-                              animatedTexts: [
-                                ColorizeAnimatedText(
-                                  fadeInOnStart: false,
-                                  '$washingMachines washing machines',
-                                  textStyle: TextStyle(
-                                      fontFamily:
-                                          GoogleFonts.inter().fontFamily,
-                                      fontSize: 18.sp,
-                                      fontWeight: FontWeight.bold),
-                                  colors: AppColors.textGradientColors
-                                ),
-                              ],
-                              repeatForever: true,
-                              isRepeatingAnimation: true,
+                            Text(
+                              '$washingMachines washing machines',
+                              style: TextStyle(
+                                fontFamily: GoogleFonts.inter().fontFamily,
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.textGradientColors,
+                              ),
                             ),
                           ],
                         ),

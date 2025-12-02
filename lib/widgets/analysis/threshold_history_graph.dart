@@ -41,7 +41,7 @@ class ThresholdHistoryGraph extends StatelessWidget {
               style: TextStyle(
                 fontSize: 18.sp,
                 fontWeight: FontWeight.bold,
-                color: AppColors.textGradientColors.last,
+                color: AppColors.textGradientColors,
               ),
             ),
             SizedBox(height: 2.h),
@@ -127,7 +127,7 @@ class ThresholdHistoryGraph extends StatelessWidget {
         getTitlesWidget: (double value, TitleMeta meta) {
           TextStyle style = TextStyle(
             fontWeight: FontWeight.bold,
-            color: AppColors.textGradientColors.last,
+            color: AppColors.textGradientColors,
             fontSize: 12,
           );
           String text = '${value.toInt()}';
@@ -147,7 +147,7 @@ class ThresholdHistoryGraph extends StatelessWidget {
         getTitlesWidget: (double value, TitleMeta meta) {
           TextStyle style = TextStyle(
             fontWeight: FontWeight.bold,
-            color: AppColors.textGradientColors.last,
+            color: AppColors.textGradientColors,
             fontSize: 12,
           );
 
@@ -167,7 +167,7 @@ class ThresholdHistoryGraph extends StatelessWidget {
         getDrawingHorizontalLine: (value) {
           return FlLine(
             dashArray: [3, 3],
-            color: AppColors.textGradientColors.last,
+            color: AppColors.textGradientColors,
             strokeWidth: 2,
           );
         },

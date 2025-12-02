@@ -1,35 +1,15 @@
 import 'dart:math';
-
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:liquid_progress_indicator_v2/liquid_progress_indicator.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:water_saver/theme/app_themes.dart';
 import 'package:water_saver/widgets/home_page/water_tank.dart';
-
-class Bubble {
-  double x;
-  double y;
-  double size;
-  double speed;
-  double opacity;
-
-  Bubble({
-    required this.x,
-    required this.y,
-    required this.size,
-    required this.speed,
-    this.opacity = 0.8,
-  });
-}
 
 class WaterTankWidget extends StatefulWidget {
   final double fillPercentage;
   final double waterLevel;
   final double tankHeight;
   final int volume;
-  final AnimatedTextController controller;
   final bool isMotorOn;
 
   const WaterTankWidget({
@@ -38,7 +18,6 @@ class WaterTankWidget extends StatefulWidget {
     required this.waterLevel,
     required this.tankHeight,
     required this.volume,
-    required this.controller,
     this.isMotorOn = false,
   });
 
@@ -126,20 +105,14 @@ class _WaterTankWidgetState extends State<WaterTankWidget>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      AnimatedTextKit(
-                        controller: widget.controller,
-                        animatedTexts: [
-                          ColorizeAnimatedText(
-                              fadeInOnStart: false,
-                              '${widget.volume} L',
-                              textStyle: TextStyle(
-                                  fontFamily: GoogleFonts.inter().fontFamily,
-                                  fontSize: 24.sp,
-                                  fontWeight: FontWeight.w900),
-                              colors: AppColors.textGradientColors),
-                        ],
-                        repeatForever: true,
-                        isRepeatingAnimation: true,
+                      Text(
+                        '${widget.volume} L',
+                        style: TextStyle(
+                          fontFamily: GoogleFonts.inter().fontFamily,
+                          fontSize: 22.sp,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textGradientColors,
+                        ),
                       ),
                       Text(
                         'volume',
@@ -149,40 +122,28 @@ class _WaterTankWidgetState extends State<WaterTankWidget>
                                 Theme.of(context).textTheme.bodyMedium?.color,
                             fontWeight: FontWeight.w700),
                       ),
-                      AnimatedTextKit(
-                        controller: widget.controller,
-                        animatedTexts: [
-                          ColorizeAnimatedText(
-                              fadeInOnStart: false,
-                              '${widget.waterLevel.toStringAsFixed(1)} m',
-                              textStyle: TextStyle(
-                                  fontFamily: GoogleFonts.inter().fontFamily,
-                                  fontSize: 22.sp,
-                                  fontWeight: FontWeight.w900),
-                              colors: AppColors.textGradientColors),
-                        ],
-                        repeatForever: true,
-                        isRepeatingAnimation: true,
+                      Text(
+                        '${widget.waterLevel.toStringAsFixed(1)} m',
+                        style: TextStyle(
+                          fontFamily: GoogleFonts.inter().fontFamily,
+                          fontSize: 22.sp,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textGradientColors,
+                        ),
                       ),
                       Text(
                         'from the bottom',
                         style: TextStyle(
                             fontSize: 14.sp, fontWeight: FontWeight.w900),
                       ),
-                      AnimatedTextKit(
-                        controller: widget.controller,
-                        animatedTexts: [
-                          ColorizeAnimatedText(
-                              fadeInOnStart: false,
-                              '${widget.fillPercentage.toStringAsFixed(0)}%',
-                              textStyle: TextStyle(
-                                  fontFamily: GoogleFonts.inter().fontFamily,
-                                  fontSize: 22.sp,
-                                  fontWeight: FontWeight.w900),
-                              colors: AppColors.textGradientColors),
-                        ],
-                        repeatForever: true,
-                        isRepeatingAnimation: true,
+                      Text(
+                        '${widget.fillPercentage.toStringAsFixed(0)}%',
+                        style: TextStyle(
+                          fontFamily: GoogleFonts.inter().fontFamily,
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textGradientColors,
+                        ),
                       ),
                       Text(
                         'filled',
@@ -197,37 +158,14 @@ class _WaterTankWidgetState extends State<WaterTankWidget>
                   child: SizedBox(
                     width: constraints.maxWidth * 0.4,
                     height: constraints.maxHeight * 0.9,
-                    child: Stack(
-                      children: [
-                        LiquidCustomProgressIndicator(
-                          value: widget.fillPercentage / 100,
-                          direction: Axis.vertical,
-                          backgroundColor: const Color(0xFFE8F4FC),
-                      waveCount: 2,
-                      waveColors: [Colors.blue, Colors.lightBlueAccent],
-
-                          valueColor: AlwaysStoppedAnimation(
-                            const Color(0xFF42A5F5),
-                          ),
-                          shapePath: buildThirdWaterTankPath(
-                            size: Size(
-                              constraints.maxWidth * 0.4,
-                              constraints.maxHeight * 0.9,
-                            ),
-                          ),
-                        ),
-                        CustomPaint(
-                          size: Size(
-                            constraints.maxWidth * 0.4,
-                            constraints.maxHeight * 0.9,
-                          ),
-                          painter: Water3DOverlayPainter(
-                            fillPercentage: widget.fillPercentage / 100,
-                            bubbles: _bubbles,
-                            isMotorOn: widget.isMotorOn,
-                          ),
-                        ),
-                      ],
+                    child: Water3DWaveWidget(
+                      fillPercentage: widget.fillPercentage / 100,
+                      size: Size(
+                        constraints.maxWidth * 0.4,
+                        constraints.maxHeight * 0.9,
+                      ),
+                      bubbles: _bubbles,
+                      isMotorOn: widget.isMotorOn,
                     ),
                   ),
                 ),
@@ -237,99 +175,5 @@ class _WaterTankWidgetState extends State<WaterTankWidget>
         ),
       );
     });
-  }
-}
-
-class Water3DOverlayPainter extends CustomPainter {
-  final double fillPercentage;
-  final List<Bubble> bubbles;
-  final bool isMotorOn;
-
-  Water3DOverlayPainter({
-    required this.fillPercentage,
-    required this.bubbles,
-    required this.isMotorOn,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final tankPath = buildThirdWaterTankPath(size: size);
-    final waterHeight = size.height * fillPercentage;
-    final waterTop = size.height - waterHeight;
-    canvas.save();
-    canvas.clipPath(tankPath);
-    if (bubbles.isNotEmpty && fillPercentage > 0) {
-      for (var bubble in bubbles) {
-        final bubbleX = bubble.x * size.width;
-        final bubbleY = waterTop +
-            (bubble.y - (1 - fillPercentage)) * waterHeight / fillPercentage;
-
-        if (bubbleY >= waterTop && bubbleY <= size.height) {
-          final bubblePaint = Paint()
-            ..shader = RadialGradient(
-              center: const Alignment(-0.4, -0.4),
-              colors: [
-                Colors.white.withValues(alpha: bubble.opacity),
-                Colors.white.withValues(alpha: bubble.opacity * 0.5),
-                const Color(0xFF90CAF9).withValues(alpha: 0.25),
-                Colors.transparent,
-              ],
-              stops: const [0.0, 0.25, 0.65, 1.0],
-            ).createShader(Rect.fromCircle(
-              center: Offset(bubbleX, bubbleY),
-              radius: bubble.size,
-            ));
-
-          canvas.drawCircle(
-            Offset(bubbleX, bubbleY),
-            bubble.size,
-            bubblePaint,
-          );
-          // Bubble outline
-          final outlinePaint = Paint()
-            ..color = Colors.white.withValues(alpha: 0.5)
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 0.8;
-          canvas.drawCircle(
-            Offset(bubbleX, bubbleY),
-            bubble.size,
-            outlinePaint,
-          );
-          final highlightDot = Paint()
-            ..color = Colors.white.withValues(alpha: 0.9);
-          canvas.drawCircle(
-            Offset(bubbleX - bubble.size * 0.3, bubbleY - bubble.size * 0.3),
-            bubble.size * 0.2,
-            highlightDot,
-          );
-        }
-      }
-    }
-    canvas.restore();
-    final outlinePaint = Paint()
-      ..color = const Color.fromARGB(255, 124, 137, 143)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
-    canvas.drawPath(tankPath, outlinePaint);
-    final tankHighlight = Paint()
-      ..shader = LinearGradient(
-        begin: Alignment.centerLeft,
-        end: Alignment.centerRight,
-        colors: [
-          Colors.white.withValues(alpha: 0.4),
-          Colors.transparent,
-        ],
-        stops: const [0.0, 0.15],
-      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height))
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5;
-    canvas.drawPath(tankPath, tankHighlight);
-  }
-
-  @override
-  bool shouldRepaint(Water3DOverlayPainter oldDelegate) {
-    return oldDelegate.fillPercentage != fillPercentage ||
-        oldDelegate.bubbles.length != bubbles.length ||
-        oldDelegate.isMotorOn != isMotorOn;
   }
 }

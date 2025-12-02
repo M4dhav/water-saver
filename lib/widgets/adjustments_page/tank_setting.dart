@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:water_saver/theme/app_themes.dart';
 
 class TankSettingsWidget extends ConsumerWidget {
   final String title;
@@ -20,79 +23,137 @@ class TankSettingsWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SliderTheme(
-      data: SliderThemeData(
-          trackHeight: 25,
-          padding: EdgeInsets.all(10),
-          activeTrackColor: Colors.blue,
-          inactiveTrackColor: Colors.grey.shade300,
-          thumbShape: SliderComponentShape.noOverlay,
-          valueIndicatorColor: Colors.blue,
-          overlayShape: SliderComponentShape.noOverlay),
-      child: Container(
-        width: 100.w,
-        padding: EdgeInsets.all(3.w),
-        margin: EdgeInsets.only(bottom: 3.h),
-        decoration: BoxDecoration(
-          color: Color(0xFF071526),
-          borderRadius: BorderRadius.circular(15),
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 2.w),
+      child: FakeGlass(
+        shape: LiquidRoundedSuperellipse(
+          borderRadius: 20,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(title,
+        settings: LiquidGlassSettings(glassColor: Theme.of(context).cardColor),
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: 2.h,
+            horizontal: 4.w,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                title,
                 style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white)),
-            SizedBox(height: 1.h),
-            if (motorOffValue != null && onMotorOffChanged != null)
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Level Threshold: Motor Off",
-                    style: TextStyle(fontSize: 14.sp, color: Colors.blue),
-                  ),
-                  SizedBox(height: 1.h),
-                  Slider(
-                      value: motorOffValue ?? 0,
-                      label: motorOffValue?.toStringAsFixed(0) ?? "0",
-                      min: 0.0,
-                      max: 100.0,
-                      divisions: 100,
-                      onChanged: (value) =>
-                          onMotorOffChanged!(value < 2 ? 2 : value)),
-                ],
+                  fontFamily: GoogleFonts.inter().fontFamily,
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textGradientColors,
+                ),
               ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Level Threshold: Motor On ",
-                  style: TextStyle(fontSize: 14.sp, color: Colors.blue),
+              SizedBox(height: 2.h),
+              if (motorOffValue != null && onMotorOffChanged != null)
+                _buildSliderSection(
+                  context,
+                  label: "Level Threshold: Motor Off",
+                  value: motorOffValue ?? 0,
+                  onChanged: (value) =>
+                      onMotorOffChanged!(value < 2 ? 2 : value),
                 ),
-                SizedBox(height: 1.h),
-                Slider(
-                    value: motorOnValue,
-                    label: motorOnValue.toStringAsFixed(0),
-                    min: 0.0,
-                    max: 100.0,
-                    divisions: 100,
-                    onChanged: (value) =>
-                        onMotorOnChanged(value < 1 ? 1 : value))
-              ],
-            ),
-            if ((motorOffValue ?? 101) <= motorOnValue)
-              Padding(
-                padding: EdgeInsets.only(top: 1.h),
-                child: Text(
-                  "Motor off threshold must be greater than Motor on threshold",
-                  style: TextStyle(color: Colors.red, fontSize: 14.sp),
+              _buildSliderSection(
+                context,
+                label: "Level Threshold: Motor On",
+                value: motorOnValue,
+                onChanged: (value) => onMotorOnChanged(value < 1 ? 1 : value),
+              ),
+              if ((motorOffValue ?? 101) <= motorOnValue)
+                Padding(
+                  padding: EdgeInsets.only(top: 1.h),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 3.w,
+                      vertical: 1.h,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.red.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: Colors.red.withValues(alpha: 0.4),
+                        width: 1,
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.warning_amber_rounded,
+                          color: Colors.red,
+                          size: 18.sp,
+                        ),
+                        SizedBox(width: 2.w),
+                        Expanded(
+                          child: Text(
+                            "Motor off threshold must be greater than motor on threshold",
+                            style: TextStyle(
+                              fontFamily: GoogleFonts.inter().fontFamily,
+                              color: Colors.red,
+                              fontSize: 13.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              )
-          ],
+            ],
+          ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildSliderSection(
+    BuildContext context, {
+    required String label,
+    required double value,
+    required void Function(double) onChanged,
+  }) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 1.5.h),
+      padding: EdgeInsets.symmetric(
+        horizontal: 3.w,
+        vertical: 1.5.h,
+      ),
+      decoration: BoxDecoration(
+        color: Theme.of(context).primaryColor,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontFamily: GoogleFonts.inter().fontFamily,
+              fontSize: 14.sp,
+              color: AppColors.textGradientColors,
+            ),
+          ),
+          SizedBox(height: 1.h),
+          SliderTheme(
+            data: SliderThemeData(
+              trackHeight: 20,
+              activeTrackColor: AppColors.textGradientColors,
+              inactiveTrackColor: Colors.grey.shade300,
+              thumbShape: SliderComponentShape.noThumb,
+              overlayShape: SliderComponentShape.noOverlay,
+            ),
+            child: Slider(
+              value: value,
+              min: 0.0,
+              max: 100.0,
+              divisions: 100,
+              onChanged: onChanged,
+            ),
+          ),
+        ],
       ),
     );
   }

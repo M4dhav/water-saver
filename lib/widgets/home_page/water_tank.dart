@@ -1,4 +1,380 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
+
+class Water3DWaveWidget extends StatefulWidget {
+  final double fillPercentage;
+  final Size size;
+  final List<Bubble> bubbles;
+  final bool isMotorOn;
+
+  const Water3DWaveWidget({
+    super.key,
+    required this.fillPercentage,
+    required this.size,
+    required this.bubbles,
+    this.isMotorOn = false,
+  });
+
+  @override
+  State<Water3DWaveWidget> createState() => _Water3DWaveWidgetState();
+}
+
+class _Water3DWaveWidgetState extends State<Water3DWaveWidget>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _waveController;
+
+  @override
+  void initState() {
+    super.initState();
+    _waveController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 4000),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _waveController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _waveController,
+      builder: (context, child) {
+        final phase = _waveController.value * 2 * math.pi;
+        return CustomPaint(
+          size: widget.size,
+          painter: Water3DWavePainter(
+            fillPercentage: widget.fillPercentage,
+            wavePhase: phase,
+            bubbles: widget.bubbles,
+            isMotorOn: widget.isMotorOn,
+          ),
+        );
+      },
+    );
+  }
+}
+
+class Bubble {
+  double x;
+  double y;
+  double size;
+  double speed;
+  double opacity;
+
+  Bubble({
+    required this.x,
+    required this.y,
+    required this.size,
+    required this.speed,
+    this.opacity = 0.8,
+  });
+}
+
+class Water3DWavePainter extends CustomPainter {
+  final double fillPercentage;
+  final double wavePhase;
+  final List<Bubble> bubbles;
+  final bool isMotorOn;
+
+  Water3DWavePainter({
+    required this.fillPercentage,
+    required this.wavePhase,
+    required this.bubbles,
+    required this.isMotorOn,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final tankPath = buildThirdWaterTankPath(size: size);
+    final waterHeight = size.height * fillPercentage;
+    final waterTop = size.height - waterHeight;
+
+    canvas.save();
+    canvas.clipPath(tankPath);
+    final backgroundPaint = Paint()..color = const Color(0xFFE8F4FC);
+    canvas.drawRect(
+        Rect.fromLTWH(0, 0, size.width, size.height), backgroundPaint);
+
+    if (fillPercentage > 0) {
+      final waterRect = Rect.fromLTWH(0, waterTop + 3, size.width, waterHeight);
+      final waterGradient = LinearGradient(
+        begin: Alignment.centerLeft,
+        end: Alignment.centerRight,
+        colors: [
+          const Color.fromARGB(255, 46, 132, 229),
+          const Color(0xFF42A5F5),
+          const Color(0xFF64B5F6),
+          const Color(0xFF42A5F5),
+          const Color.fromARGB(255, 50, 130, 222),
+        ],
+        stops: const [0.0, 0.2, 0.5, 0.8, 1.0],
+      );
+      canvas.drawRect(
+        waterRect,
+        Paint()..shader = waterGradient.createShader(waterRect),
+      );
+      _drawTankWave(
+        canvas,
+        size,
+        waterTop,
+        wavePhase,
+        amplitude: 2.5,
+        color: const Color.fromARGB(255, 71, 137, 235),
+        yOffset: -2,
+        phaseOffset: math.pi * 0.5,
+      );
+      _drawTankWave(
+        canvas,
+        size,
+        waterTop,
+        wavePhase,
+        amplitude: 3.5,
+        color: const Color(0xFF42A5F5),
+        yOffset: 0,
+        isFrontWave: true,
+      );
+      _drawTankWave(
+        canvas,
+        size,
+        waterTop,
+        wavePhase,
+        amplitude: 2.0,
+        color: const Color(0xFF90CAF9).withValues(alpha: 0.4),
+        yOffset: 1,
+        isHighlight: true,
+        phaseOffset: math.pi * 0.2,
+      );
+      _draw3DDepthOverlay(canvas, size, waterTop, waterHeight);
+      _drawBubbles(canvas, size, waterTop, waterHeight);
+    }
+
+    canvas.restore();
+    final outlinePaint = Paint()
+      ..color = const Color.fromARGB(255, 124, 137, 143)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2;
+    canvas.drawPath(tankPath, outlinePaint);
+
+    final tankHighlight = Paint()
+      ..shader = LinearGradient(
+        begin: Alignment.centerLeft,
+        end: Alignment.centerRight,
+        colors: [
+          Colors.white.withValues(alpha: 0.4),
+          Colors.transparent,
+        ],
+        stops: const [0.0, 0.15],
+      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height))
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5;
+    canvas.drawPath(tankPath, tankHighlight);
+  }
+
+  void _drawTankWave(
+    Canvas canvas,
+    Size size,
+    double waterTop,
+    double phase, {
+    required double amplitude,
+    required Color color,
+    double yOffset = 0,
+    double phaseOffset = 0,
+    bool isFrontWave = false,
+    bool isHighlight = false,
+  }) {
+    final wavePath = Path();
+    wavePath.moveTo(0, size.height);
+    wavePath.lineTo(0, waterTop + yOffset);
+    for (double x = 0; x <= size.width; x += 0.5) {
+      final normalizedX = x / size.width;
+      final slosh = math.sin(phase + phaseOffset) *
+          math.sin(normalizedX * math.pi) *
+          amplitude;
+      final ripple =
+          math.sin(normalizedX * math.pi * 3 + phase) * (amplitude * 0.15);
+
+      final waveY = waterTop + yOffset + slosh + ripple;
+      wavePath.lineTo(x, waveY);
+    }
+    wavePath.lineTo(size.width, size.height);
+    wavePath.close();
+    final waveRect = Rect.fromLTWH(0, waterTop - amplitude * 1.5, size.width,
+        size.height - waterTop + amplitude * 2);
+
+    Paint wavePaint;
+    if (isFrontWave) {
+      wavePaint = Paint()
+        ..shader = LinearGradient(
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+          colors: [
+            color.withValues(alpha: 0.8),
+            color,
+            color.withValues(alpha: 0.95),
+            color,
+            color.withValues(alpha: 0.8),
+          ],
+          stops: const [0.0, 0.2, 0.5, 0.8, 1.0],
+        ).createShader(waveRect);
+    } else if (isHighlight) {
+      wavePaint = Paint()..color = color;
+    } else {
+      wavePaint = Paint()
+        ..shader = LinearGradient(
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+          colors: [
+            color.withValues(alpha: 0.6),
+            color.withValues(alpha: 0.85),
+            color,
+            color.withValues(alpha: 0.85),
+            color.withValues(alpha: 0.6),
+          ],
+          stops: const [0.0, 0.2, 0.5, 0.8, 1.0],
+        ).createShader(waveRect);
+    }
+
+    canvas.drawPath(wavePath, wavePaint);
+  }
+
+  void _draw3DDepthOverlay(
+      Canvas canvas, Size size, double waterTop, double waterHeight) {
+    if (waterHeight <= 0) return;
+
+    final waterRect = Rect.fromLTWH(0, waterTop, size.width, waterHeight);
+    final cylinderGradient = Paint()
+      ..shader = RadialGradient(
+        center: const Alignment(0.0, 0.0),
+        radius: 1.2,
+        colors: [
+          Colors.white.withValues(alpha: 0.12),
+          Colors.transparent,
+          const Color(0xFF0D47A1).withValues(alpha: 0.08),
+        ],
+        stops: const [0.0, 0.5, 1.0],
+      ).createShader(waterRect);
+    canvas.drawRect(waterRect, cylinderGradient);
+    final leftGlowRect =
+        Rect.fromLTWH(0, waterTop, size.width * 0.35, waterHeight);
+    final leftGlow = Paint()
+      ..shader = LinearGradient(
+        begin: Alignment.centerLeft,
+        end: Alignment.centerRight,
+        colors: [
+          Colors.white.withValues(alpha: 0.18),
+          Colors.white.withValues(alpha: 0.06),
+          Colors.transparent,
+        ],
+        stops: const [0.0, 0.5, 1.0],
+      ).createShader(leftGlowRect);
+    canvas.drawRect(leftGlowRect, leftGlow);
+    final rightShadowRect = Rect.fromLTWH(
+        size.width * 0.65, waterTop, size.width * 0.35, waterHeight);
+    final rightShadow = Paint()
+      ..shader = LinearGradient(
+        begin: Alignment.centerLeft,
+        end: Alignment.centerRight,
+        colors: [
+          Colors.transparent,
+          const Color(0xFF0D47A1).withValues(alpha: 0.1),
+          const Color(0xFF0D47A1).withValues(alpha: 0.2),
+        ],
+        stops: const [0.0, 0.5, 1.0],
+      ).createShader(rightShadowRect);
+    canvas.drawRect(rightShadowRect, rightShadow);
+    final bottomDepthHeight = waterHeight * 0.35;
+    final bottomRect = Rect.fromLTWH(
+        0, size.height - bottomDepthHeight, size.width, bottomDepthHeight);
+    final bottomDepth = Paint()
+      ..shader = LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          Colors.transparent,
+          const Color(0xFF0D47A1).withValues(alpha: 0.12),
+          const Color(0xFF0D47A1).withValues(alpha: 0.2),
+        ],
+        stops: const [0.0, 0.6, 1.0],
+      ).createShader(bottomRect);
+    canvas.drawRect(bottomRect, bottomDepth);
+    final specularRect = Rect.fromLTWH(
+        size.width * 0.25, waterTop, size.width * 0.5, waterHeight * 0.3);
+    final specular = Paint()
+      ..shader = RadialGradient(
+        center: const Alignment(0.0, -0.5),
+        radius: 1.0,
+        colors: [
+          Colors.white.withValues(alpha: 0.1),
+          Colors.transparent,
+        ],
+      ).createShader(specularRect);
+    canvas.drawRect(specularRect, specular);
+  }
+
+  void _drawBubbles(
+      Canvas canvas, Size size, double waterTop, double waterHeight) {
+    if (bubbles.isEmpty || fillPercentage <= 0) return;
+
+    for (var bubble in bubbles) {
+      final bubbleX = bubble.x * size.width;
+      final bubbleY = waterTop +
+          (bubble.y - (1 - fillPercentage)) * waterHeight / fillPercentage;
+
+      if (bubbleY >= waterTop && bubbleY <= size.height) {
+        final bubblePaint = Paint()
+          ..shader = RadialGradient(
+            center: const Alignment(-0.4, -0.4),
+            colors: [
+              Colors.white.withValues(alpha: bubble.opacity),
+              Colors.white.withValues(alpha: bubble.opacity * 0.5),
+              const Color(0xFF90CAF9).withValues(alpha: 0.25),
+              Colors.transparent,
+            ],
+            stops: const [0.0, 0.25, 0.65, 1.0],
+          ).createShader(Rect.fromCircle(
+            center: Offset(bubbleX, bubbleY),
+            radius: bubble.size,
+          ));
+
+        canvas.drawCircle(
+          Offset(bubbleX, bubbleY),
+          bubble.size,
+          bubblePaint,
+        );
+
+        final outlinePaint = Paint()
+          ..color = Colors.white.withValues(alpha: 0.5)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 0.8;
+        canvas.drawCircle(
+          Offset(bubbleX, bubbleY),
+          bubble.size,
+          outlinePaint,
+        );
+
+        final highlightDot = Paint()
+          ..color = Colors.white.withValues(alpha: 0.9);
+        canvas.drawCircle(
+          Offset(bubbleX - bubble.size * 0.3, bubbleY - bubble.size * 0.3),
+          bubble.size * 0.2,
+          highlightDot,
+        );
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(Water3DWavePainter oldDelegate) {
+    return oldDelegate.fillPercentage != fillPercentage ||
+        oldDelegate.wavePhase != wavePhase ||
+        oldDelegate.bubbles.length != bubbles.length ||
+        oldDelegate.isMotorOn != isMotorOn;
+  }
+}
 
 Path buildRawShapePath() {
   final Path path = Path();

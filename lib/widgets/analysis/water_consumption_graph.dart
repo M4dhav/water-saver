@@ -39,7 +39,7 @@ class WaterConsumptionGraph extends StatelessWidget {
               style: TextStyle(
                 fontSize: 18.sp,
                 fontWeight: FontWeight.bold,
-                color: AppColors.textGradientColors.last,
+                color: AppColors.textGradientColors,
               ),
             ),
             SizedBox(height: 2.h),
