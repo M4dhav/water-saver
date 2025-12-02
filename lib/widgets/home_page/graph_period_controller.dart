@@ -29,7 +29,7 @@ class GraphPeriodControllerWidget extends StatelessWidget {
             labelColor: Colors.white,
             unselectedLabelColor: AppColors.textGradientColors.last,
             indicator: RectangularIndicator(
-                color: AppColors.textGradientColors.last,
+                color: Theme.of(context).iconTheme.color!,
                 paintingStyle: PaintingStyle.fill,
                 bottomLeftRadius: 100,
                 topLeftRadius: 100,

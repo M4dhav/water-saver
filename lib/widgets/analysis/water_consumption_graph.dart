@@ -35,7 +35,7 @@ class WaterConsumptionGraph extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Water Consumption',
+              'Water Consumption ',
               style: TextStyle(
                 fontSize: 18.sp,
                 fontWeight: FontWeight.bold,

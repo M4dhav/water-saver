@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:water_saver/models/app_themes.dart';
 import 'package:water_saver/screens/adjustment.dart';
@@ -37,25 +38,29 @@ class _BottomNavBarState extends State<BottomNavBar> {
           height: 100.h,
           decoration: const BoxDecoration(
             gradient: AppColors.primaryGradient,
-            // image: DecorationImage(
-            //     image: AssetImage('assets/images/onboarding_screen1.png'),
-            //     fit: BoxFit.cover),
           ),
         ),
-        SafeArea(
-          child: Scaffold(
-            backgroundColor: Colors.transparent,
-            body: _pages[_selectedIndex],
-            bottomNavigationBar: BottomNavigationBar(
-              backgroundColor: const Color.fromARGB(0, 111, 111, 111),
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          body: _pages[_selectedIndex],
+          bottomNavigationBar: FakeGlass(
+            shape: LiquidRoundedRectangle(borderRadius: 20),
+            // shape: LiquidRoundedSuperellipse(borderRadius: 20),
+            settings:
+                LiquidGlassSettings(glassColor: Theme.of(context).cardColor),
+            child: BottomNavigationBar(
+              backgroundColor: Colors.transparent,
               currentIndex: _selectedIndex,
               onTap: _onItemTapped,
               type: BottomNavigationBarType.fixed,
-              selectedItemColor: const Color.fromARGB(255, 255, 255, 255),
-              unselectedItemColor: const Color(0xFFA0AEC0),
+              selectedItemColor: Theme.of(context).iconTheme.color,
+              unselectedItemColor: AppColors.textGradientColors.last,
               elevation: 0,
-              items: const [
-                BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+              items: [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.home),
+                  label: 'Home',
+                ),
                 BottomNavigationBarItem(
                     icon: Icon(Icons.bar_chart), label: 'Analysis'),
                 BottomNavigationBarItem(
