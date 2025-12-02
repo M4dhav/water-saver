@@ -54,15 +54,15 @@ class _BottomNavBarState extends State<BottomNavBar> {
               onTap: _onItemTapped,
               type: BottomNavigationBarType.fixed,
               selectedItemColor: Theme.of(context).iconTheme.color,
-              unselectedItemColor: AppColors.textGradientColors.last,
+              unselectedItemColor: AppColors.inactivePageColor,
               elevation: 0,
               items: [
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.home),
+                  icon: Icon(Icons.home_outlined),
                   label: 'Home',
                 ),
                 BottomNavigationBarItem(
-                    icon: Icon(Icons.bar_chart), label: 'Analysis'),
+                    icon: Icon(Icons.analytics), label: 'Analysis'),
                 BottomNavigationBarItem(
                     icon: Icon(Icons.handyman), label: 'Adjustments'),
                 BottomNavigationBarItem(

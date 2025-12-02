@@ -44,7 +44,10 @@ dependencies:
   flutter_secure_storage: ^9.2.4
   interactive_slider: ^0.5.1
   responsive_sizer: ^3.3.1
-  liquid_progress_indicator_v2: ^0.5.0
+  liquid_progress_indicator_v2:
+    git:
+      url: https://github.com/M4dhav/liquid_progress_indicator_v2.git
+      ref: multiple-waves
   go_router: ^17.0.0
   font_awesome_flutter: ^10.12.0
   intl: ^0.20.2
@@ -57,10 +60,10 @@ dependencies:
   liquid_glass_renderer: ^0.2.0-dev.4
   flutter_svg: ^2.2.3
   google_fonts: ^6.3.3
-  animated_text_kit: 
+  animated_text_kit:
     git:
       url: https://github.com/M4dhav/Animated-Text-Kit.git
-    # path: D:/development/GitHub/Animated-Text-Kit/  
+    # path: D:/development/GitHub/Animated-Text-Kit/
   inner_shadow_container: ^1.0.4
   flutter_riverpod: ^2.6.1
   riverpod_annotation: ^2.6.1
@@ -71,7 +74,7 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^6.0.0
   custom_lint: ^0.8.1
-  
+
   tab_indicator_styler: ^2.0.0
   build_runner: ^2.10.4
   freezed: ^3.2.3
@@ -102,7 +105,7 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-    
+
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

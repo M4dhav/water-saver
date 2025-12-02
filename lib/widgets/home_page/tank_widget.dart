@@ -144,8 +144,10 @@ class _WaterTankWidgetState extends State<WaterTankWidget>
                       Text(
                         'volume',
                         style: TextStyle(
-                          fontSize: 14.sp,
-                        ),
+                            fontSize: 14.sp,
+                            color:
+                                Theme.of(context).textTheme.bodyMedium?.color,
+                            fontWeight: FontWeight.w700),
                       ),
                       AnimatedTextKit(
                         controller: widget.controller,
@@ -165,8 +167,7 @@ class _WaterTankWidgetState extends State<WaterTankWidget>
                       Text(
                         'from the bottom',
                         style: TextStyle(
-                          fontSize: 14.sp,
-                        ),
+                            fontSize: 14.sp, fontWeight: FontWeight.w900),
                       ),
                       AnimatedTextKit(
                         controller: widget.controller,
@@ -186,8 +187,7 @@ class _WaterTankWidgetState extends State<WaterTankWidget>
                       Text(
                         'filled',
                         style: TextStyle(
-                          fontSize: 14.sp,
-                        ),
+                            fontSize: 14.sp, fontWeight: FontWeight.w700),
                       ),
                     ],
                   ),
@@ -203,6 +203,9 @@ class _WaterTankWidgetState extends State<WaterTankWidget>
                           value: widget.fillPercentage / 100,
                           direction: Axis.vertical,
                           backgroundColor: const Color(0xFFE8F4FC),
+                      waveCount: 2,
+                      waveColors: [Colors.blue, Colors.lightBlueAccent],
+
                           valueColor: AlwaysStoppedAnimation(
                             const Color(0xFF42A5F5),
                           ),

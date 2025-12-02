@@ -100,10 +100,7 @@ class InsightsWidget extends StatelessWidget {
                                           GoogleFonts.inter().fontFamily,
                                       fontSize: 18.sp,
                                       fontWeight: FontWeight.bold),
-                                  colors: [
-                                    Color.fromARGB(255, 0, 140, 255),
-                                    Color.fromARGB(255, 15, 62, 123),
-                                  ],
+                                  colors: AppColors.textGradientColors
                                 ),
                               ],
                               repeatForever: true,
@@ -161,10 +158,7 @@ class InsightsWidget extends StatelessWidget {
                                           GoogleFonts.inter().fontFamily,
                                       fontSize: 18.sp,
                                       fontWeight: FontWeight.bold),
-                                  colors: [
-                                    Color.fromARGB(255, 0, 140, 255),
-                                    Color.fromARGB(255, 15, 62, 123),
-                                  ],
+                                  colors: AppColors.textGradientColors
                                 ),
                               ],
                               repeatForever: true,

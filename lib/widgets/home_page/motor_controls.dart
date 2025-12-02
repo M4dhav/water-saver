@@ -85,17 +85,14 @@ class MotorControlsWidget extends StatelessWidget {
                         controller: controller,
                         animatedTexts: [
                           ColorizeAnimatedText(
-                            fadeInOnStart: false,
-                            'Motor',
-                            textStyle: TextStyle(
-                                fontFamily: GoogleFonts.inter().fontFamily,
-                                fontSize: 18.sp,
-                                fontWeight: FontWeight.bold),
-                            colors: [
-                              Color.fromARGB(255, 0, 140, 255),
-                              Color.fromARGB(255, 15, 62, 123),
-                            ],
-                          ),
+                              speed: Duration(milliseconds: 5),
+                              fadeInOnStart: false,
+                              'Motor',
+                              textStyle: TextStyle(
+                                  fontFamily: GoogleFonts.inter().fontFamily,
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.bold),
+                              colors: AppColors.textGradientColors),
                         ],
                         repeatForever: true,
                         isRepeatingAnimation: true,
@@ -136,17 +133,13 @@ class MotorControlsWidget extends StatelessWidget {
                         controller: controller,
                         animatedTexts: [
                           ColorizeAnimatedText(
-                            fadeInOnStart: false,
-                            'Auto Mode',
-                            textStyle: TextStyle(
-                                fontFamily: GoogleFonts.inter().fontFamily,
-                                fontSize: 18.sp,
-                                fontWeight: FontWeight.bold),
-                            colors: [
-                              Color.fromARGB(255, 0, 140, 255),
-                              Color.fromARGB(255, 15, 62, 123),
-                            ],
-                          ),
+                              fadeInOnStart: false,
+                              'Auto Mode',
+                              textStyle: TextStyle(
+                                  fontFamily: GoogleFonts.inter().fontFamily,
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.bold),
+                              colors: AppColors.textGradientColors),
                         ],
                         repeatForever: true,
                         isRepeatingAnimation: true,

@@ -11,7 +11,6 @@ import 'package:water_saver/widgets/analysis/motor_graph.dart';
 import 'package:water_saver/widgets/analysis/threshold_history_graph.dart';
 import 'package:water_saver/widgets/analysis/water_consumption_graph.dart';
 import 'package:water_saver/widgets/analysis/graph_legend.dart';
-import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 import 'package:water_saver/widgets/analysis/graph_period_controller.dart';
 
 class AnalysisPage extends ConsumerWidget {
