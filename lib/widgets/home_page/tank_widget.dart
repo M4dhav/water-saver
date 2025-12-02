@@ -110,6 +110,9 @@ class WaterTankWidget extends StatelessWidget {
                     child: LiquidCustomProgressIndicator(
                       direction: Axis.vertical,
                       value: fillPercentage / 100,
+                      waveCount: 2,
+                      waveColors: [Colors.blue, Colors.lightBlueAccent],
+
                       // value: 0,
                       valueColor:
                           const AlwaysStoppedAnimation<Color>(Colors.blue),
