@@ -19,7 +19,7 @@ class AppColors {
       textTheme: GoogleFonts.interTextTheme().copyWith(
           bodyMedium: GoogleFonts.interTextTheme()
               .bodyMedium
-              ?.copyWith(color: Color.fromARGB(255, 107, 114, 128))));
+              ?.copyWith(color: Color.fromARGB(255, 190, 192, 197))));
   static ThemeData darkTheme = ThemeData.dark(
     useMaterial3: true,
   ).copyWith();

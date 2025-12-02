@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:water_saver/models/app_themes.dart';
+import 'package:water_saver/theme/app_themes.dart';
 import 'package:water_saver/screens/adjustment.dart';
 import 'package:water_saver/screens/home.dart';
 import 'package:water_saver/screens/settings.dart';

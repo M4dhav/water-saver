@@ -5,7 +5,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 
 import 'package:google_fonts/google_fonts.dart';
-import 'package:water_saver/models/app_themes.dart';
+import 'package:water_saver/theme/app_themes.dart';
 import 'package:water_saver/widgets/home_page/control_switch.dart';
 
 class MotorControlsWidget extends StatelessWidget {

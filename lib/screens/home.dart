@@ -135,6 +135,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               tankHeight: tank / 100.0,
               volume: volume,
               controller: controller,
+              isMotorOn: appUser.userDataUpload.motorOn == "yes",
             ),
           ),
           SizedBox(
@@ -225,7 +226,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             ),
           ),
           SizedBox(
-            height: 24.h,
+            height: 27.h,
             child: InsightsWidget(
               buckets: buckets,
               washingMachines: washingMachines,

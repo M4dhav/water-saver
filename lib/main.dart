@@ -5,7 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:water_saver/firebase_options.dart';
-import 'package:water_saver/models/app_themes.dart';
+import 'package:water_saver/theme/app_themes.dart';
 import 'package:water_saver/screens/login_screen.dart';
 import 'package:water_saver/screens/onboarding_screens.dart';
 import 'package:water_saver/screens/personal_info.dart';
