@@ -1,18 +1,16 @@
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:water_saver/controllers/graph_controller.dart';
-import 'package:water_saver/models/app_themes.dart';
+import 'package:water_saver/theme/app_themes.dart';
 import 'package:water_saver/models/graph_page_model.dart';
 import 'package:water_saver/providers/graph_controller_provider.dart';
 import 'package:water_saver/widgets/analysis/motor_graph.dart';
 import 'package:water_saver/widgets/analysis/threshold_history_graph.dart';
 import 'package:water_saver/widgets/analysis/water_consumption_graph.dart';
-import 'package:water_saver/widgets/home_page/graph_legend.dart';
-import 'package:tab_indicator_styler/tab_indicator_styler.dart';
-import 'package:water_saver/widgets/home_page/graph_period_controller.dart';
+import 'package:water_saver/widgets/analysis/graph_legend.dart';
+import 'package:water_saver/widgets/analysis/graph_period_controller.dart';
 
 class AnalysisPage extends ConsumerWidget {
   const AnalysisPage({super.key});
@@ -24,19 +22,14 @@ class AnalysisPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: AnimatedTextKit(
-          animatedTexts: [
-            ColorizeAnimatedText(
-                fadeInOnStart: false,
-                'Analysis',
-                textStyle: TextStyle(
-                    fontFamily: GoogleFonts.inter().fontFamily,
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.bold),
-                colors: AppColors.textGradientColors),
-          ],
-          repeatForever: true,
-          isRepeatingAnimation: true,
+        title: Text(
+          'Analysis',
+          style: TextStyle(
+            fontFamily: GoogleFonts.inter().fontFamily,
+            fontSize: 18.sp,
+            fontWeight: FontWeight.bold,
+            color: AppColors.textGradientColors,
+          ),
         ),
         centerTitle: true,
       ),

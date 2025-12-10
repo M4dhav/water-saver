@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:water_saver/models/app_themes.dart';
+import 'package:water_saver/theme/app_themes.dart';
 import 'package:water_saver/screens/adjustment.dart';
 import 'package:water_saver/screens/home.dart';
 import 'package:water_saver/screens/settings.dart';
@@ -54,15 +54,15 @@ class _BottomNavBarState extends State<BottomNavBar> {
               onTap: _onItemTapped,
               type: BottomNavigationBarType.fixed,
               selectedItemColor: Theme.of(context).iconTheme.color,
-              unselectedItemColor: AppColors.textGradientColors.last,
+              unselectedItemColor: AppColors.inactivePageColor,
               elevation: 0,
               items: [
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.home),
+                  icon: Icon(Icons.home_outlined),
                   label: 'Home',
                 ),
                 BottomNavigationBarItem(
-                    icon: Icon(Icons.bar_chart), label: 'Analysis'),
+                    icon: Icon(Icons.analytics), label: 'Analysis'),
                 BottomNavigationBarItem(
                     icon: Icon(Icons.handyman), label: 'Adjustments'),
                 BottomNavigationBarItem(

@@ -2,7 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:water_saver/controllers/graph_controller.dart';
-import 'package:water_saver/models/app_themes.dart';
+import 'package:water_saver/theme/app_themes.dart';
 import 'package:water_saver/models/graph_page_model.dart';
 
 class WaterConsumptionGraph extends StatelessWidget {
@@ -39,7 +39,7 @@ class WaterConsumptionGraph extends StatelessWidget {
               style: TextStyle(
                 fontSize: 18.sp,
                 fontWeight: FontWeight.bold,
-                color: AppColors.textGradientColors.last,
+                color: AppColors.textGradientColors,
               ),
             ),
             SizedBox(height: 2.h),

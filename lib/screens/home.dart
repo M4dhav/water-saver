@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -23,13 +21,11 @@ class _HomePageState extends ConsumerState<HomePage> {
   Timer? _timer;
   bool _isAutoMode = true;
   int _currentIndex = 0;
-  final AnimatedTextController controller = AnimatedTextController();
 
   @override
   void initState() {
     super.initState();
     _initAutoMode();
-    controller.play();
   }
 
   Future<void> _initAutoMode() async {
@@ -134,7 +130,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               waterLevel: waterLevel,
               tankHeight: tank / 100.0,
               volume: volume,
-              controller: controller,
+              isMotorOn: appUser.userDataUpload.motorOn == "yes",
             ),
           ),
           SizedBox(
@@ -168,20 +164,20 @@ class _HomePageState extends ConsumerState<HomePage> {
                 }
 
                 final motorLimit = appUser.userDataUpload.motorOn != 'yes';
-                if (motorLimit) {
-                  final allowed =
-                      await appUserController.canTurnMotorOn(appUser);
-                  if (!allowed) {
-                    if (!mounted) return;
-                    messenger.showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                            'Manual ON limit reached (3 times/24h). Try later.'),
-                      ),
-                    );
-                    return;
-                  }
-                }
+                // if (motorLimit) {
+                //   final allowed =
+                //       await appUserController.canTurnMotorOn(appUser);
+                //   if (!allowed) {
+                //     if (!mounted) return;
+                //     messenger.showSnackBar(
+                //       const SnackBar(
+                //         content: Text(
+                //             'Manual ON limit reached (3 times/24h). Try later.'),
+                //       ),
+                //     );
+                //     return;
+                //   }
+                // }
 
                 await appUserController.updateMotorState(
                   motorLimit,
@@ -221,15 +217,13 @@ class _HomePageState extends ConsumerState<HomePage> {
                 }
               },
               onMotorButtonPressed: () async {},
-              controller: controller,
             ),
           ),
           SizedBox(
-            height: 24.h,
+            height: 27.h,
             child: InsightsWidget(
               buckets: buckets,
               washingMachines: washingMachines,
-              controller: controller,
             ),
           ),
           SizedBox(height: 2.h),

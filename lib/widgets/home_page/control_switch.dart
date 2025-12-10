@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:inner_shadow_container/inner_shadow_container.dart';
-import 'package:water_saver/models/app_themes.dart';
+import 'package:water_saver/theme/app_themes.dart';
 
 class ControlSwitch extends StatefulWidget {
   const ControlSwitch(
       {super.key,
       required this.switchValue,
       required this.onTap,
-      this.inactiveBackgroundColor = Colors.grey,
+      this.inactiveBackgroundColor = const Color.fromARGB(255, 197, 194, 194),
       this.inactiveThumbColor = Colors.white,
       this.activeThumbColor = Colors.white,
       this.height = 31,
@@ -50,8 +50,8 @@ class _ControlSwitchState extends State<ControlSwitch> {
                 BoxShadow(
                   color: Colors.grey,
                   spreadRadius: 0,
-                  blurRadius: 10,
-                  offset: Offset(1, 5),
+                  blurRadius: 5,
+                  offset: Offset(1, 2),
                 )
               ]),
           child: Padding(

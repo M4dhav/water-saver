@@ -1,17 +1,16 @@
-import 'package:animated_text_kit/animated_text_kit.dart';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:liquid_progress_indicator_v2/liquid_progress_indicator.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:water_saver/models/app_themes.dart';
-import 'package:water_saver/widgets/home_page/water_tank_new_2.dart';
+import 'package:water_saver/theme/app_themes.dart';
+import 'package:water_saver/widgets/home_page/water_tank.dart';
 
-class WaterTankWidget extends StatelessWidget {
+class WaterTankWidget extends StatefulWidget {
   final double fillPercentage;
   final double waterLevel;
   final double tankHeight;
   final int volume;
-  final AnimatedTextController controller;
+  final bool isMotorOn;
 
   const WaterTankWidget({
     super.key,
@@ -19,8 +18,77 @@ class WaterTankWidget extends StatelessWidget {
     required this.waterLevel,
     required this.tankHeight,
     required this.volume,
-    required this.controller,
+    this.isMotorOn = false,
   });
+
+  @override
+  State<WaterTankWidget> createState() => _WaterTankWidgetState();
+}
+
+class _WaterTankWidgetState extends State<WaterTankWidget>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _bubbleController;
+  final List<Bubble> _bubbles = [];
+  final Random _random = Random();
+  bool _shouldGenerateBubbles = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _bubbleController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 80),
+    )..addListener(_updateBubbles);
+
+    if (widget.isMotorOn) {
+      _shouldGenerateBubbles = true;
+      _bubbleController.repeat();
+    }
+  }
+
+  @override
+  void didUpdateWidget(WaterTankWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isMotorOn && !oldWidget.isMotorOn) {
+      _shouldGenerateBubbles = true;
+      _bubbleController.repeat();
+    } else if (!widget.isMotorOn && oldWidget.isMotorOn) {
+      _shouldGenerateBubbles = false;
+    }
+  }
+
+  void _updateBubbles() {
+    if (!_shouldGenerateBubbles && _bubbles.isEmpty) {
+      _bubbleController.stop();
+      return;
+    }
+
+    setState(() {
+      if (_shouldGenerateBubbles && _random.nextDouble() < 0.028) {
+        _bubbles.add(Bubble(
+          x: _random.nextDouble() * 0.7 + 0.15,
+          y: 1.0,
+          size: _random.nextDouble() * 4,
+          speed: _random.nextDouble() * 0.01,
+          opacity: _random.nextDouble() * 0.3 + 0.6,
+        ));
+      }
+      for (var bubble in _bubbles) {
+        bubble.y -= bubble.speed;
+        bubble.x = bubble.x.clamp(0.08, 0.92);
+        bubble.size += (_random.nextDouble() - 0.5) * 0.1;
+        bubble.size = bubble.size.clamp(3.0, 14.0);
+      }
+      final waterSurface = 1 - (widget.fillPercentage / 100);
+      _bubbles.removeWhere((b) => b.y < waterSurface + 0.02);
+    });
+  }
+
+  @override
+  void dispose() {
+    _bubbleController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,112 +105,67 @@ class WaterTankWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      AnimatedTextKit(
-                        controller: controller,
-                        animatedTexts: [
-                          ColorizeAnimatedText(
-                              fadeInOnStart: false,
-                              '$volume L',
-                              textStyle: TextStyle(
-                                  fontFamily: GoogleFonts.inter().fontFamily,
-                                  fontSize: 24.sp,
-                                  fontWeight: FontWeight.w900),
-                              colors: AppColors.textGradientColors),
-                        ],
-                        repeatForever: true,
-                        isRepeatingAnimation: true,
+                      Text(
+                        '${widget.volume} L',
+                        style: TextStyle(
+                          fontFamily: GoogleFonts.inter().fontFamily,
+                          fontSize: 22.sp,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textGradientColors,
+                        ),
                       ),
                       Text(
                         'volume',
                         style: TextStyle(
-                          fontSize: 14.sp,
-                        ),
+                            fontSize: 14.sp,
+                            color:
+                                Theme.of(context).textTheme.bodyMedium?.color,
+                            fontWeight: FontWeight.w700),
                       ),
-                      AnimatedTextKit(
-                        controller: controller,
-                        animatedTexts: [
-                          ColorizeAnimatedText(
-                              fadeInOnStart: false,
-                              '${waterLevel.toStringAsFixed(1)} m',
-                              textStyle: TextStyle(
-                                  fontFamily: GoogleFonts.inter().fontFamily,
-                                  fontSize: 22.sp,
-                                  fontWeight: FontWeight.w900),
-                              colors: AppColors.textGradientColors),
-                        ],
-                        repeatForever: true,
-                        isRepeatingAnimation: true,
+                      Text(
+                        '${widget.waterLevel.toStringAsFixed(1)} m',
+                        style: TextStyle(
+                          fontFamily: GoogleFonts.inter().fontFamily,
+                          fontSize: 22.sp,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textGradientColors,
+                        ),
                       ),
                       Text(
                         'from the bottom',
                         style: TextStyle(
-                          fontSize: 14.sp,
-                        ),
+                            fontSize: 14.sp, fontWeight: FontWeight.w900),
                       ),
-                      AnimatedTextKit(
-                        controller: controller,
-                        animatedTexts: [
-                          ColorizeAnimatedText(
-                              fadeInOnStart: false,
-                              '${fillPercentage.toStringAsFixed(0)}%',
-                              textStyle: TextStyle(
-                                  fontFamily: GoogleFonts.inter().fontFamily,
-                                  fontSize: 22.sp,
-                                  fontWeight: FontWeight.w900),
-                              colors: AppColors.textGradientColors),
-                        ],
-                        repeatForever: true,
-                        isRepeatingAnimation: true,
+                      Text(
+                        '${widget.fillPercentage.toStringAsFixed(0)}%',
+                        style: TextStyle(
+                          fontFamily: GoogleFonts.inter().fontFamily,
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textGradientColors,
+                        ),
                       ),
                       Text(
                         'filled',
                         style: TextStyle(
-                          fontSize: 14.sp,
-                        ),
+                            fontSize: 14.sp, fontWeight: FontWeight.w700),
                       ),
                     ],
                   ),
                 ),
-                Card(
-                  color: Colors.white,
-                  child: Padding(
-                    padding: EdgeInsets.all(constraints.maxHeight * 0.03),
-                    child: LiquidCustomProgressIndicator(
-                      direction: Axis.vertical,
-                      value: fillPercentage / 100,
-                      waveCount: 2,
-                      waveColors: [Colors.blue, Colors.lightBlueAccent],
-
-                      // value: 0,
-                      valueColor:
-                          const AlwaysStoppedAnimation<Color>(Colors.blue),
-                      backgroundColor: const Color(0xFF98D8F6),
-                      // shapePath: buildOtherWaterTankPath(),
-
-                      shapePath: buildThirdWaterTankPath(
-                          size: Size(constraints.maxWidth * 0.35,
-                              constraints.maxHeight * 0.85)),
-                      // center: Column(
-                      //   mainAxisAlignment: MainAxisAlignment.center,
-                      //   children: [
-                      //     Text(
-                      //       '${fillPercentage.toInt()}%',
-                      //       textAlign: TextAlign.center,
-                      //       style: TextStyle(
-                      //           fontSize: 24.sp,
-                      //           color: const Color(0xFFE2E8F0),
-                      //           fontWeight: FontWeight.bold),
-                      //     ),
-                      //     Text(
-                      //       'filled',
-                      //       style: TextStyle(
-                      //         fontSize: 14.sp,
-                      //         color: const Color(0xFFE2E8F0),
-                      //       ),
-                      //       textAlign: TextAlign.center,
-                      //     ),
-                      //   ],
-                      // ),
+                Padding(
+                  padding: EdgeInsets.all(constraints.maxHeight * 0.02),
+                  child: SizedBox(
+                    width: constraints.maxWidth * 0.4,
+                    height: constraints.maxHeight * 0.9,
+                    child: Water3DWaveWidget(
+                      fillPercentage: widget.fillPercentage / 100,
+                      size: Size(
+                        constraints.maxWidth * 0.4,
+                        constraints.maxHeight * 0.9,
+                      ),
+                      bubbles: _bubbles,
+                      isMotorOn: widget.isMotorOn,
                     ),
                   ),
                 ),

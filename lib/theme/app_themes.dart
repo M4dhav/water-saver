@@ -19,7 +19,7 @@ class AppColors {
       textTheme: GoogleFonts.interTextTheme().copyWith(
           bodyMedium: GoogleFonts.interTextTheme()
               .bodyMedium
-              ?.copyWith(color: Color.fromARGB(255, 107, 114, 128))));
+              ?.copyWith(color: Color.fromARGB(255, 135, 134, 134))));
   static ThemeData darkTheme = ThemeData.dark(
     useMaterial3: true,
   ).copyWith();
@@ -36,8 +36,6 @@ class AppColors {
   );
   static const Color activeToggleButtonColor =
       Color.fromARGB(255, 176, 228, 234);
-  static const List<Color> textGradientColors = [
-    Color.fromARGB(255, 0, 140, 255),
-    Color.fromARGB(255, 15, 62, 123),
-  ];
+  static const Color textGradientColors = Color.fromARGB(255, 40, 153, 245);
+  static const Color inactivePageColor = Color.fromARGB(255, 44, 110, 198);
 }
